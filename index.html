@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CONDE 2 SMART</title>
+  <style>
+    :root {
+      --bg-color: #FDFBF7;
+      --card-bg: #FFFFFF;
+      --primary: #FF6B00;
+      --primary-dark: #E05E00;
+      --text-main: #333333;
+      --text-muted: #666666;
+      --border: #E8E2D5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 30px; }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 { font-size: 1.4rem; font-weight: bold; }
+    .role-badge { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
+
+    nav {
+      display: flex;
+      background-color: #F4EFE6;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    nav button.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+      background-color: var(--card-bg);
+    }
+
+    .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
+
+    .admin-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .btn:hover { background-color: var(--primary-dark); }
+    .btn-danger { background-color: #d9534f; }
+    .btn-secondary { background-color: #777; }
+    .btn-success { background-color: #28a745; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .hidden { display: none !important; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    th, td { border: 1px solid var(--border); padding: 8px; text-align: left; }
+    th { background-color: #F4EFE6; color: var(--primary-dark); }
+
+    .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .tag-owner { background-color: #e2f0d9; color: #385723; }
+    .tag-rented { background-color: #fff2cc; color: #7f6000; }
+    .tag-empty { background-color: #fce4d6; color: #c65911; }
+    .tag-urgent { background-color: #f8d7da; color: #721c24; }
+    .tag-normal { background-color: #d1ecf1; color: #0c5460; }
+    .tag-attended { background-color: #d4edda; color: #155724; }
+    .tag-pending { background-color: #fff3cd; color: #856404; }
+
+    /* Estilo ampliado para redacción del Reglamento */
+    .reglamento-editor {
+      min-height: 400px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      white-space: pre;
+      overflow-x: auto;
+      tab-size: 4;
+    }
+
+    .reglamento-box {
+      white-space: pre-wrap;
+      line-height: 1.6;
+      background: #FAFAFA;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 200px;
+    }
+  </style>
+
+  <!-- FIREBASE SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>CONDE 2 SMART</h1>
+    <div>
+      <span class="role-badge" id="roleLabel">Modo: Vecino</span>
+      <button class="btn btn-secondary" onclick="toggleRole()" id="roleBtn">Ingresar como Admin</button>
+    </div>
+  </header>
+
+  <nav>
+    <button class="active" onclick="switchTab('comunicados')">Anuncios</button>
+    <button onclick="switchTab('novedades')">Reportar Novedad</button>
+    <button onclick="switchTab('casas')">Directorio Casas (112)</button>
+    <button onclick="switchTab('servicios')">Servicios</button>
+    <button onclick="switchTab('emergencias')">Emergencias</button>
+    <button onclick="switchTab('reglamento')">Reglamento</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- COMUNICADOS -->
+    <div id="tab-comunicados">
+      <div class="admin-controls admin-only hidden">
+        <button class="btn" onclick="showForm('form-comunicado')">+ Nuevo Comunicado</button>
+      </div>
+
+      <div id="form-comunicado" class="card hidden">
+        <h3>Publicar Comunicado</h3>
+        <input type="text" id="com-titulo" placeholder="Título del anuncio">
+        <textarea id="com-texto" rows="3" placeholder="Detalle del comunicado..."></textarea>
+        <button class="btn" onclick="addComunicado()">Guardar</button>
+        <button class="btn btn-secondary" onclick="
