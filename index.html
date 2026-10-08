@@ -14,220 +14,292 @@
       --text-muted: #666666;
       --border: #E8E2D5;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 30px; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 40px; }
+    header { background-color: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    header h1 { font-size: 1.2rem; font-weight: bold; }
+    .admin-btn { background: white; color: var(--primary); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    
+    nav { display: flex; background: #EAE5D9; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    nav button { background: none; border: none; padding: 12px 16px; font-weight: 600; color: var(--text-muted); cursor: pointer; }
+    nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: white; }
 
-    header {
-      background-color: var(--primary);
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+    .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    header h1 { font-size: 1.4rem; font-weight: bold; }
-    .role-badge { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
+    .card { background: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; color: var(--primary-dark); }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+    th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; font-size: 0.9rem; }
+    th { background-color: #F4EFE6; color: var(--text-main); }
 
-    nav {
-      display: flex;
-      background-color: #F4EFE6;
-      overflow-x: auto;
-      border-bottom: 1px solid var(--border);
-    }
-
-    nav button {
-      background: none;
-      border: none;
-      padding: 12px 16px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    nav button.active {
-      color: var(--primary);
-      border-bottom: 3px solid var(--primary);
-      background-color: var(--card-bg);
-    }
-
-    .container { max-width: 950px; margin: 20px auto; padding: 0 15px; }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
-
-    .admin-controls {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .btn:hover { background-color: var(--primary-dark); }
-    .btn-danger { background-color: #d9534f; }
-    .btn-secondary { background-color: #777; }
-    .btn-success { background-color: #28a745; }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0 12px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-    }
-
-    .hidden { display: none !important; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-    th, td { border: 1px solid var(--border); padding: 8px; text-align: left; }
-    th { background-color: #F4EFE6; color: var(--primary-dark); }
-
-    .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .tag-owner { background-color: #e2f0d9; color: #385723; }
-    .tag-rented { background-color: #fff2cc; color: #7f6000; }
-    .tag-empty { background-color: #fce4d6; color: #c65911; }
-    .tag-urgent { background-color: #f8d7da; color: #721c24; }
-    .tag-normal { background-color: #d1ecf1; color: #0c5460; }
-    .tag-attended { background-color: #d4edda; color: #155724; }
-    .tag-pending { background-color: #fff3cd; color: #856404; }
-
-    .reglamento-editor {
-      min-height: 400px;
-      font-family: 'Consolas', 'Courier New', monospace;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      white-space: pre;
-      overflow-x: auto;
-      tab-size: 4;
-    }
-
-    .reglamento-box {
-      white-space: pre-wrap;
-      line-height: 1.6;
-      background: #FAFAFA;
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      font-family: 'Segoe UI', sans-serif;
-      min-height: 200px;
-    }
+    .btn { background: var(--primary); color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-danger { background: #D9534F; }
+    .btn-sm { padding: 4px 8px; font-size: 0.8rem; }
+    
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.85rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; }
+    
+    .admin-only { display: none; }
+    .is-admin .admin-only { display: inline-block; }
+    .is-admin blockquote.admin-only, .is-admin div.admin-only { display: block; }
   </style>
 
-  <!-- FIREBASE SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <!-- Firebase App & Realtime Database SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
   <header>
     <h1>CONDE 2 SMART</h1>
     <div>
-      <span class="role-badge" id="roleLabel">Modo: Vecino</span>
-      <button class="btn btn-secondary" onclick="toggleRole()" id="roleBtn">Ingresar como Admin</button>
+      <span id="admin-status" style="font-size:0.8rem; margin-right:8px;"></span>
+      <button class="admin-btn" onclick="toggleAdmin()">Acceso Admin</button>
     </div>
   </header>
 
   <nav>
-    <button class="active" onclick="switchTab('comunicados')">Anuncios</button>
-    <button onclick="switchTab('novedades')">Reportar Novedad</button>
-    <button onclick="switchTab('casas')">Directorio Casas (112)</button>
-    <button onclick="switchTab('servicios')">Servicios</button>
-    <button onclick="switchTab('emergencias')">Emergencias</button>
-    <button onclick="switchTab('reglamento')">Reglamento</button>
+    <button class="tab-link active" onclick="openTab(event, 'comunicados')">Comunicados</button>
+    <button class="tab-link" onclick="openTab(event, 'directorio')">Directorio Casas (112)</button>
+    <button class="tab-link" onclick="openTab(event, 'servicios')">Servicios</button>
+    <button class="tab-link" onclick="openTab(event, 'emergencias')">Emergencias</button>
   </nav>
 
   <div class="container">
-
-    <!-- COMUNICADOS -->
-    <div id="tab-comunicados">
-      <div class="admin-controls admin-only hidden">
+    
+    <!-- Pestaña Comunicados -->
+    <div id="comunicados" class="tab-content active">
+      <div class="admin-only" style="margin-bottom: 15px;">
         <button class="btn" onclick="showForm('form-comunicado')">+ Nuevo Comunicado</button>
       </div>
 
-      <div id="form-comunicado" class="card hidden">
-        <h3>Publicar Comunicado</h3>
-        <input type="text" id="com-titulo" placeholder="Título del anuncio">
-        <textarea id="com-texto" rows="3" placeholder="Detalle del comunicado..."></textarea>
-        <button class="btn" onclick="addComunicado()">Guardar</button>
-        <button class="btn btn-secondary" onclick="hideForm('form-comunicado')">Cancelar</button>
-      </div>
-
-      <div id="list-comunicados">No hay comunicados publicados.</div>
-    </div>
-
-    <!-- NOVEDADES -->
-    <div id="tab-novedades" class="hidden">
-      <div class="card">
-        <h3>Reportar Novedad (Iluminación, Seguridad, Roturas)</h3>
-        <label><strong>Número de Casa:</strong></label>
-        <input type="text" id="nov-casa" placeholder="Ej: 45">
-        
-        <label><strong>Tipo de Novedad:</strong></label>
-        <select id="nov-tipo">
-          <option value="Iluminación">Iluminación</option>
-          <option value="Seguridad y Guardianía">Seguridad y Guardianía</option>
-          <option value="Daños / Roturas">Daños / Roturas</option>
-          <option value="Otro">Otro</option>
-        </select>
-
-        <label><strong>Prioridad:</strong></label>
-        <select id="nov-prioridad">
-          <option value="Normal">Normal</option>
-          <option value="Urgente">Urgente</option>
-        </select>
-
-        <label><strong>Detalle:</strong></label>
-        <textarea id="nov-detalle" rows="3" placeholder="Describa el problema..."></textarea>
-        <button class="btn" onclick="addNovedad()">Enviar Reporte a Administración</button>
-      </div>
-
-      <h3 style="margin-top:20px;">Estado de Novedades Reportadas</h3>
-      <div id="list-novedades" style="margin-top: 10px;">Sin datos registrados.</div>
-    </div>
-
-    <!-- DIRECTORIO CASAS (112) -->
-    <div id="tab-casas" class="hidden">
-      <div class="card">
-        <h3>Buscador de Casas</h3>
-        <input type="text" id="search-casa" placeholder="Buscar por casa, dueño, inquilino o parqueadero..." onkeyup="renderCasas()">
-        <div class="admin-only hidden" style="margin-top:10px;">
-          <button class="btn btn-secondary" onclick="inicializar112Casas()">Inicializar 112 Casas (Solo si está vacío)</button>
+      <div id="form-comunicado" class="card" style="display:none;">
+        <h3>Nuevo Comunicado</h3>
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" id="com-titulo">
         </div>
+        <div class="form-group">
+          <label>Contenido</label>
+          <textarea id="com-texto" rows="3"></textarea>
+        </div>
+        <button class="btn" onclick="addComunicado()">Publicar</button>
+        <button class="btn btn-danger" onclick="hideForm('form-comunicado')">Cancelar</button>
       </div>
 
-      <div style="overflow-x: auto;">
+      <div id="lista-comunicados">
+        <p>Cargando comunicados...</p>
+      </div>
+    </div>
+
+    <!-- Pestaña Directorio -->
+    <div id="directorio" class="tab-content">
+      <h3>Directorio del Conjunto (112 Casas)</h3>
+      <div style="overflow-x:auto;">
         <table>
           <thead>
             <tr>
               <th>Casa #</th>
-              <th>Parqueadero</th>
               <th>Propietario</th>
-              <th>Estado</th>
               <th>Inquilino</th>
-              <th>Hab.</th>
-              <th>Niños</th>
-              <th>Mascotas</th>
-              <th class="admin-only hidden">Acc
+              <th>Teléfono</th>
+              <th class="admin-only">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-directorio">
+            <!-- Se carga dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pestaña Servicios -->
+    <div id="servicios" class="tab-content">
+      <h3>Servicios Internos y Recomendados</h3>
+      <div class="admin-only" style="margin-bottom:15px;">
+        <button class="btn" onclick="showForm('form-servicio')">+ Agregar Servicio</button>
+      </div>
+
+      <div id="form-servicio" class="card" style="display:none;">
+        <div class="form-group"><label>Nombre / Servicio</label><input type="text" id="srv-nombre"></div>
+        <div class="form-group"><label>Contacto / Teléfono</label><input type="text" id="srv-contacto"></div>
+        <button class="btn" onclick="addServicio()">Guardar</button>
+        <button class="btn btn-danger" onclick="hideForm('form-servicio')">Cancelar</button>
+      </div>
+
+      <div id="lista-servicios"></div>
+    </div>
+
+    <!-- Pestaña Emergencias -->
+    <div id="emergencias" class="tab-content">
+      <h3>Números de Emergencia</h3>
+      <div id="lista-emergencias">
+        <div class="card"><b>Guardia / Garita:</b> Ext. 100</div>
+        <div class="card"><b>Policía Nacional / ECU 911:</b> 911</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      databaseURL: "https://conde2smart-default-rtdb.firebaseio.com"
+    };
+    
+    let db = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    } catch(e) {
+      console.log("Firebase no inicializado aún.");
+    }
+
+    let isAdmin = false;
+
+    function toggleAdmin() {
+      if(!isAdmin) {
+        let pass = prompt("Ingrese la clave de administrador:");
+        if(pass === "admin123") {
+          isAdmin = true;
+          document.body.classList.add("is-admin");
+          document.getElementById("admin-status").innerText = "Modo: Admin";
+          alert("Acceso concedido como Administrador.");
+          cargarComunicados();
+          cargarDirectorio();
+        } else if(pass !== null) {
+          alert("Contraseña incorrecta.");
+        }
+      } else {
+        isAdmin = false;
+        document.body.classList.remove("is-admin");
+        document.getElementById("admin-status").innerText = "";
+        alert("Sesión de administrador cerrada.");
+        cargarComunicados();
+        cargarDirectorio();
+      }
+    }
+
+    function openTab(evt, tabName) {
+      let contents = document.getElementsByClassName("tab-content");
+      for (let i = 0; i < contents.length; i++) {
+        contents[i].classList.remove("active");
+      }
+      let links = document.getElementsByClassName("tab-link");
+      for (let i = 0; i < links.length; i++) {
+        links[i].classList.remove("active");
+      }
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+
+    function showForm(id) { document.getElementById(id).style.display = 'block'; }
+    function hideForm(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Cargar y gestionar Comunicados
+    function cargarComunicados() {
+      let contenedor = document.getElementById("lista-comunicados");
+      if(!db) {
+        contenedor.innerHTML = "<p>No hay comunicados publicados.</p>";
+        return;
+      }
+      db.ref("comunicados").on("value", snapshot => {
+        contenedor.innerHTML = "";
+        let data = snapshot.val();
+        if(!data) {
+          contenedor.innerHTML = "<p>No hay comunicados publicados.</p>";
+          return;
+        }
+        Object.keys(data).forEach(key => {
+          let item = data[key];
+          let deleteBtn = isAdmin ? `<button class="btn btn-danger btn-sm" onclick="deleteRecord('comunicados/${key}', cargarComunicados)">Eliminar</button>` : '';
+          contenedor.innerHTML += `
+            <div class="card">
+              <div class="card-title">${item.titulo || ''}</div>
+              <p>${item.texto || ''}</p>
+              <div style="margin-top:10px; text-align:right;">${deleteBtn}</div>
+            </div>`;
+        });
+      });
+    }
+
+    function addComunicado() {
+      let t = document.getElementById("com-titulo").value;
+      let x = document.getElementById("com-texto").value;
+      if(!t || !x) return alert("Complete los campos");
+      if(db) {
+        db.ref("comunicados").push({ titulo: t, texto: x }).then(() => {
+          document.getElementById("com-titulo").value = "";
+          document.getElementById("com-texto").value = "";
+          hideForm("form-comunicado");
+        });
+      }
+    }
+
+    // Cargar Directorio de 112 casas
+    function cargarDirectorio() {
+      let tbody = document.getElementById("tabla-directorio");
+      tbody.innerHTML = "";
+      
+      let casasData = {};
+      if(db) {
+        db.ref("casas").once("value", snapshot => {
+          casasData = snapshot.val() || {};
+          renderTabla(casasData);
+        });
+      } else {
+        renderTabla(casasData);
+      }
+    }
+
+    function renderTabla(data) {
+      let tbody = document.getElementById("tabla-directorio");
+      tbody.innerHTML = "";
+      for(let i = 1; i <= 112; i++) {
+        let info = data[i] || {};
+        let prop = info.propietario || "—";
+        let inq = info.inquilino || "—";
+        let tel = info.telefono || "—";
+        let editBtn = isAdmin ? `<button class="btn btn-sm" onclick="editCasa(${i}, '${prop}', '${inq}', '${tel}')">Editar</button>` : '';
+        
+        tbody.innerHTML += `
+          <tr>
+            <td><b>Casa ${i}</b></td>
+            <td>${prop}</td>
+            <td>${inq}</td>
+            <td>${tel}</td>
+            <td class="admin-only">${editBtn}</td>
+          </tr>`;
+      }
+    }
+
+    function editCasa(num, prop, inq, tel) {
+      let newProp = prompt(`Propietario Casa ${num}:`, prop === '—' ? '' : prop);
+      let newInq = prompt(`Inquilino Casa ${num}:`, inq === '—' ? '' : inq);
+      let newTel = prompt(`Teléfono Casa ${num}:`, tel === '—' ? '' : tel);
+      
+      if(newProp !== null && db) {
+        db.ref(`casas/${num}`).set({
+          propietario: newProp,
+          inquilino: newInq,
+          telefono: newTel
+        }).then(() => cargarDirectorio());
+      }
+    }
+
+    function deleteRecord(path, reloadFn) {
+      if(confirm("¿Desea eliminar este registro?")) {
+        if(db) db.ref(path).remove().then(() => reloadFn());
+      }
+    }
+
+    // Inicializar
+    cargarComunicados();
+    cargarDirectorio();
+  </script>
+</body>
+</html>
