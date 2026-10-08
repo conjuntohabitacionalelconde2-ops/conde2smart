@@ -161,7 +161,7 @@
 
   <div class="container">
 
-    <!-- COMUNICADOS -->
+    <!-- COMUNICADOS / ANUNCIOS -->
     <div id="tab-comunicados">
       <div class="admin-controls admin-only hidden">
         <button class="btn" onclick="showForm('form-comunicado')">+ Nuevo Comunicado</button>
@@ -212,7 +212,7 @@
     <div id="tab-casas" class="hidden">
       <div class="card">
         <h3>Buscador de Casas</h3>
-        <input type="text" id="search-casa" placeholder="Buscar por casa, dueño o parqueadero..." onkeyup="renderCasas()">
+        <input type="text" id="search-casa" placeholder="Buscar por casa, dueño, inquilino o parqueadero..." onkeyup="renderCasas()">
         <div class="admin-only hidden" style="margin-top:10px;">
           <button class="btn btn-secondary" onclick="inicializar112Casas()">Inicializar 112 Casas (Solo si está vacío)</button>
         </div>
@@ -224,7 +224,8 @@
             <tr>
               <th>Casa #</th>
               <th>Parqueadero</th>
-              <th>Propietario / Residente</th>
+              <th>Propietario</th>
+              <th>Inquilino / Residente</th>
               <th>Estado</th>
               <th>Hab.</th>
               <th>Niños</th>
@@ -233,7 +234,7 @@
             </tr>
           </thead>
           <tbody id="list-casas">
-            <tr><td colspan="8">Cargando directorio de casas...</td></tr>
+            <tr><td colspan="9">Cargando directorio de casas...</td></tr>
           </tbody>
         </table>
       </div>
@@ -288,4 +289,94 @@
       <div id="form-reglamento" class="card hidden">
         <h3>Editor del Reglamento Interno</h3>
         <label><strong>Escriba y enumere las normas en columnas hacia abajo:</strong></label>
-        <textarea id="reg-texto-input" class="reglamento-editor" placeholder="1. NORMAS GENERALES&#10;   1.1. El horario de silencio es de 22:0
+        <textarea id="reg-texto-input" class="reglamento-editor" placeholder="1. NORMAS GENERALES&#10;   1.1. El horario de silencio es de 22:00 a 06:00.&#10;   1.2. Mantener las áreas comunes limpias.&#10;&#10;2. PARQUEADEROS&#10;   2.1. Estacionar únicamente en el parqueadero asignado.&#10;   2.2. Respetar la velocidad máxima de 10 km/h."></textarea>
+
+        <button class="btn" onclick="saveReglamento()">Guardar Reglamento</button>
+        <button class="btn btn-secondary" onclick="hideForm('form-reglamento')">Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2LS5FWfLXuqM3pvDM_GZ8pthbX3eYYMc",
+      authDomain: "conde2smart.firebaseapp.com",
+      databaseURL: "https://conde2smart-default-rtdb.firebaseio.com",
+      projectId: "conde2smart",
+      storageBucket: "conde2smart.firebasestorage.app",
+      messagingSenderId: "800276938723",
+      appId: "1:800276938723:web:a85d124869435d7a276ad6"
+    };
+
+    let db = null;
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    } catch(e) { console.warn("Firebase no activo:", e); }
+
+    let isAdmin = false;
+    let dataCasas = {};
+
+    try {
+      dataCasas = JSON.parse(localStorage.getItem('conde2_casas') || '{}');
+    } catch(e) { dataCasas = {}; }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      const targetTab = document.getElementById('tab-' + tabId);
+      if (targetTab) targetTab.classList.remove('hidden');
+      if (window.event && window.event.target) {
+        window.event.target.classList.add('active');
+      }
+
+      if (tabId === 'casas') cargarCasas();
+      if (tabId === 'servicios') cargarServicios();
+      if (tabId === 'emergencias') cargarEmergencias();
+      if (tabId === 'reglamento') cargarReglamento();
+      if (tabId === 'novedades') cargarNovedades();
+      if (tabId === 'comunicados') cargarComunicados();
+    }
+
+    function toggleRole() {
+      if (!isAdmin) {
+        let pass = prompt("Ingrese la clave de Administrador:");
+        if (pass === "admin123") {
+          isAdmin = true;
+          document.getElementById('roleLabel').innerText = "Modo: Administrador";
+          document.getElementById('roleBtn').innerText = "Salir de Admin";
+          document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+        } else if (pass !== null) {
+          alert("Clave incorrecta.");
+        }
+      } else {
+        isAdmin = false;
+        document.getElementById('roleLabel').innerText = "Modo: Vecino";
+        document.getElementById('roleBtn').innerText = "Ingresar como Admin";
+        document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+      }
+      renderCasas();
+      cargarComunicados();
+      cargarNovedades();
+      cargarServicios();
+      cargarEmergencias();
+    }
+
+    function showForm(id) { document.getElementById(id).classList.remove('hidden'); }
+    function hideForm(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // COMUNICADOS (ANUNCIOS) CON OPCIÓN DE ELIMINAR PARA ADMIN
+    function cargarComunicados() {
+      const container = document.getElementById('list-comunicados');
+      const cached = localStorage.getItem('conde2_comunicados');
+      if (cached) renderComunicadosHTML(JSON.parse(cached));
+
+      if (db) {
+        db.ref('comunicados').once('value').then(snapshot => {
+          const val = snapshot.val();
+          if (val) {
+            localStorage.setItem('conde2_comunicados', JSON.stringify(val));
+            renderComunicadosHTML(val);
+          } else {
+            container.innerHTML = "<p style='color:var(--text-muted);'>No hay comunicados publicados.</p>";
