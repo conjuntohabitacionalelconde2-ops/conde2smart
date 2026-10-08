@@ -153,6 +153,7 @@
 
   <nav>
     <button class="active" onclick="switchTab('comunicados')">Anuncios</button>
+    <button onclick="switchTab('beneficios')">Beneficios</button>
     <button onclick="switchTab('novedades')">Reportar Novedad</button>
     <button onclick="switchTab('casas')">Directorio Casas (112)</button>
     <button onclick="switchTab('servicios')">Servicios</button>
@@ -177,6 +178,23 @@
       </div>
 
       <div id="list-comunicados">No hay comunicados publicados.</div>
+    </div>
+
+    <!-- BENEFICIOS -->
+    <div id="tab-beneficios" class="hidden">
+      <div class="admin-controls admin-only hidden">
+        <button class="btn" onclick="showForm('form-beneficio')">+ Nuevo Beneficio</button>
+      </div>
+
+      <div id="form-beneficio" class="card hidden">
+        <h3>Publicar Beneficio para Vecinos Puntuales</h3>
+        <input type="text" id="ben-titulo" placeholder="Título del beneficio (Ej: Descuento en área social)">
+        <textarea id="ben-texto" rows="3" placeholder="Detalle de los beneficios por pagos puntuales..."></textarea>
+        <button class="btn" onclick="addBeneficio()">Guardar</button>
+        <button class="btn btn-secondary" onclick="hideForm('form-beneficio')">Cancelar</button>
+      </div>
+
+      <div id="list-beneficios">No hay beneficios publicados.</div>
     </div>
 
     <!-- NOVEDADES -->
@@ -336,6 +354,7 @@
       if (tabId === 'emergencias') cargarEmergencias();
       if (tabId === 'reglamento') cargarReglamento();
       if (tabId === 'novedades') cargarNovedades();
+      if (tabId === 'beneficios') cargarBeneficios();
     }
 
     function toggleRole() {
@@ -356,6 +375,8 @@
         document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
       }
       renderCasas();
+      renderComunicadosHTML(JSON.parse(localStorage.getItem('conde2_comunicados') || '{}'));
+      renderBeneficiosHTML(JSON.parse(localStorage.getItem('conde2_beneficios') || '{}'));
     }
 
     function showForm(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -363,18 +384,15 @@
 
     // COMUNICADOS
     function cargarComunicados() {
-      const container = document.getElementById('list-comunicados');
       const cached = localStorage.getItem('conde2_comunicados');
       if (cached) renderComunicadosHTML(JSON.parse(cached));
 
       if (db) {
-        db.ref('comunicados').once('value').then(snapshot => {
-          const val = snapshot.val();
-          if (val) {
-            localStorage.setItem('conde2_comunicados', JSON.stringify(val));
-            renderComunicadosHTML(val);
-          }
-        }).catch(() => {});
+        db.ref('comunicados').on('value', snapshot => {
+          const val = snapshot.val() || {};
+          localStorage.setItem('conde2_comunicados', JSON.stringify(val));
+          renderComunicadosHTML(val);
+        });
       }
     }
 
@@ -393,6 +411,40 @@
             <h3>${c.titulo || ''}</h3>
             <p>${c.texto || ''}</p>
             ${isAdmin ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="deleteRecord('comunicados/${key}', cargarComunicados)">Eliminar Comunicado</button>` : ''}
+          </div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    // BENEFICIOS
+    function cargarBeneficios() {
+      const cached = localStorage.getItem('conde2_beneficios');
+      if (cached) renderBeneficiosHTML(JSON.parse(cached));
+
+      if (db) {
+        db.ref('beneficios').on('value', snapshot => {
+          const val = snapshot.val() || {};
+          localStorage.setItem('conde2_beneficios', JSON.stringify(val));
+          renderBeneficiosHTML(val);
+        });
+      }
+    }
+
+    function renderBeneficiosHTML(val) {
+      const container = document.getElementById('list-beneficios');
+      if (!val || Object.keys(val).length === 0) {
+        container.innerHTML = "<p style='color:var(--text-muted);'>No hay beneficios publicados.</p>";
+        return;
+      }
+      let html = '';
+      Object.keys(val).reverse().forEach(key => {
+        const b = val[key];
+        html += `
+          <div class="card">
+            <small style="color:var(--text-muted)">${b.fecha || ''}</small>
+            <h3>${b.titulo || ''}</h3>
+            <p>${b.texto || ''}</p>
+            ${isAdmin ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="deleteRecord('beneficios/${key}', cargarBeneficios)">Eliminar Beneficio</button>` : ''}
           </div>`;
       });
       container.innerHTML = html;
@@ -627,10 +679,28 @@
       if (!titulo || !texto) return alert("Complete los campos.");
 
       const item = { fecha: new Date().toLocaleDateString(), titulo, texto };
-      if (db) db.ref('comunicados').push(item).then(() => cargarComunicados());
-      document.getElementById('com-titulo').value = '';
-      document.getElementById('com-texto').value = '';
-      hideForm('form-comunicado');
+      if (db) {
+        db.ref('comunicados').push(item).then(() => {
+          document.getElementById('com-titulo').value = '';
+          document.getElementById('com-texto').value = '';
+          hideForm('form-comunicado');
+        });
+      }
+    }
+
+    function addBeneficio() {
+      const titulo = document.getElementById('ben-titulo').value;
+      const texto = document.getElementById('ben-texto').value;
+      if (!titulo || !texto) return alert("Complete los campos.");
+
+      const item = { fecha: new Date().toLocaleDateString(), titulo, texto };
+      if (db) {
+        db.ref('beneficios').push(item).then(() => {
+          document.getElementById('ben-titulo').value = '';
+          document.getElementById('ben-texto').value = '';
+          hideForm('form-beneficio');
+        });
+      }
     }
 
     function addNovedad() {
@@ -674,6 +744,7 @@
 
     // Carga inicial
     cargarComunicados();
+    cargarBeneficios();
   </script>
 </body>
 </html>
