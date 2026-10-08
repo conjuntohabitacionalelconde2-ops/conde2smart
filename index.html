@@ -114,7 +114,6 @@
     .tag-attended { background-color: #d4edda; color: #155724; }
     .tag-pending { background-color: #fff3cd; color: #856404; }
 
-    /* Estilo ampliado para redacción del Reglamento */
     .reglamento-editor {
       min-height: 400px;
       font-family: 'Consolas', 'Courier New', monospace;
@@ -162,7 +161,7 @@
 
   <div class="container">
 
-    <!-- COMUNICADOS -->
+    <!-- COMUNICADOS / ANUNCIOS -->
     <div id="tab-comunicados">
       <div class="admin-controls admin-only hidden">
         <button class="btn" onclick="showForm('form-comunicado')">+ Nuevo Comunicado</button>
@@ -213,7 +212,7 @@
     <div id="tab-casas" class="hidden">
       <div class="card">
         <h3>Buscador de Casas</h3>
-        <input type="text" id="search-casa" placeholder="Buscar por casa, dueño o parqueadero..." onkeyup="renderCasas()">
+        <input type="text" id="search-casa" placeholder="Buscar por casa, dueño, inquilino o parqueadero..." onkeyup="renderCasas()">
         <div class="admin-only hidden" style="margin-top:10px;">
           <button class="btn btn-secondary" onclick="inicializar112Casas()">Inicializar 112 Casas (Solo si está vacío)</button>
         </div>
@@ -225,7 +224,8 @@
             <tr>
               <th>Casa #</th>
               <th>Parqueadero</th>
-              <th>Propietario / Residente</th>
+              <th>Propietario</th>
+              <th>Inquilino / Residente</th>
               <th>Estado</th>
               <th>Hab.</th>
               <th>Niños</th>
@@ -234,7 +234,7 @@
             </tr>
           </thead>
           <tbody id="list-casas">
-            <tr><td colspan="8">Cargando directorio de casas...</td></tr>
+            <tr><td colspan="9">Cargando directorio de casas...</td></tr>
           </tbody>
         </table>
       </div>
@@ -336,6 +336,7 @@
       if (tabId === 'emergencias') cargarEmergencias();
       if (tabId === 'reglamento') cargarReglamento();
       if (tabId === 'novedades') cargarNovedades();
+      if (tabId === 'comunicados') cargarComunicados();
     }
 
     function toggleRole() {
@@ -356,12 +357,16 @@
         document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
       }
       renderCasas();
+      cargarComunicados();
+      cargarNovedades();
+      cargarServicios();
+      cargarEmergencias();
     }
 
     function showForm(id) { document.getElementById(id).classList.remove('hidden'); }
     function hideForm(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // COMUNICADOS
+    // COMUNICADOS (ANUNCIOS) CON OPCIÓN DE ELIMINAR PARA ADMIN
     function cargarComunicados() {
       const container = document.getElementById('list-comunicados');
       const cached = localStorage.getItem('conde2_comunicados');
@@ -373,307 +378,5 @@
           if (val) {
             localStorage.setItem('conde2_comunicados', JSON.stringify(val));
             renderComunicadosHTML(val);
-          }
-        }).catch(() => {});
-      }
-    }
-
-    function renderComunicadosHTML(val) {
-      const container = document.getElementById('list-comunicados');
-      if (!val || Object.keys(val).length === 0) {
-        container.innerHTML = "<p style='color:var(--text-muted);'>No hay comunicados publicados.</p>";
-        return;
-      }
-      let html = '';
-      Object.keys(val).reverse().forEach(key => {
-        const c = val[key];
-        html += `
-          <div class="card">
-            <small style="color:var(--text-muted)">${c.fecha || ''}</small>
-            <h3>${c.titulo || ''}</h3>
-            <p>${c.texto || ''}</p>
-            ${isAdmin ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="deleteRecord('comunicados/${key}', cargarComunicados)">Eliminar Comunicado</button>` : ''}
-          </div>`;
-      });
-      container.innerHTML = html;
-    }
-
-    // DIRECTORIO CASAS
-    function cargarCasas() {
-      renderCasas();
-      if (db) {
-        db.ref('casas').once('value').then(snapshot => {
-          const val = snapshot.val();
-          if (val) {
-            dataCasas = val;
-            localStorage.setItem('conde2_casas', JSON.stringify(val));
-            renderCasas();
-          }
-        }).catch(() => {});
-      }
-    }
-
-    function inicializar112Casas() {
-      if (confirm("¿Desea crear el listado base de 112 casas? Esto actualizará la lista actual.")) {
-        let inicial = {};
-        for (let i = 1; i <= 112; i++) {
-          inicial['casa_' + i] = { 
-            numero: i, 
-            parqueo: 'P-' + i, 
-            propietario: 'Propietario Casa ' + i, 
-            estado: 'Habitada por Dueño', 
-            personas: 1, 
-            ninos: 0, 
-            mascotas: 0 
-          };
-        }
-        dataCasas = inicial;
-        localStorage.setItem('conde2_casas', JSON.stringify(inicial));
-        renderCasas();
-        if (db) db.ref('casas').set(inicial);
-      }
-    }
-
-    function renderCasas() {
-      const filterInput = document.getElementById('search-casa');
-      const filter = filterInput ? filterInput.value.toLowerCase().trim() : '';
-      const tbody = document.getElementById('list-casas');
-      if (!tbody) return;
-
-      const keys = Object.keys(dataCasas || {});
-      if (keys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8">No hay casas registradas. Inicie sesión como admin para inicializar.</td></tr>';
-        return;
-      }
-
-      let html = '';
-      const sortedKeys = keys.sort((a, b) => (parseInt(dataCasas[a].numero) || 0) - (parseInt(dataCasas[b].numero) || 0));
-
-      for (let i = 0; i < sortedKeys.length; i++) {
-        const key = sortedKeys[i];
-        const c = dataCasas[key];
-        if (!c) continue;
-
-        const numStr = (c.numero || '').toString();
-        const propStr = (c.propietario || '').toLowerCase();
-        const parkStr = (c.parqueo || '').toLowerCase();
-
-        if (!filter || numStr.includes(filter) || propStr.includes(filter) || parkStr.includes(filter)) {
-          let tagClass = c.estado === 'Habitada por Dueño' ? 'tag-owner' : (c.estado === 'Arrendada' ? 'tag-rented' : 'tag-empty');
-          html += `
-            <tr>
-              <td><strong>#${c.numero || ''}</strong></td>
-              <td><strong>${c.parqueo || 'S/N'}</strong></td>
-              <td>${c.propietario || ''}</td>
-              <td><span class="tag ${tagClass}">${c.estado || ''}</span></td>
-              <td>${c.personas || 0}</td>
-              <td>${c.ninos || 0}</td>
-              <td>${c.mascotas || 0}</td>
-              ${isAdmin ? `<td><button class="btn" onclick="editCasa('${key}')">Editar</button></td>` : ''}
-            </tr>`;
-        }
-      }
-
-      tbody.innerHTML = html;
-    }
-
-    function editCasa(key) {
-      const c = dataCasas[key] || {};
-      const parqueo = prompt("Número / Código del Parqueadero:", c.parqueo || ('P-' + c.numero));
-      if (parqueo === null) return;
-      const propietario = prompt("Nombre del Propietario o Residente:", c.propietario || '');
-      if (propietario === null) return;
-      const estado = prompt("Estado (Habitada por Dueño, Arrendada, Desocupada):", c.estado || 'Habitada por Dueño');
-      const personas = prompt("Número de personas:", c.personas || 1);
-      const ninos = prompt("Número de niños:", c.ninos || 0);
-      const mascotas = prompt("Número de mascotas:", c.mascotas || 0);
-
-      const updated = {
-        numero: c.numero,
-        parqueo: parqueo,
-        propietario: propietario,
-        estado: estado,
-        personas: parseInt(personas) || 0,
-        ninos: parseInt(ninos) || 0,
-        mascotas: parseInt(mascotas) || 0
-      };
-
-      dataCasas[key] = updated;
-      localStorage.setItem('conde2_casas', JSON.stringify(dataCasas));
-      renderCasas();
-
-      if (db) db.ref('casas/' + key).update(updated);
-    }
-
-    // NOVEDADES
-    function cargarNovedades() {
-      const container = document.getElementById('list-novedades');
-      if (!db) return;
-      db.ref('novedades').once('value').then(snapshot => {
-        const val = snapshot.val();
-        if (!val) { container.innerHTML = "<p style='color:var(--text-muted);'>No hay reportes registrados.</p>"; return; }
-
-        let html = '';
-        Object.keys(val).reverse().forEach(key => {
-          const n = val[key];
-          const prioTag = n.prioridad === 'Urgente' ? 'tag-urgent' : 'tag-normal';
-          const estadoTag = n.atendido ? 'tag-attended' : 'tag-pending';
-          const estadoTexto = n.atendido ? 'ATENDIDO' : 'PENDIENTE';
-
-          html += `
-            <div class="card">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Casa #${n.casa} - ${n.tipo}</h3>
-                <div>
-                  <span class="tag ${prioTag}">${n.prioridad || 'Normal'}</span>
-                  <span class="tag ${estadoTag}">${estadoTexto}</span>
-                </div>
-              </div>
-              <p style="margin: 10px 0;">${n.detalle}</p>
-              <small style="color:var(--text-muted)">Reportado: ${n.fecha || ''}</small><br>
-              <div style="margin-top:10px; display:flex; gap:10px;">
-                ${isAdmin && !n.atendido ? `<button class="btn btn-success" onclick="marcarAtendido('${key}')">Marcar como Atendido</button>` : ''}
-                ${isAdmin ? `<button class="btn btn-danger" onclick="deleteRecord('novedades/${key}', cargarNovedades)">Eliminar Reporte</button>` : ''}
-              </div>
-            </div>`;
-        });
-        container.innerHTML = html;
-      }).catch(() => {});
-    }
-
-    function marcarAtendido(key) {
-      if (db) db.ref('novedades/' + key).update({ atendido: true }).then(() => cargarNovedades());
-    }
-
-    // SERVICIOS
-    function cargarServicios() {
-      const container = document.getElementById('list-servicios');
-      if (!db) return;
-      db.ref('servicios').once('value').then(snapshot => {
-        const val = snapshot.val();
-        if (!val) { container.innerHTML = "<p style='color:var(--text-muted);'>No hay servicios registrados.</p>"; return; }
-
-        let html = '';
-        Object.keys(val).forEach(key => {
-          const s = val[key];
-          html += `
-            <div class="card">
-              <span class="tag tag-rented" style="margin-bottom:5px;">${s.categoria || ''}</span>
-              <h3>${s.nombre || ''}</h3>
-              <p>📞 <strong>${s.telefono || ''}</strong></p>
-              ${isAdmin ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="deleteRecord('servicios/${key}', cargarServicios)">Eliminar</button>` : ''}
-            </div>`;
-        });
-        container.innerHTML = html;
-      }).catch(() => {});
-    }
-
-    // EMERGENCIAS
-    function cargarEmergencias() {
-      const container = document.getElementById('list-emergencias');
-      if (!db) return;
-      db.ref('emergencias').once('value').then(snapshot => {
-        const val = snapshot.val();
-        if (!val) { container.innerHTML = "<p style='color:var(--text-muted);'>No hay contactos de emergencia.</p>"; return; }
-
-        let html = '';
-        Object.keys(val).forEach(key => {
-          const e = val[key];
-          html += `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <h3>${e.entidad || ''}</h3>
-                <p style="font-size:1.2rem; color:var(--primary-dark); font-weight:bold;">📞 ${e.numero || ''}</p>
-              </div>
-              ${isAdmin ? `<button class="btn btn-danger" onclick="deleteRecord('emergencias/${key}', cargarEmergencias)">Eliminar</button>` : ''}
-            </div>`;
-        });
-        container.innerHTML = html;
-      }).catch(() => {});
-    }
-
-    // REGLAMENTO
-    function cargarReglamento() {
-      const cached = localStorage.getItem('conde2_reglamento');
-      if (cached) {
-        document.getElementById('reglamento-texto').innerText = cached;
-        document.getElementById('reg-texto-input').value = cached;
-      }
-
-      if (db) {
-        db.ref('reglamento').once('value').then(snapshot => {
-          const val = snapshot.val();
-          if (val && val.texto) {
-            document.getElementById('reglamento-texto').innerText = val.texto;
-            document.getElementById('reg-texto-input').value = val.texto;
-            localStorage.setItem('conde2_reglamento', val.texto);
-          }
-        }).catch(() => {});
-      }
-    }
-
-    function saveReglamento() {
-      const texto = document.getElementById('reg-texto-input').value;
-      document.getElementById('reglamento-texto').innerText = texto;
-      localStorage.setItem('conde2_reglamento', texto);
-      hideForm('form-reglamento');
-      if (db) db.ref('reglamento').set({ texto });
-    }
-
-    // FUNCIONES AGREGAR Y ELIMINAR
-    function addComunicado() {
-      const titulo = document.getElementById('com-titulo').value;
-      const texto = document.getElementById('com-texto').value;
-      if (!titulo || !texto) return alert("Complete los campos.");
-
-      const item = { fecha: new Date().toLocaleDateString(), titulo, texto };
-      if (db) db.ref('comunicados').push(item).then(() => cargarComunicados());
-      document.getElementById('com-titulo').value = '';
-      document.getElementById('com-texto').value = '';
-      hideForm('form-comunicado');
-    }
-
-    function addNovedad() {
-      const casa = document.getElementById('nov-casa').value;
-      const tipo = document.getElementById('nov-tipo').value;
-      const prioridad = document.getElementById('nov-prioridad').value;
-      const detalle = document.getElementById('nov-detalle').value;
-      if (!casa || !detalle) return alert("Ingrese número de casa y detalle.");
-
-      const item = { casa, tipo, prioridad, detalle, atendido: false, fecha: new Date().toLocaleDateString() };
-      if (db) db.ref('novedades').push(item).then(() => cargarNovedades());
-      document.getElementById('nov-casa').value = '';
-      document.getElementById('nov-detalle').value = '';
-      alert("Novedad enviada con éxito.");
-    }
-
-    function addServicio() {
-      const nombre = document.getElementById('serv-nombre').value;
-      const categoria = document.getElementById('serv-categoria').value;
-      const telefono = document.getElementById('serv-telefono').value;
-      if (!nombre || !telefono) return alert("Complete los datos.");
-
-      if (db) db.ref('servicios').push({ nombre, categoria, telefono }).then(() => cargarServicios());
-      hideForm('form-servicio');
-    }
-
-    function addEmergencia() {
-      const entidad = document.getElementById('em-entidad').value;
-      const numero = document.getElementById('em-numero').value;
-      if (!entidad || !numero) return alert("Complete los datos.");
-
-      if (db) db.ref('emergencias').push({ entidad, numero }).then(() => cargarEmergencias());
-      hideForm('form-emergencia');
-    }
-
-    function deleteRecord(path, reloadFn) {
-      if (confirm("¿Está seguro de eliminar este registro?")) {
-        if (db) db.ref(path).remove().then(() => { if (reloadFn) reloadFn(); });
-      }
-    }
-
-    // Carga inicial
-    cargarComunicados();
-  </script>
-</body>
-</html>
+          } else {
+            container.innerHTML = "<p style='color:var(--text-muted);'>No hay comunicados publicados.</p>";
