@@ -6,7 +6,7 @@
     <title>Conjunto Habitacional El Conde 2 - Administración</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h1, h2, h3 { color: #2c3e50; }
         .card { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 6px; }
         input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
@@ -16,10 +16,12 @@
         button.danger:hover { background-color: #c0392b; }
         button.success { background-color: #2ecc71; }
         button.success:hover { background-color: #27ae60; }
+        button.warning { background-color: #f39c12; color: white; }
+        button.warning:hover { background-color: #d35400; }
         .flex-row { display: flex; gap: 10px; }
         .flex-row > * { flex: 1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f8f9fa; }
         
         /* Sistema de Pestañas */
@@ -29,6 +31,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .badge-admin { background: #e67e22; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; }
+        .private-info { color: #888; font-style: italic; }
     </style>
 </head>
 <body>
@@ -39,7 +42,7 @@
             <h1>Conjunto Habitacional El Conde 2</h1>
             <p>Plataforma Comunitaria (112 Viviendas)</p>
         </div>
-        <div id="estado-sesion-div">
+        <div>
             <span id="label-estado-rol" class="badge-admin" style="background: #7f8c8d;">Modo Vecino</span>
         </div>
     </div>
@@ -49,7 +52,7 @@
     <div class="nav-tabs">
         <button onclick="cambiarPestaña('inicio')" id="btn-inicio" class="active">Inicio / Admin</button>
         <button onclick="cambiarPestaña('cartelera')" id="btn-cartelera">Cartelera</button>
-        <button onclick="cambiarPestaña('requerimientos')" id="btn-requerimientos">Requerimientos</button>
+        <button onclick="cambiarPestaña('reportar')" id="btn-reportar">Reportar Novedad</button>
         <button onclick="cambiarPestaña('beneficios')" id="btn-beneficios">Beneficios</button>
         <button onclick="cambiarPestaña('directorio')" id="btn-directorio">Directorio Casas</button>
         <button onclick="cambiarPestaña('servicios')" id="btn-servicios">Servicios</button>
@@ -59,23 +62,20 @@
 
     <!-- PESTAÑA 1: INICIO / ACCESO ADMINISTRADOR -->
     <div id="tab-inicio" class="tab-content active">
-        <!-- LOGIN -->
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <p>Ingrese la contraseña de administrador para desbloquear las funciones de gestión (Contraseña inicial: <strong>admin123</strong>)</p>
+            <p>Ingrese la contraseña de administrador para gestionar publicaciones y ver información privada (Contraseña inicial: <strong>admin123</strong>)</p>
             <input type="password" id="inputPasswordAdmin" placeholder="Contraseña de administrador">
             <button onclick="loginAdministrador()" class="success">Ingresar como Administrador</button>
         </div>
 
-        <!-- PANEL DE CONTROL (Oculto si no es admin) -->
         <div id="panel-admin" style="display: none;">
             <div class="card" style="background: #eaf2f8;">
                 <h3>Panel de Control del Administrador</h3>
-                <p>Tiene privilegios completos para gestionar vecinos, publicar en cartelera, atender requerimientos y modificar información.</p>
+                <p>Tiene privilegios completos de publicación, edición, eliminación y visualización de teléfonos protegidos.</p>
                 <button onclick="cerrarSesionAdmin()" class="danger">Cerrar Sesión de Administrador</button>
             </div>
 
-            <!-- CAMBIAR CONTRASEÑA -->
             <div class="card">
                 <h3>Cambiar Contraseña de Administrador</h3>
                 <input type="password" id="inputPasswordActual" placeholder="Contraseña Actual">
@@ -90,26 +90,42 @@
     <div id="tab-cartelera" class="tab-content">
         <h2>Cartelera Comunitaria</h2>
         <div id="admin-controls-cartelera" style="display: none;" class="card">
-            <h4>Publicar Nuevo Anuncio</h4>
+            <h4 id="titulo-form-cartelera">Publicar Nuevo Anuncio</h4>
+            <input type="hidden" id="editIdCartelera" value="">
             <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
             <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
-            <button onclick="guardarAnuncioCartelera()" class="success">Publicar en Cartelera</button>
+            <button onclick="guardarAnuncioCartelera()" class="success">Guardar / Publicar</button>
+            <button onclick="limpiarFormCartelera()" style="background: #95a5a6; display: none;" id="btnCancelarCartelera">Cancelar</button>
         </div>
         <div id="listaCarteleraContainer"></div>
     </div>
 
-    <!-- PESTAÑA 3: REQUERIMIENTOS -->
-    <div id="tab-requerimientos" class="tab-content">
-        <h2>Requerimientos y Novedades</h2>
-        <div class="card">
-            <h4>Enviar un Requerimiento / Reporte</h4>
+    <!-- PESTAÑA 3: REPORTAR NOVEDAD -->
+    <div id="tab-reportar" class="tab-content">
+        <h2>Módulo de Reportar Novedad</h2>
+        
+        <!-- Formulario visible para vecinos y admin -->
+        <div class="card" id="form-reporte-vecino">
+            <h4>Enviar un Reporte o Requerimiento</h4>
             <div class="flex-row">
                 <input type="number" id="inputCasaReporte" placeholder="Nº de Casa (1 - 112)" min="1" max="112">
+                <select id="selectTipoReporte">
+                    <option value="Daño">Tipo: Daño / Afectación</option>
+                    <option value="Jardinería / Mantenimiento">Tipo: Jardinería / Mantenimiento</option>
+                    <option value="Convivencia / Otro">Tipo: Convivencia / Otro</option>
+                </select>
             </div>
-            <textarea id="textoNovedad" placeholder="Describa el requerimiento o novedad (mantenimiento, áreas comunales, etc.)..."></textarea>
-            <button onclick="crearNovedad()" class="success">Enviar Requerimiento</button>
+            <div class="flex-row">
+                <select id="selectPrioridadReporte">
+                    <option value="Normal">Prioridad: Normal</option>
+                    <option value="Urgente">Prioridad: Urgente 🚨</option>
+                </select>
+            </div>
+            <textarea id="textoNovedad" placeholder="Describa detalladamente el daño o requerimiento..."></textarea>
+            <button onclick="crearNovedad()" class="success">Enviar Reporte</button>
         </div>
-        <h4>Listado de Requerimientos</h4>
+
+        <h3>Bandeja de Reportes (Vista exclusiva del Administrador)</h3>
         <div id="listaNovedadesContainer"></div>
     </div>
 
@@ -117,10 +133,12 @@
     <div id="tab-beneficios" class="tab-content">
         <h2>Beneficios para la Comunidad</h2>
         <div id="admin-controls-beneficios" style="display: none;" class="card">
-            <h4>Registrar Nuevo Beneficio / Convenio</h4>
-            <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio (Ej. Descuento en gas, áreas deportivas)">
+            <h4 id="titulo-form-beneficio">Registrar / Editar Beneficio</h4>
+            <input type="hidden" id="editIdBeneficio" value="">
+            <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio">
             <textarea id="inputDescBeneficio" placeholder="Detalles del beneficio..."></textarea>
             <button onclick="guardarBeneficio()" class="success">Guardar Beneficio</button>
+            <button onclick="limpiarFormBeneficio()" style="background: #95a5a6; display: none;" id="btnCancelarBeneficio">Cancelar</button>
         </div>
         <div id="listaBeneficiosContainer"></div>
     </div>
@@ -129,32 +147,51 @@
     <div id="tab-directorio" class="tab-content">
         <h2>Directorio de Casas (112 Viviendas)</h2>
         <div id="admin-controls-vecinos" style="display: none;" class="card">
-            <h4>Gestionar Vecino / Control de Acceso</h4>
+            <h4 id="titulo-form-vecino">Registrar / Actualizar Datos de Casa</h4>
             <div class="flex-row">
-                <input type="number" id="inputCasa" placeholder="Número de Casa (1 - 112)" min="1" max="112">
-                <input type="text" id="inputNombreVecino" placeholder="Nombre del Propietario / Residente">
+                <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
+                <input type="text" id="inputParqueadero" placeholder="Parqueadero (Ej. P-12)">
             </div>
             <div class="flex-row">
-                <input type="text" id="inputTelefonoVecino" placeholder="Teléfono de contacto">
-                <select id="selectAcceso">
-                    <option value="true">Acceso Permitido</option>
-                    <option value="false">Acceso Bloqueado</option>
+                <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
+                <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado)">
+            </div>
+            <div class="flex-row">
+                <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario (opcional)">
+                <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado)">
+            </div>
+            <div class="flex-row">
+                <select id="selectEstadoCasa">
+                    <option value="Habitado por Propietario">Habitado por Propietario</option>
+                    <option value="Arrendado">Arrendado</option>
+                    <option value="Desocupado">Desocupado</option>
                 </select>
+                <input type="number" id="inputHabitantes" placeholder="Nº Habitantes" min="0">
             </div>
-            <button onclick="guardarVecino()" class="success">Guardar / Registrar Vecino</button>
+            <div class="flex-row">
+                <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
+                <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
+            </div>
+            <button onclick="guardarVecino()" class="success">Guardar Registro de Casa</button>
         </div>
 
         <div class="card">
-            <h3>Listado General</h3>
-            <div style="max-height: 400px; overflow-y: auto;">
+            <h3>Listado General de Viviendas</h3>
+            <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
                             <th>Casa</th>
-                            <th>Propietario / Residente</th>
-                            <th>Teléfono</th>
-                            <th>Estado Acceso</th>
-                            <th>Acciones</th>
+                            <th>Parqueadero</th>
+                            <th>Propietario</th>
+                            <th>Teléfono 1</th>
+                            <th>Arrendatario</th>
+                            <th>Teléfono 2</th>
+                            <th>Estado</th>
+                            <th>Hab.</th>
+                            <th>Niños</th>
+                            <th>Masc.</th>
+                            <th id="th-acciones-dir" style="display: none;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tablaVecinosBody"></tbody>
@@ -167,10 +204,12 @@
     <div id="tab-servicios" class="tab-content">
         <h2>Servicios del Conjunto</h2>
         <div id="admin-controls-servicios" style="display: none;" class="card">
-            <h4>Añadir / Editar Servicio</h4>
-            <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio (Ej. Guardianía, Recolección de basura)">
-            <textarea id="inputDescServicio" placeholder="Horarios, detalles y encargado..."></textarea>
+            <h4 id="titulo-form-servicio">Registrar / Editar Servicio</h4>
+            <input type="hidden" id="editIdServicio" value="">
+            <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
+            <textarea id="inputDescServicio" placeholder="Horarios y detalles..."></textarea>
             <button onclick="guardarServicio()" class="success">Guardar Servicio</button>
+            <button onclick="limpiarFormServicio()" style="background: #95a5a6; display: none;" id="btnCancelarServicio">Cancelar</button>
         </div>
         <div id="listaServiciosContainer"></div>
     </div>
@@ -179,10 +218,12 @@
     <div id="tab-emergencias" class="tab-content">
         <h2>Números y Protocolos de Emergencia</h2>
         <div id="admin-controls-emergencias" style="display: none;" class="card">
-            <h4>Añadir Contacto de Emergencia</h4>
-            <input type="text" id="inputNombreEmergencia" placeholder="Institución o Contacto (Ej. UPC Policía Guamaní, Bomberos)">
+            <h4 id="titulo-form-emergencia">Registrar / Editar Contacto</h4>
+            <input type="hidden" id="editIdEmergencia" value="">
+            <input type="text" id="inputNombreEmergencia" placeholder="Institución / Contacto">
             <input type="text" id="inputNumeroEmergencia" placeholder="Número telefónico">
             <button onclick="guardarEmergencia()" class="success">Guardar Contacto</button>
+            <button onclick="limpiarFormEmergencia()" style="background: #95a5a6; display: none;" id="btnCancelarEmergencia">Cancelar</button>
         </div>
         <div id="listaEmergenciasContainer"></div>
     </div>
@@ -191,36 +232,37 @@
     <div id="tab-reglamento" class="tab-content">
         <h2>Reglamento Interno</h2>
         <div id="admin-controls-reglamento" style="display: none;" class="card">
-            <h4>Actualizar Apartado del Reglamento</h4>
-            <input type="text" id="inputTituloReglamento" placeholder="Título de la norma (Ej. Uso de áreas comunales, mascotas)">
+            <h4 id="titulo-form-reglamento">Registrar / Editar Apartado del Reglamento</h4>
+            <input type="hidden" id="editIdReglamento" value="">
+            <input type="text" id="inputTituloReglamento" placeholder="Título de la norma">
             <textarea id="inputDescReglamento" placeholder="Contenido de la norma..."></textarea>
             <button onclick="guardarReglamento()" class="success">Guardar Norma</button>
+            <button onclick="limpiarFormReglamento()" style="background: #95a5a6; display: none;" id="btnCancelarReglamento">Cancelar</button>
         </div>
         <div id="listaReglamentosContainer"></div>
     </div>
 </div>
 
 <script>
-    // --- 1. PERSISTENCIA DE DATOS Y ESTADO ---
+    // --- 1. DATOS Y PERSISTENCIA ---
     let datosApp = JSON.parse(localStorage.getItem('elCondeData')) || {
         vecinos: [],
         novedades: [],
         cartelera: [
-            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Estimados vecinos de las 112 casas, este es el portal oficial de gestión de El Conde 2.", fecha: "2026-10-13" }
+            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 viviendas).", fecha: "2026-10-13" }
         ],
         beneficios: [
-            { id: 1, titulo: "Uso de Cancha Deportiva", contenido: "Reservas disponibles a través de la administración." }
+            { id: 1, titulo: "Uso de Cancha de Uso Múltiple", contenido: "Reservas disponibles en administración." }
         ],
         servicios: [
-            { id: 1, titulo: "Mantenimiento General", contenido: "Horario de atención de lunes a viernes de 08:00 a 16:30." }
+            { id: 1, titulo: "Recolección de Basura", contenido: "Lunes, miércoles y viernes a partir de las 07:00 AM." }
         ],
         emergencias: [
             { id: 1, nombre: "ECU 911 (Emergencias Generales)", numero: "911" },
             { id: 2, nombre: "UPC Guamaní", numero: "0999999999" }
         ],
         reglamento: [
-            { id: 1, titulo: "Control de Mascotas", contenido: "Es obligatorio el uso de correa y la recolección de heces en áreas comunes." },
-            { id: 2, titulo: "Zonas de Parqueo", contenido: "Prohibido estacionar en zonas de circulación vehicular y rampas de acceso." }
+            { id: 1, titulo: "Control de Mascotas", contenido: "Uso obligatorio de correa y recolección de heces." }
         ]
     };
 
@@ -228,25 +270,24 @@
         localStorage.setItem('elCondeData', JSON.stringify(datosApp));
     }
 
-    // --- 2. CONTROL DE PESTAÑAS ---
+    // --- 2. NAVEGACIÓN ---
     function cambiarPestaña(nombreTab) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
 
         document.getElementById('tab-' + nombreTab).classList.add('active');
         document.getElementById('btn-' + nombreTab).classList.add('active');
-
         renderizarTodo();
     }
 
-    // --- 3. AUTENTICACIÓN ADMIN ---
+    // --- 3. AUTENTICACIÓN ---
     function obtenerPasswordAdmin() {
         return localStorage.getItem('adminPasswordDirecta') || 'admin123';
     }
 
     function loginAdministrador() {
-        const passwordIngresada = document.getElementById('inputPasswordAdmin').value;
-        if (passwordIngresada === obtenerPasswordAdmin()) {
+        const pass = document.getElementById('inputPasswordAdmin').value;
+        if (pass === obtenerPasswordAdmin()) {
             sessionStorage.setItem('adminAutenticado', 'true');
             alert("¡Bienvenido, Administrador!");
             verificarSesion();
@@ -258,20 +299,20 @@
     function verificarSesion() {
         const esAuth = sessionStorage.getItem('adminAutenticado') === 'true';
         const badge = document.getElementById('label-estado-rol');
-        
+        const thAccionesDir = document.getElementById('th-acciones-dir');
+
         if (esAuth) {
             document.getElementById('panel-admin').style.display = 'block';
             badge.textContent = "Modo Administrador";
             badge.style.background = "#27ae60";
-            
-            // Mostrar controles admin en pestañas
             document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'block');
+            if(thAccionesDir) thAccionesDir.style.display = 'table-cell';
         } else {
             document.getElementById('panel-admin').style.display = 'none';
             badge.textContent = "Modo Vecino";
             badge.style.background = "#7f8c8d";
-            
             document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'none');
+            if(thAccionesDir) thAccionesDir.style.display = 'none';
         }
         renderizarTodo();
     }
@@ -285,35 +326,68 @@
         return sessionStorage.getItem('adminAutenticado') === 'true';
     }
 
-    // --- 4. GESTIÓN DE VECINOS ---
+    // --- 4. DIRECTORIO DE CASAS ---
     function guardarVecino() {
         if (!esAdmin()) return;
         const idCasa = parseInt(document.getElementById('inputCasa').value);
-        const nombre = document.getElementById('inputNombreVecino').value.trim();
-        const telefono = document.getElementById('inputTelefonoVecino').value.trim();
-        const tieneAcceso = document.getElementById('selectAcceso').value === 'true';
+        const parqueadero = document.getElementById('inputParqueadero').value.trim();
+        const propietario = document.getElementById('inputPropietario').value.trim();
+        const telefono1 = document.getElementById('inputTelefono1').value.trim();
+        const arrendatario = document.getElementById('inputArrendatario').value.trim();
+        const telefono2 = document.getElementById('inputTelefono2').value.trim();
+        const estado = document.getElementById('selectEstadoCasa').value;
+        const habitantes = parseInt(document.getElementById('inputHabitantes').value) || 0;
+        const ninos = parseInt(document.getElementById('inputNinos').value) || 0;
+        const mascotas = parseInt(document.getElementById('inputMascotas').value) || 0;
 
         if (!idCasa || idCasa < 1 || idCasa > 112) {
             alert("Ingrese un número de casa válido entre 1 y 112.");
             return;
         }
-        if (!nombre) {
-            alert("El nombre es obligatorio.");
-            return;
-        }
 
         let index = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
+        const registro = { idCasa, parqueadero, propietario, telefono1, arrendatario, telefono2, estado, habitantes, ninos, mascotas };
+
         if (index >= 0) {
-            datosApp.vecinos[index] = { idCasa, nombre, telefono, tieneAcceso };
+            datosApp.vecinos[index] = registro;
         } else {
-            datosApp.vecinos.push({ idCasa, nombre, telefono, tieneAcceso });
+            datosApp.vecinos.push(registro);
         }
+
         guardarEnLocalStorage();
         renderizarVecinos();
+        limpiarFormVecino();
+        alert("Casa guardada con éxito.");
+    }
+
+    function limpiarFormVecino() {
         document.getElementById('inputCasa').value = '';
-        document.getElementById('inputNombreVecino').value = '';
-        document.getElementById('inputTelefonoVecino').value = '';
-        alert("Vecino guardado con éxito.");
+        document.getElementById('inputParqueadero').value = '';
+        document.getElementById('inputPropietario').value = '';
+        document.getElementById('inputTelefono1').value = '';
+        document.getElementById('inputArrendatario').value = '';
+        document.getElementById('inputTelefono2').value = '';
+        document.getElementById('inputHabitantes').value = '';
+        document.getElementById('inputNinos').value = '';
+        document.getElementById('inputMascotas').value = '';
+    }
+
+    function editarVecino(idCasa) {
+        if (!esAdmin()) return;
+        const v = datosApp.vecinos.find(item => item.idCasa === idCasa);
+        if (v) {
+            document.getElementById('inputCasa').value = v.idCasa;
+            document.getElementById('inputParqueadero').value = v.parqueadero || '';
+            document.getElementById('inputPropietario').value = v.propietario || '';
+            document.getElementById('inputTelefono1').value = v.telefono1 || '';
+            document.getElementById('inputArrendatario').value = v.arrendatario || '';
+            document.getElementById('inputTelefono2').value = v.telefono2 || '';
+            document.getElementById('selectEstadoCasa').value = v.estado || 'Habitado por Propietario';
+            document.getElementById('inputHabitantes').value = v.habitantes || 0;
+            document.getElementById('inputNinos').value = v.ninos || 0;
+            document.getElementById('inputMascotas').value = v.mascotas || 0;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 
     function eliminarVecino(idCasa) {
@@ -328,34 +402,168 @@
     function renderizarVecinos() {
         const tbody = document.getElementById('tablaVecinosBody');
         tbody.innerHTML = '';
+        
+        // Rellenar automáticamente con las 112 casas si están vacías o mostrar las registradas
+        datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
+
         if (datosApp.vecinos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No hay vecinos registrados.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;">No hay casas registradas en el directorio.</td></tr>`;
             return;
         }
-        datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
+
         datosApp.vecinos.forEach(v => {
             const tr = document.createElement('tr');
-            const estadoBadge = v.tieneAcceso ? '<span style="color:green;font-weight:bold;">Permitido</span>' : '<span style="color:red;font-weight:bold;">Bloqueado</span>';
-            let acciones = '<span>Solo lectura</span>';
+            
+            // Si es vecino, ocultar teléfonos con etiqueta protegida
+            let tel1 = esAdmin() ? (v.telefono1 || 'N/A') : '<span class="private-info">🔒 [Protegido]</span>';
+            let tel2 = esAdmin() ? (v.telefono2 || 'N/A') : '<span class="private-info">🔒 [Protegido]</span>';
+
+            let tdAcciones = '';
             if (esAdmin()) {
-                acciones = `<button onclick="eliminarVecino(${v.idCasa})" class="danger">Eliminar</button>`;
+                tdAcciones = `<td>
+                    <button onclick="editarVecino(${v.idCasa})" class="warning" style="padding:4px 8px;font-size:0.8em;">Editar</button>
+                    <button onclick="eliminarVecino(${v.idCasa})" class="danger" style="padding:4px 8px;font-size:0.8em;">Eliminar</button>
+                </td>`;
             }
-            tr.innerHTML = `<td>Casa ${v.idCasa}</td><td>${v.nombre}</td><td>${v.telefono || 'N/A'}</td><td>${estadoBadge}</td><td>${acciones}</td>`;
+
+            tr.innerHTML = `
+                <td><strong>Casa ${v.idCasa}</strong></td>
+                <td>${v.parqueadero || '-'}</td>
+                <td>${v.propietario || '-'}</td>
+                <td>${tel1}</td>
+                <td>${v.arrendatario || '-'}</td>
+                <td>${tel2}</td>
+                <td>${v.estado || '-'}</td>
+                <td>${v.habitantes || 0}</td>
+                <td>${v.ninos || 0}</td>
+                <td>${v.mascotas || 0}</td>
+                ${tdAcciones}
+            `;
             tbody.appendChild(tr);
         });
     }
 
-    // --- 5. CARTELERA ---
+    // --- 5. REPORTAR NOVEDAD ---
+    function crearNovedad() {
+        const casa = parseInt(document.getElementById('inputCasaReporte').value);
+        const tipo = document.getElementById('selectTipoReporte').value;
+        const prioridad = document.getElementById('selectPrioridadReporte').value;
+        const descripcion = document.getElementById('textoNovedad').value.trim();
+
+        if (!casa || casa < 1 || casa > 112 || !descripcion) {
+            alert("Por favor ingrese un número de casa válido (1 - 112) y la descripción del reporte.");
+            return;
+        }
+
+        datosApp.novedades.push({
+            id: Date.now(),
+            casa,
+            tipo,
+            prioridad,
+            descripcion,
+            estado: 'Pendiente',
+            fecha: new Date().toLocaleString()
+        });
+
+        guardarEnLocalStorage();
+        renderizarNovedades();
+        document.getElementById('inputCasaReporte').value = '';
+        document.getElementById('textoNovedad').value = '';
+        alert("¡Reporte enviado exitosamente a la administración!");
+    }
+
+    function atenderNovedad(id) {
+        if (!esAdmin()) return;
+        const n = datosApp.novedades.find(item => item.id === id);
+        if (n) {
+            n.estado = 'Atendido';
+            guardarEnLocalStorage();
+            renderizarNovedades();
+        }
+    }
+
+    function eliminarNovedad(id) {
+        if (!esAdmin()) return;
+        if (confirm("¿Está seguro de eliminar este reporte?")) {
+            datosApp.novedades = datosApp.novedades.filter(n => n.id !== id);
+            guardarEnLocalStorage();
+            renderizarNovedades();
+        }
+    }
+
+    function renderizarNovedades() {
+        const cont = document.getElementById('listaNovedadesContainer');
+        const formVecino = document.getElementById('form-reporte-vecino');
+        
+        // El formulario de reporte lo ven todos, pero la bandeja de reportes solo la ve el admin
+        if (!esAdmin()) {
+            cont.innerHTML = `<div class="card" style="background:#f9f9f9; text-align:center;"><p>🔒 Los reportes y requerimientos enviados son de acceso exclusivo para la revisión y gestión de la administración.</p></div>`;
+            return;
+        }
+
+        cont.innerHTML = '';
+        if (datosApp.novedades.length === 0) {
+            cont.innerHTML = '<p>No hay reportes de novedades registrados.</p>';
+            return;
+        }
+
+        datosApp.novedades.slice().reverse().forEach(n => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            const colorPrioridad = n.prioridad === 'Urgente' ? 'red' : 'green';
+            
+            let botones = '';
+            if (n.estado === 'Pendiente') {
+                botones += `<button onclick="atenderNovedad(${n.id})" class="success">Marcar como Atendido</button> `;
+            }
+            botones += `<button onclick="eliminarNovedad(${n.id})" class="danger">Eliminar Reporte</button>`;
+
+            div.innerHTML = `
+                <strong>Casa Nº ${n.casa}</strong> | Tipo: <em>${n.tipo}</em> | Prioridad: <span style="color:${colorPrioridad}; font-weight:bold;">${n.prioridad}</span> <span style="float:right; font-size:0.85em; color:#666;">${n.fecha}</span>
+                <p><strong>Estado:</strong> <span style="color:${n.estado==='Atendido'?'green':'orange'}">${n.estado}</span></p>
+                <p>${n.descripcion}</p>
+                <div style="margin-top: 10px;">${botones}</div>
+            `;
+            cont.appendChild(div);
+        });
+    }
+
+    // --- 6. CARTELERA ---
     function guardarAnuncioCartelera() {
         if (!esAdmin()) return;
+        const idEdit = document.getElementById('editIdCartelera').value;
         const titulo = document.getElementById('inputTituloCartelera').value.trim();
         const contenido = document.getElementById('inputContenidoCartelera').value.trim();
         if (!titulo || !contenido) { alert("Complete los campos"); return; }
-        datosApp.cartelera.push({ id: Date.now(), titulo, contenido, fecha: new Date().toLocaleDateString() });
+
+        if (idEdit) {
+            let item = datosApp.cartelera.find(c => c.id == idEdit);
+            if(item) { item.titulo = titulo; item.contenido = contenido; }
+        } else {
+            datosApp.cartelera.push({ id: Date.now(), titulo, contenido, fecha: new Date().toLocaleDateString() });
+        }
         guardarEnLocalStorage();
         renderizarCartelera();
+        limpiarFormCartelera();
+    }
+    function editarCartelera(id) {
+        if (!esAdmin()) return;
+        const c = datosApp.cartelera.find(item => item.id === id);
+        if(c) {
+            document.getElementById('editIdCartelera').value = c.id;
+            document.getElementById('inputTituloCartelera').value = c.titulo;
+            document.getElementById('inputContenidoCartelera').value = c.contenido;
+            document.getElementById('titulo-form-cartelera').textContent = "Editar Anuncio";
+            document.getElementById('btnCancelarCartelera').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    function limpiarFormCartelera() {
+        document.getElementById('editIdCartelera').value = '';
         document.getElementById('inputTituloCartelera').value = '';
         document.getElementById('inputContenidoCartelera').value = '';
+        document.getElementById('titulo-form-cartelera').textContent = "Publicar Nuevo Anuncio";
+        document.getElementById('btnCancelarCartelera').style.display = 'none';
     }
     function eliminarCartelera(id) {
         if (!esAdmin()) return;
@@ -366,146 +574,39 @@
     function renderizarCartelera() {
         const cont = document.getElementById('listaCarteleraContainer');
         cont.innerHTML = '';
-        if (datosApp.cartelera.length === 0) { cont.innerHTML = '<p>No hay anuncios.</p>'; return; }
+        if (datosApp.cartelera.length === 0) { cont.innerHTML = '<p>No hay anuncios en la cartelera.</p>'; return; }
         datosApp.cartelera.slice().reverse().forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = `<h3>${c.titulo}</h3><small>${c.fecha}</small><p>${c.contenido}</p>` + (esAdmin() ? `<button onclick="eliminarCartelera(${c.id})" class="danger">Eliminar</button>` : '');
-            cont.appendChild(div);
-        });
-    }
-
-    // --- 6. REQUERIMIENTOS ---
-    function crearNovedad() {
-        const casa = parseInt(document.getElementById('inputCasaReporte').value);
-        const descripcion = document.getElementById('textoNovedad').value.trim();
-        if (!casa || casa < 1 || casa > 112 || !descripcion) { alert("Verifique el número de casa (1-112) y la descripción."); return; }
-        datosApp.novedades.push({ id: Date.now(), casa, descripcion, estado: 'Pendiente', fecha: new Date().toLocaleString() });
-        guardarEnLocalStorage();
-        renderizarNovedades();
-        document.getElementById('inputCasaReporte').value = '';
-        document.getElementById('textoNovedad').value = '';
-        alert("Requerimiento enviado.");
-    }
-    function atenderNovedad(id) {
-        if (!esAdmin()) return;
-        const n = datosApp.novedades.find(item => item.id === id);
-        if (n) { n.estado = 'Atendido'; guardarEnLocalStorage(); renderizarNovedades(); }
-    }
-    function eliminarNovedad(id) {
-        if (!esAdmin()) return;
-        datosApp.novedades = datosApp.novedades.filter(n => n.id !== id);
-        guardarEnLocalStorage();
-        renderizarNovedades();
-    }
-    function renderizarNovedades() {
-        const cont = document.getElementById('listaNovedadesContainer');
-        cont.innerHTML = '';
-        if (datosApp.novedades.length === 0) { cont.innerHTML = '<p>No hay requerimientos.</p>'; return; }
-        datosApp.novedades.slice().reverse().forEach(n => {
             const div = document.createElement('div');
             div.className = 'card';
             let botones = '';
             if (esAdmin()) {
-                if (n.estado === 'Pendiente') botones += `<button onclick="atenderNovedad(${n.id})" class="success">Atender</button> `;
-                botones += `<button onclick="eliminarNovedad(${n.id})" class="danger">Eliminar</button>`;
+                botones = `<button onclick="editarCartelera(${c.id})" class="warning" style="padding:4px 8px;">Editar</button> <button onclick="eliminarCartelera(${c.id})" class="danger" style="padding:4px 8px;">Eliminar</button>`;
             }
-            div.innerHTML = `<strong>Casa ${n.casa}</strong> (${n.fecha})<br>Estado: <span style="color:${n.estado==='Atendido'?'green':'orange'}">${n.estado}</span><p>${n.descripcion}</p>${botones}`;
+            div.innerHTML = `<h3>${c.titulo}</h3><small>${c.fecha}</small><p>${c.contenido}</p><div style="margin-top:10px;">${botones}</div>`;
             cont.appendChild(div);
         });
     }
 
-    // --- 7. BENEFICIOS, SERVICIOS, EMERGENCIAS, REGLAMENTO (Genéricos Admin) ---
+    // --- 7. BENEFICIOS ---
     function guardarBeneficio() {
         if (!esAdmin()) return;
-        const titulo = document.getElementById('inputTituloBeneficio').value;
-        const contenido = document.getElementById('inputDescBeneficio').value;
+        const idEdit = document.getElementById('editIdBeneficio').value;
+        const titulo = document.getElementById('inputTituloBeneficio').value.trim();
+        const contenido = document.getElementById('inputDescBeneficio').value.trim();
         if (!titulo) return;
-        datosApp.beneficios.push({ id: Date.now(), titulo, contenido });
-        guardarEnLocalStorage(); renderizarBeneficios();
-        document.getElementById('inputTituloBeneficio').value = ''; document.getElementById('inputDescBeneficio').value = '';
-    }
-    function renderizarBeneficios() {
-        const cont = document.getElementById('listaBeneficiosContainer'); cont.innerHTML = '';
-        datosApp.beneficios.forEach(b => {
-            cont.innerHTML += `<div class="card"><h3>${b.titulo}</h3><p>${b.contenido}</p>` + (esAdmin() ? `<button onclick="datosApp.beneficios=datosApp.beneficios.filter(x=>x.id!==${b.id});guardarEnLocalStorage();renderizarBeneficios();" class="danger">Eliminar</button>` : '') + `</div>`;
-        });
-    }
 
-    function guardarServicio() {
+        if (idEdit) {
+            let b = datosApp.beneficios.find(item => item.id == idEdit);
+            if(b) { b.titulo = titulo; b.contenido = contenido; }
+        } else {
+            datosApp.beneficios.push({ id: Date.now(), titulo, contenido });
+        }
+        guardarEnLocalStorage(); renderizarBeneficios(); limpiarFormBeneficio();
+    }
+    function editarBeneficio(id) {
         if (!esAdmin()) return;
-        const titulo = document.getElementById('inputTituloServicio').value;
-        const contenido = document.getElementById('inputDescServicio').value;
-        if (!titulo) return;
-        datosApp.servicios.push({ id: Date.now(), titulo, contenido });
-        guardarEnLocalStorage(); renderizarServicios();
-        document.getElementById('inputTituloServicio').value = ''; document.getElementById('inputDescServicio').value = '';
-    }
-    function renderizarServicios() {
-        const cont = document.getElementById('listaServiciosContainer'); cont.innerHTML = '';
-        datosApp.servicios.forEach(s => {
-            cont.innerHTML += `<div class="card"><h3>${s.titulo}</h3><p>${s.contenido}</p>` + (esAdmin() ? `<button onclick="datosApp.servicios=datosApp.servicios.filter(x=>x.id!==${s.id});guardarEnLocalStorage();renderizarServicios();" class="danger">Eliminar</button>` : '') + `</div>`;
-        });
-    }
-
-    function guardarEmergencia() {
-        if (!esAdmin()) return;
-        const nombre = document.getElementById('inputNombreEmergencia').value;
-        const numero = document.getElementById('inputNumeroEmergencia').value;
-        if (!nombre) return;
-        datosApp.emergencias.push({ id: Date.now(), nombre, numero });
-        guardarEnLocalStorage(); renderizarEmergencias();
-        document.getElementById('inputNombreEmergencia').value = ''; document.getElementById('inputNumeroEmergencia').value = '';
-    }
-    function renderizarEmergencias() {
-        const cont = document.getElementById('listaEmergenciasContainer'); cont.innerHTML = '';
-        datosApp.emergencias.forEach(e => {
-            cont.innerHTML += `<div class="card"><h3>${e.nombre}</h3><p>Teléfono: <strong>${e.numero}</strong></p>` + (esAdmin() ? `<button onclick="datosApp.emergencias=datosApp.emergencias.filter(x=>x.id!==${e.id});guardarEnLocalStorage();renderizarEmergencias();" class="danger">Eliminar</button>` : '') + `</div>`;
-        });
-    }
-
-    function guardarReglamento() {
-        if (!esAdmin()) return;
-        const titulo = document.getElementById('inputTituloReglamento').value;
-        const contenido = document.getElementById('inputDescReglamento').value;
-        if (!titulo) return;
-        datosApp.reglamento.push({ id: Date.now(), titulo, contenido });
-        guardarEnLocalStorage(); renderizarReglamentos();
-        document.getElementById('inputTituloReglamento').value = ''; document.getElementById('inputDescReglamento').value = '';
-    }
-    function renderizarReglamentos() {
-        const cont = document.getElementById('listaReglamentosContainer'); cont.innerHTML = '';
-        datosApp.reglamento.forEach(r => {
-            cont.innerHTML += `<div class="card"><h3>${r.titulo}</h3><p>${r.contenido}</p>` + (esAdmin() ? `<button onclick="datosApp.reglamento=datosApp.reglamento.filter(x=>x.id!==${r.id});guardarEnLocalStorage();renderizarReglamentos();" class="danger">Eliminar</button>` : '') + `</div>`;
-        });
-    }
-
-    function cambiarPasswordAdmin() {
-        if (!esAdmin()) return;
-        const actual = document.getElementById('inputPasswordActual').value;
-        const nueva = document.getElementById('inputPasswordNueva').value;
-        const confirmar = document.getElementById('inputPasswordConfirmar').value;
-        if (nueva !== confirmar || nueva.length < 6) { alert("Verifique que las contraseñas coincidan y tengan al menos 6 caracteres."); return; }
-        if (actual !== obtenerPasswordAdmin()) { alert("Contraseña actual incorrecta."); return; }
-        localStorage.setItem('adminPasswordDirecta', nueva);
-        alert("Contraseña actualizada. Su sesión se cerrará.");
-        cerrarSesionAdmin();
-    }
-
-    function renderizarTodo() {
-        renderizarVecinos();
-        renderizarCartelera();
-        renderizarNovedades();
-        renderizarBeneficios();
-        renderizarServicios();
-        renderizarEmergencias();
-        renderizarReglamentos();
-    }
-
-    window.onload = function() {
-        verificarSesion();
-    };
-</script>
-
-</body>
-</html>
+        const b = datosApp.beneficios.find(i => i.id === id);
+        if(b) {
+            document.getElementById('editIdBeneficio').value = b.id;
+            document.getElementById('inputTituloBeneficio').value = b.titulo;
+            document.getElementById('inputDescBeneficio').value
