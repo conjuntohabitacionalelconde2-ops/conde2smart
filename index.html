@@ -90,6 +90,7 @@
     .btn-danger { background-color: #d9534f; }
     .btn-secondary { background-color: #777; }
     .btn-success { background-color: #28a745; }
+    .btn-warning { background-color: #f0ad4e; color: #fff; }
 
     input, select, textarea {
       width: 100%;
@@ -113,8 +114,8 @@
     .tag-normal { background-color: #d1ecf1; color: #0c5460; }
     .tag-attended { background-color: #d4edda; color: #155724; }
     .tag-pending { background-color: #fff3cd; color: #856404; }
+    .tag-blocked { background-color: #721c24; color: #ffffff; }
 
-    /* Estilo ampliado para redacción del Reglamento */
     .reglamento-editor {
       min-height: 400px;
       font-family: 'Consolas', 'Courier New', monospace;
@@ -245,14 +246,15 @@
               <th>Parqueadero</th>
               <th>Propietario / Residente</th>
               <th>Estado</th>
+              <th>Acceso</th>
               <th>Hab.</th>
               <th>Niños</th>
               <th>Mascotas</th>
-              <th class="admin-only hidden">Acción</th>
+              <th class="admin-only hidden">Acciones Admin</th>
             </tr>
           </thead>
           <tbody id="list-casas">
-            <tr><td colspan="8">Cargando directorio de casas...</td></tr>
+            <tr><td colspan="9">Cargando directorio de casas...</td></tr>
           </tbody>
         </table>
       </div>
@@ -474,6 +476,7 @@
             parqueo: 'P-' + i, 
             propietario: 'Propietario Casa ' + i, 
             estado: 'Habitada por Dueño', 
+            accesoBloqueado: false,
             personas: 1, 
             ninos: 0, 
             mascotas: 0 
@@ -494,7 +497,7 @@
 
       const keys = Object.keys(dataCasas || {});
       if (keys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8">No hay casas registradas. Inicie sesión como admin para inicializar.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9">No hay casas registradas. Inicie sesión como admin para inicializar.</td></tr>';
         return;
       }
 
@@ -512,16 +515,25 @@
 
         if (!filter || numStr.includes(filter) || propStr.includes(filter) || parkStr.includes(filter)) {
           let tagClass = c.estado === 'Habitada por Dueño' ? 'tag-owner' : (c.estado === 'Arrendada' ? 'tag-rented' : 'tag-empty');
+          
+          let accesoTag = c.accesoBloqueado ? '<span class="tag tag-blocked">Bloqueado</span>' : '<span class="tag tag-attended">Permitido</span>';
+          let btnBloqueoText = c.accesoBloqueado ? 'Permitir Ingreso' : 'Bloquear Ingreso';
+          let btnBloqueoClass = c.accesoBloqueado ? 'btn-success' : 'btn-danger';
+
           html += `
             <tr>
               <td><strong>#${c.numero || ''}</strong></td>
               <td><strong>${c.parqueo || 'S/N'}</strong></td>
               <td>${c.propietario || ''}</td>
               <td><span class="tag ${tagClass}">${c.estado || ''}</span></td>
+              <td>${accesoTag}</td>
               <td>${c.personas || 0}</td>
               <td>${c.ninos || 0}</td>
               <td>${c.mascotas || 0}</td>
-              ${isAdmin ? `<td><button class="btn" onclick="editCasa('${key}')">Editar</button></td>` : ''}
+              ${isAdmin ? `<td>
+                <button class="btn" style="margin-right:4px;" onclick="editCasa('${key}')">Editar / Nuevo Usuario</button>
+                <button class="btn ${btnBloqueoClass}" onclick="toggleAccesoCasa('${key}')">${btnBloqueoText}</button>
+              </td>` : ''}
             </tr>`;
         }
       }
@@ -529,22 +541,44 @@
       tbody.innerHTML = html;
     }
 
+    function toggleAccesoCasa(key) {
+      const c = dataCasas[key] || {};
+      const nuevoEstado = !c.accesoBloqueado;
+      const accionText = nuevoEstado ? "bloquear el ingreso a" : "permitir el ingreso a";
+      
+      if (confirm(`¿Está seguro de ${accionText} la casa #${c.numero} (${c.propietario})?`)) {
+        dataCasas[key].accesoBloqueado = nuevoEstado;
+        localStorage.setItem('conde2_casas', JSON.stringify(dataCasas));
+        renderCasas();
+        if (db) db.ref('casas/' + key + '/accesoBloqueado').set(nuevoEstado);
+      }
+    }
+
     function editCasa(key) {
       const c = dataCasas[key] || {};
       const parqueo = prompt("Número / Código del Parqueadero:", c.parqueo || ('P-' + c.numero));
       if (parqueo === null) return;
-      const propietario = prompt("Nombre del Propietario o Residente:", c.propietario || '');
+      const propietario = prompt("Nombre del Nuevo Propietario o Residente:", c.propietario || '');
       if (propietario === null) return;
       const estado = prompt("Estado (Habitada por Dueño, Arrendada, Desocupada):", c.estado || 'Habitada por Dueño');
       const personas = prompt("Número de personas:", c.personas || 1);
       const ninos = prompt("Número de niños:", c.ninos || 0);
       const mascotas = prompt("Número de mascotas:", c.mascotas || 0);
 
+      // Si la casa estaba bloqueada, al registrar o cambiar los datos del residente, se habilita nuevamente el acceso.
+      let accesoBloqueado = c.accesoBloqueado || false;
+      if (accesoBloqueado) {
+        if (confirm("Esta casa tenía el acceso bloqueado. ¿Desea rehabilitar el permiso de ingreso para el nuevo residente?")) {
+          accesoBloqueado = false;
+        }
+      }
+
       const updated = {
         numero: c.numero,
         parqueo: parqueo,
         propietario: propietario,
         estado: estado,
+        accesoBloqueado: accesoBloqueado,
         personas: parseInt(personas) || 0,
         ninos: parseInt(ninos) || 0,
         mascotas: parseInt(mascotas) || 0
@@ -709,6 +743,11 @@
       const prioridad = document.getElementById('nov-prioridad').value;
       const detalle = document.getElementById('nov-detalle').value;
       if (!casa || !detalle) return alert("Ingrese número de casa y detalle.");
+
+      const keyCasa = 'casa_' + casa;
+      if (dataCasas[keyCasa] && dataCasas[keyCasa].accesoBloqueado) {
+        return alert("ACCESO DENEGADO: El usuario/casa especificado ya no forma parte del conjunto habitacional o se encuentra deshabilitado por la administración.");
+      }
 
       const item = { casa, tipo, prioridad, detalle, atendido: false, fecha: new Date().toLocaleDateString() };
       if (db) db.ref('novedades').push(item).then(() => cargarNovedades());
