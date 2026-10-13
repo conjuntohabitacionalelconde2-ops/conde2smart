@@ -1,111 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CONDE 2 SMART</title>
-  <style>
-    :root {
-      --bg-color: #FDFBF7;
-      --card-bg: #FFFFFF;
-      --primary: #FF6B00;
-      --primary-dark: #E05E00;
-      --text-main: #333333;
-      --text-muted: #666666;
-      --border: #E8E2D5;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 30px; }
-
-    header {
-      background-color: var(--primary);
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    header h1 { font-size: 1.4rem; font-weight: bold; }
-    .role-badge { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
-
-    nav {
-      display: flex;
-      background-color: #F4EFE6;
-      overflow-x: auto;
-      border-bottom: 1px solid var(--border);
-    }
-
-    nav button {
-      background: none;
-      border: none;
-      padding: 12px 16px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    nav button.active {
-      color: var(--primary);
-      border-bottom: 3px solid var(--primary);
-      background-color: var(--card-bg);
-    }
-
-    .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
-
-    .admin-controls {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .btn:hover { background-color: var(--primary-dark); }
-    .btn-danger { background-color: #d9534f; }
-    .btn-secondary { background-color: #777; }
-    .btn-success { background-color: #28a745; }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0 12px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-    }
-
-    .hidden { display: none !important; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-    th, td { border: 1px solid var(--border); padding: 8px; text-align: left; }
-    th { background-color: #F4EFE6; color: var(--primary-dark); }
-
-    .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .tag-owner { background-color: #e2f0d9; color: #385723; }
-    .tag-rented { background-color: #fff2cc; color: #7f6000; }
-    .tag-empty { background-color: #fce4d6; color: #c
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EL CONDE 2 SMART</title>
+<style>
+:root{--beige:#f4ead8;--beige2:#fffaf2;--orange:#e97825;--orange2:#c85b12;--ink:#3b332b;--muted:#7b7167;--line:#ead9c3;--green:#527b58}
+*{box-sizing:border-box}body{margin:0;background:var(--beige2);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:var(--orange);color:white;font-weight:700}button:hover{background:var(--orange2)}button.secondary{background:#efe1ce;color:var(--ink)}button.danger{background:#a83e32}button.small{padding:6px 9px;font-size:13px}.wrap{max-width:1200px;margin:auto;padding:18px}.hero{background:linear-gradient(120deg,#f4ead8,#fce4cd);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:13px}.logo{width:54px;height:54px;border-radius:16px;background:var(--orange);display:grid;place-items:center;color:white;font-size:26px;font-weight:900;box-shadow:0 6px 16px #e9782530}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--orange2);font-weight:800}.hero h1{margin:2px 0;font-size:clamp(22px,4vw,34px);letter-spacing:-.7px}.hero p{margin:0;color:var(--muted)}.pill{background:#fff6ea;border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800}.layout{display:grid;grid-template-columns:225px 1fr;gap:18px;margin-top:18px}.sidebar,.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 8px 26px #5a3d1710}.sidebar h3{margin:6px 10px 12px;font-size:12px;color:var(--muted);letter-spacing:1px}.nav{display:flex;flex-direction:column;gap:6px}.nav button{background:transparent;color:var(--ink);text-align:left;display:flex;align-items:center;gap:11px;padding:12px;border-radius:11px}.nav button.active,.nav button:hover{background:#fff0df;color:var(--orange2)}.content{min-width:0}.panel{padding:20px;min-height:400px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.panel h2{margin:0 0 4px;font-size:24px}.muted{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:800;color:#66584b}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fffdf9;color:var(--ink);outline-color:var(--orange)}.field textarea{min-height:95px;resize:vertical}.wide{grid-column:1/-1}.formbox{background:#fff8ef;border:1px solid var(--line);padding:15px;border-radius:14px;margin-bottom:17px}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.item{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fffdf9}.item h3{margin:5px 0 7px;font-size:17px}.item p{margin:5px 0;white-space:pre-wrap}.item .actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.tag{display:inline-block;border-radius:99px;padding:4px 8px;background:#f6eadb;color:#85502c;font-size:11px;font-weight:800}.tag.ok{background:#e5f2e5;color:#37643c}.tag.wait{background:#fff0d3;color:#8a5a12}.tag.no{background:#fbe5e1;color:#a83e32}.empty{padding:34px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:850px;font-size:13px}th,td{padding:10px;text-align:left;border-bottom:1px solid #f0e5d7;vertical-align:top}th{background:#fff4e6;color:#705641;position:sticky;top:0}td input,td select{width:100%;min-width:90px;border:1px solid var(--line);border-radius:7px;padding:7px}td button{margin:2px}.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:17px}.stat{background:#fff6ea;border:1px solid var(--line);padding:14px;border-radius:13px}.stat strong{display:block;font-size:25px}.stat span{font-size:12px;color:var(--muted)}.login{max-width:460px;margin:8vh auto;padding:22px}.login .panel{min-height:0}.login h2{font-size:26px}.login .field{margin:12px 0}.notice{background:#fff2db;border:1px solid #efd4a8;padding:12px;border-radius:12px;font-size:12px;margin-top:15px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0}.hidden{display:none!important}.search{max-width:260px}.footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}@media(max-width:760px){.wrap{padding:10px}.hero{padding:16px}.layout{grid-template-columns:1fr}.sidebar{padding:10px}.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.nav button{font-size:13px;padding:9px}.sidebar h3{margin-bottom:6px}.panel{padding:14px}.grid,.cards{grid-template-columns:1fr}.statrow{grid-template-columns:repeat(3,1fr)}.stat{padding:9px}.stat strong{font-size:20px}.panel-head{flex-direction:column}.hero .pill{display:none}}
+</style></head>
+<body><div id="app"></div>
+<script>
+const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key='conde2smart_demo_v1';
+const defaults=()=>({posts:[],benefits:[],requests:[],contacts:[],services:[],houses:Array.from({length:112},(_,i)=>({house:i+1,parking:'',owner:'',tenant:'',resident:'',people:'',children:'',pets:'0',active:true,accessCode:''}))});
+let db=JSON.parse(localStorage.getItem(key)||'null')||defaults();let user=null,tab='home',editing=null;
+function save(){localStorage.setItem(key,JSON.stringify(db))}
+function init(){if(!db.houses||db.houses.length!==112)db.houses=defaults().houses;renderLogin()}
+function renderLogin(){$('#app').innerHTML=`<div class="wrap login"><div class="hero"><div class="brand"><div class="logo">C2</div><div><div class="eyebrow">COMUNIDAD CONECTADA</div><h1>EL CONDE 2 SMART</h1><p>Tu conjunto, más cerca.</p></div></div></div><div class="panel" style="margin-top:16px"><h2>Ingresar</h2><p class="muted">Acceso para administración y residentes autorizados.</p><div class="field"><label>Tipo de acceso</label><select id="role"><option value="neighbor">Vecino</option><option value="admin">Administrador</option></select></div><div id="houseField" class="field"><label>Número de casa (1–112)</label><input id="houseNo" type="number" min="1" max="112" placeholder="Ej. 24"></div><div id="codeField" class="field"><label>Código de acceso del vecino</label><input id="neighborCode" type="password" placeholder="Código asignado por administración"></div><div id="adminFields" class="hidden"><div class="field"><label>Usuario administrador</label><input id="adminUser" value="admin"></div><div class="field"><label>Contraseña</label><input id="adminPass" type="password" placeholder="Contraseña"></div></div><button id="loginBtn" style="width:100%;margin-top:8px">Ingresar a la aplicación</button><div id="loginErr" class="muted" style="color:#a83e32;margin-top:8px"></div><div class="notice"><b>Prototipo funcional:</b> los datos se guardan en este navegador. Acceso demo administrador: usuario <b>admin</b>, contraseña <b>conde2026</b>. Antes de usar con vecinos, se necesita configurar autenticación real y base de datos central segura.</div></div></div>`;
+$('#role').onchange=()=>{let a=$('#role').value==='admin';$('#adminFields').classList.toggle('hidden',!a);$('#houseField').classList.toggle('hidden',a);$('#codeField').classList.toggle('hidden',a)};
+$('#loginBtn').onclick=()=>{if($('#role').value==='admin'){if($('#adminUser').value==='admin'&&$('#adminPass').value==='conde2026'){user={role:'admin',label:'Administrador'};renderApp()}else $('#loginErr').textContent='Usuario o contraseña incorrectos.'}else{let n=Number($('#houseNo').value),h=db.houses[n-1];if(!h||n<1||n>112)$('#loginErr').textContent='Ingresa un número de casa válido (1–112).';else if(!h.active)$('#loginErr').textContent='El acceso de esta vivienda está bloqueado. Contacta a administración.';else if(!h.accessCode||$('#neighborCode').value!==h.accessCode)$('#loginErr').textContent='Código no válido. Solicítalo a administración.';else{user={role:'neighbor',house:n,label:'Casa '+n};renderApp()}}};
+}
+const isAdmin=()=>user?.role==='admin';
+const tabs=[['home','⌂','Inicio'],['posts','▤','Cartelera'],['benefits','✦','Beneficios'],['requests','▣','Requerimientos'],['houses','⌂','Base de datos'],['emergency','✚','Emergencia'],['services','⚙','Servicios']];
+function renderApp(){tab='home';$('#app').innerHTML=`<div class="wrap"><header class="hero"><div class="brand"><div class="logo">C2</div><div><div class="eyebrow">COMUNIDAD CONECTADA</div><h1>EL CONDE 2 SMART</h1><p>Gestión inteligente para 112 viviendas</p></div></div><span class="pill">${isAdmin()?'ADMINISTRADOR':'RESIDENTE · '+esc(user.label)}</span></header><div class="topbar"><div class="muted">Hola, ${esc(user.label)}. Bienvenido/a.</div><button class="secondary small" id="logout">Cerrar sesión</button></div><div class="layout"><aside class="sidebar"><h3>MENÚ PRINCIPAL</h3><div class="nav">${tabs.filter(t=>isAdmin()||t[0]!=='houses').map(t=>`<button data-tab="${t[0]}" class="${tab===t[0]?'active':''}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</div><div class="notice">Diseñado para móvil · Beige + naranja</div></aside><main class="content"><div id="view"></div></main></div><div class="footer">EL CONDE 2 SMART · Prototipo de demostración · No usar para datos sensibles hasta configurar servidor seguro.</div></div>`;
+$('#logout').onclick=renderLogin;document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;renderAppTab()});renderAppTab()}
+function renderAppTab(){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));let v=$('#view');if(!v)return;const titles={home:['Panel principal','Resumen de actividad de la comunidad'],posts:['Cartelera','Convocatorias, comunicados y eventos'],benefits:['Beneficios','Servicios y beneficios disponibles para residentes'],requests:['Requerimientos','Solicitudes de mantenimiento y reservas comunales'],houses:['Base de datos','Registro de las 112 viviendas · solo administración'],emergency:['Emergencia','Contactos importantes ante una emergencia'],services:['Servicios','Contactos de servicios y mantenimiento']};let [title,sub]=titles[tab]||titles.home;
+let body=tab==='home'?homeView():tab==='posts'?collectionView('posts','Publicación'):tab==='benefits'?collectionView('benefits','Beneficio'):tab==='requests'?requestsView():tab==='houses'?housesView():tab==='emergency'?collectionView('contacts','Contacto de emergencia'):collectionView('services','Servicio');
+v.innerHTML=`<section class="panel"><div class="panel-head"><div><h2>${title}</h2><div class="muted">${sub}</div></div>${tab==='houses'?'<span class="tag">Acceso restringido</span>':''}</div>${body}</section>`;wireTab()}
+function homeView(){return `<div class="statrow"><div class="stat"><strong>112</strong><span>Viviendas registradas</span></div><div class="stat"><strong>${db.requests.filter(x=>x.status==='Pendiente').length}</strong><span>Solicitudes pendientes</span></div><div class="stat"><strong>${db.posts.length}</strong><span>Publicaciones</span></div></div><div class="item"><span class="tag">BIENVENIDO</span><h3>Tu comunidad, en un solo lugar</h3><p>Consulta anuncios y beneficios, envía requerimientos y encuentra contactos útiles.</p><p class="muted">${isAdmin()?'Como administrador puedes gestionar publicaciones, solicitudes, contactos y el registro de viviendas.':'Puedes revisar la cartelera, los beneficios y crear solicitudes para administración.'}</p></div><div class="cards" style="margin-top:12px"><div class="item"><h3>📣 Cartelera</h3><p class="muted">Comunicados y eventos del conjunto.</p><button class="secondary small" data-jump="posts">Abrir cartelera</button></div><div class="item"><h3>🛠 Requerimientos</h3><p class="muted">Mantenimiento y reservas de espacios.</p><button class="secondary small" data-jump="requests">Ver requerimientos</button></div></div>`}
+const configs={posts:[['title','Título','text',true],['date','Fecha','date',false],['body','Detalle','textarea',true]],benefits:[['title','Título del beneficio','text',true],['date','Vigencia hasta','date',false],['body','Descripción / condiciones','textarea',true]],contacts:[['title','Entidad / contacto','text',true],['phone','Teléfono','tel',true],['body','Información adicional','textarea',false]],services:[['title','Servicio / proveedor','text',true],['phone','Teléfono','tel',true],['body','Detalle / horario','textarea',false]]};
+function collectionView(type,label){let items=db[type]||[],admin=isAdmin();return `${admin?`<div class="formbox"><h3 style="margin:0 0 12px">${editing!==null?'Editar':'Crear'} ${label.toLowerCase()}</h3><form id="collectionForm"><div class="grid">${configs[type].map(([k,l,t,req])=>`<div class="field ${t==='textarea'?'wide':''}"><label>${l}${req?' *':''}</label>${t==='textarea'?`<textarea name="${k}" ${req?'required':''}>${esc(editing!==null?(items[editing]?.[k]||''):'')}</textarea>`:`<input name="${k}" type="${t}" value="${esc(editing!==null?(items[editing]?.[k]||''):'')}" ${req?'required':''}>`}</div>`).join('')}</div><div class="formactions"><button type="submit">Guardar</button><button type="button" class="secondary" id="cancelEdit">Limpiar / cancelar</button></div></form></div>`:''}<div class="cards">${items.map((x,i)=>`<article class="item"><span class="tag">${esc(x.date||label.toUpperCase())}</span><h3>${esc(x.title)}</h3>${x.phone?`<p><b>Teléfono:</b> ${esc(x.phone)}</p>`:''}<p>${esc(x.body||'')}</p>${admin?`<div class="actions"><button class="secondary small" data-edit="${i}">Editar</button><button class="danger small" data-delete="${i}">Eliminar</button></div>`:''}</article>`).join('')||`<div class="empty" style="grid-column:1/-1">Aún no hay ${label.toLowerCase()}s publicados.</div>`}</div>`}
+function requestsView(){let admin=isAdmin(),items=db.requests;return `${!admin?`<div class="formbox"><h3 style="margin:0 0 12px">Crear requerimiento</h3><form id="requestForm"><div class="grid"><div class="field"><label>Tipo de solicitud *</label><select name="type"><option>Mantenimiento</option><option>Iluminación</option><option>Fuga de agua</option><option>Área comunal</option><option>Alquiler de casa comunal</option><option>Préstamo de escalera</option><option>Otro</option></select></div><div class="field"><label>Fecha solicitada *</label><input name="date" type="date" required min="${new Date().toISOString().slice(0,10)}"></div><div class="field"><label>Horario / hora *</label><select name="time"><option>08:00–10:00</option><option>10:00–12:00</option><option>12:00–14:00</option><option>14:00–16:00</option><option>16:00–18:00</option><option>Todo el día / por coordinar</option></select></div><div class="field"><label>Ubicación / área</label><input name="place" placeholder="Ej. casa comunal, parqueadero"></div><div class="field wide"><label>Descripción *</label><textarea name="body" required placeholder="Describe el problema o el motivo de la reserva"></textarea></div></div><div class="formactions"><button>Enviar solicitud</button></div></form></div>`:''}<div class="topbar"><b>${admin?'Solicitudes de todos los vecinos':'Mis solicitudes'}</b><span class="muted">${items.filter(x=>!admin?x.house===user.house:true).length} registro(s)</span></div><div class="cards">${items.map((x,i)=>({x,i})).filter(({x})=>admin||x.house===user.house).map(({x,i})=>`<article class="item"><span class="tag ${x.status==='Atendido'||x.status==='Aprobado'?'ok':x.status==='Rechazado'?'no':'wait'}">${esc(x.status)}</span><h3>${esc(x.type)}</h3><p><b>Casa:</b> ${esc(x.house)} · <b>Fecha:</b> ${esc(x.date)} · <b>Horario:</b> ${esc(x.time||'—')}</p><p><b>Ubicación:</b> ${esc(x.place||'No indicada')}</p><p>${esc(x.body)}</p>${admin?`<div class="field" style="margin-top:10px"><label>Estado</label><select data-status="${i}">${['Pendiente','Atendido','Aprobado','Rechazado'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="actions"><button class="danger small" data-delete="${i}">Eliminar</button></div>`:''}</article>`).join('')||'<div class="empty" style="grid-column:1/-1">No hay solicitudes registradas.</div>'}</div>`}
+function housesView(){if(!isAdmin())return '<div class="empty">Acceso restringido a administración.</div>';return `<div class="statrow"><div class="stat"><strong>112</strong><span>Casas</span></div><div class="stat"><strong>${db.houses.filter(h=>h.active).length}</strong><span>Accesos habilitados</span></div><div class="stat"><strong>${db.houses.filter(h=>!h.active).length}</strong><span>Accesos bloqueados</span></div></div><div class="formbox"><div class="grid"><div class="field"><label>Buscar casa / copropietario</label><input id="houseSearch" placeholder="Número o nombre"></div><div class="field"><label>Nota</label><div class="muted">Pulsa Editar para cambiar los datos y el código de acceso.</div></div></div></div><div class="tablewrap"><table><thead><tr><th>Casa</th><th>Parqueadero</th><th>Copropietario</th><th>Arrendatario</th><th>Quién habita</th><th>Personas</th><th>Niños</th><th>Mascotas</th><th>Código vecino</th><th>Acceso</th><th>Acción</th></tr></thead><tbody>${db.houses.map((h,i)=>`<tr data-house-row="${i}"><td>${h.house}</td><td>${esc(h.parking)}</td><td>${esc(h.owner)}</td><td>${esc(h.tenant)}</td><td>${esc(h.resident)}</td><td>${esc(h.people)}</td><td>${esc(h.children)}</td><td>${esc(h.pets)}</td><td>${h.accessCode?'••••••':'Sin asignar'}</td><td><span class="tag ${h.active?'ok':'no'}">${h.active?'Activa':'Bloqueada'}</span></td><td><button class="secondary small" data-house-edit="${i}">Editar</button><button class="${h.active?'danger':'small'} small" data-house-toggle="${i}">${h.active?'Bloquear':'Activar'}</button></td></tr>`).join('')}</tbody></table></div><div id="houseEditor"></div>`}
+function wireTab(){document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{tab=b.dataset.jump;renderAppTab()});
+let cf=$('#collectionForm');if(cf)cf.onsubmit=e=>{e.preventDefault();let data=Object.fromEntries(new FormData(cf).entries());if(editing===null)db[tab].unshift(data);else db[tab][editing]=data;editing=null;save();renderAppTab()};
+let ce=$('#cancelEdit');if(ce)ce.onclick=()=>{editing=null;renderAppTab()};
+document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{editing=+b.dataset.edit;renderAppTab()});
+document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')){db[tab].splice(+b.dataset.delete,1);save();renderAppTab()}});
+let rf=$('#requestForm');if(rf)rf.onsubmit=e=>{e.preventDefault();let d=Object.fromEntries(new FormData(rf).entries());db.requests.unshift({...d,house:user.house,status:'Pendiente',created:new Date().toISOString()});save();renderAppTab();alert('Solicitud registrada en este navegador.')};
+document.querySelectorAll('[data-status]').forEach(s=>s.onchange=()=>{db.requests[+s.dataset.status].status=s.value;save();renderAppTab()});
+let search=$('#houseSearch');if(search)search.oninput=()=>document.querySelectorAll('[data-house-row]').forEach(r=>{let h=db.houses[+r.dataset.houseRow],q=search.value.toLowerCase();r.style.display=(!q||String(h.house).includes(q)||h.owner.toLowerCase().includes(q)||h.tenant.toLowerCase().includes(q))?'':'none'});
+document.querySelectorAll('[data-house-toggle]').forEach(b=>b.onclick=()=>{let h=db.houses[+b.dataset.houseToggle];h.active=!h.active;save();renderAppTab()});
+document.querySelectorAll('[data-house-edit]').forEach(b=>b.onclick=()=>{let i=+b.dataset.houseEdit,h=db.houses[i];$('#houseEditor').innerHTML=`<div class="formbox" style="margin-top:14px"><h3>Editar casa ${h.house}</h3><form id="houseForm"><div class="grid">${[['parking','Número de parqueadero'],['owner','Nombre del copropietario'],['tenant','Nombre del arrendatario'],['resident','Quién habita la casa'],['people','Número de personas'],['children','Número de niños'],['pets','Número de mascotas'],['accessCode','Código de acceso del vecino']].map(([k,l])=>`<div class="field"><label>${l}</label><input name="${k}" value="${esc(h[k])}" ${['people','children','pets'].includes(k)?'type="number" min="0"':''} ${k==='accessCode'?'type="text"':''}></div>`).join('')}</div><div class="formactions"><button>Guardar cambios</button><button type="button" class="secondary" id="closeHouse">Cancelar</button></div></form></div>`;$('#houseForm').onsubmit=e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target).entries());Object.assign(db.houses[i],d);save();renderAppTab()};$('#closeHouse').onclick=()=>{$('#houseEditor').innerHTML=''}})}
+}
+init();
+</script></body></html>
