@@ -3,50 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conjunto Habitacional El Conde 2 - Administración</title>
+    <title>Conjunto Habitacional El Conde 2</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1, h2, h3 { color: #2c3e50; }
-        .card { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 6px; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #3498db; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-top: 5px; }
-        button:hover { background-color: #2980b9; }
-        button.danger { background-color: #e74c3c; }
-        button.danger:hover { background-color: #c0392b; }
-        button.success { background-color: #2ecc71; }
-        button.success:hover { background-color: #27ae60; }
-        button.warning { background-color: #f39c12; color: white; }
-        button.warning:hover { background-color: #d35400; }
-        .flex-row { display: flex; gap: 10px; }
-        .flex-row > * { flex: 1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f8f9fa; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.5; padding: 10px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         
-        /* Sistema de Pestañas */
-        .nav-tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #2c3e50; padding: 10px; border-radius: 6px; margin-bottom: 20px; }
-        .nav-tabs button { background: #34495e; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9em; margin: 0; }
+        /* Encabezado */
+        .header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; text-align: center; }
+        .header-titles h1 { font-size: 1.5rem; color: #2c3e50; }
+        .header-titles p { font-size: 0.9rem; color: #7f8c8d; }
+        .badge-admin { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: white; background: #7f8c8d; margin-top: 5px; }
+
+        /* Pestañas / Menú Responsivo */
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #2c3e50; padding: 8px; border-radius: 8px; margin-bottom: 20px; }
+        .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: #34495e; color: white; border: none; padding: 10px 8px; cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: bold; text-align: center; }
         .nav-tabs button:hover, .nav-tabs button.active { background: #3498db; }
+
+        /* Tarjetas y Formularios */
+        .card { background: #fff; border: 1px solid #e1e8ed; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .card h2, .card h3, .card h4 { color: #2c3e50; margin-bottom: 10px; }
+        
+        input, select, textarea { width: 100%; padding: 10px; margin: 6px 0 12px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }
+        textarea { min-height: 80px; resize: vertical; }
+
+        /* Botones */
+        button.btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 5px; }
+        button.btn-inline { width: auto; padding: 6px 12px; font-size: 0.85rem; margin-right: 5px; margin-top: 5px; }
+        
+        .btn-success { background-color: #2ecc71; color: white; }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn-danger:hover { background-color: #c0392b; }
+        .btn-warning { background-color: #f39c12; color: white; }
+        .btn-warning:hover { background-color: #d35400; }
+        .btn-secondary { background-color: #95a5a6; color: white; }
+
+        /* Layout de Formularios */
+        .flex-row { display: flex; flex-direction: column; gap: 10px; }
+
+        /* Tablas Responsivas */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; font-size: 0.88rem; }
+        th, td { border: 1px solid #e1e8ed; padding: 10px; text-align: left; }
+        th { background-color: #f8f9fa; color: #2c3e50; }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .badge-admin { background: #e67e22; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; }
-        .private-info { color: #888; font-style: italic; }
+        .private-info { color: #95a5a6; font-style: italic; font-size: 0.85rem; }
+
+        /* Adaptación específica para Pantallas Grandes (Escritorio) */
+        @media (min-width: 768px) {
+            .header { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
+            .flex-row { flex-direction: row; }
+            .flex-row > * { flex: 1; }
+            button.btn-responsive { width: auto; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
+    <!-- ENCABEZADO -->
+    <div class="header">
+        <div class="header-titles">
             <h1>Conjunto Habitacional El Conde 2</h1>
-            <p>Plataforma Comunitaria (112 Viviendas)</p>
+            <p>Plataforma Digital de Gestión (112 Viviendas)</p>
         </div>
         <div>
-            <span id="label-estado-rol" class="badge-admin" style="background: #7f8c8d;">Modo Vecino</span>
+            <span id="label-estado-rol" class="badge-admin">Modo Vecino</span>
         </div>
     </div>
-    <hr>
 
     <!-- MENÚ DE PESTAÑAS -->
     <div class="nav-tabs">
@@ -64,16 +91,16 @@
     <div id="tab-inicio" class="tab-content active">
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <p>Ingrese la contraseña de administrador para gestionar publicaciones y ver información privada (Contraseña inicial: <strong>admin123</strong>)</p>
+            <p style="margin-bottom:10px; font-size:0.9rem;">Ingrese la contraseña de administrador para desbloquear las opciones de edición y gestión (Contraseña inicial: <strong>admin123</strong>):</p>
             <input type="password" id="inputPasswordAdmin" placeholder="Contraseña de administrador">
-            <button onclick="loginAdministrador()" class="success">Ingresar como Administrador</button>
+            <button onclick="loginAdministrador()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
         </div>
 
         <div id="panel-admin" style="display: none;">
             <div class="card" style="background: #eaf2f8;">
-                <h3>Panel de Control del Administrador</h3>
-                <p>Tiene privilegios completos de publicación, edición, eliminación y visualización de teléfonos protegidos.</p>
-                <button onclick="cerrarSesionAdmin()" class="danger">Cerrar Sesión de Administrador</button>
+                <h3>Panel de Control Activo</h3>
+                <p style="font-size:0.9rem; margin-bottom:10px;">Tiene acceso completo para publicar, modificar y eliminar contenido, así como para consultar teléfonos privados del directorio.</p>
+                <button onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
             </div>
 
             <div class="card">
@@ -81,7 +108,7 @@
                 <input type="password" id="inputPasswordActual" placeholder="Contraseña Actual">
                 <input type="password" id="inputPasswordNueva" placeholder="Nueva Contraseña (mínimo 6 caracteres)">
                 <input type="password" id="inputPasswordConfirmar" placeholder="Confirmar Nueva Contraseña">
-                <button onclick="cambiarPasswordAdmin()">Actualizar Contraseña</button>
+                <button onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña</button>
             </div>
         </div>
     </div>
@@ -94,38 +121,46 @@
             <input type="hidden" id="editIdCartelera" value="">
             <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
             <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
-            <button onclick="guardarAnuncioCartelera()" class="success">Guardar / Publicar</button>
-            <button onclick="limpiarFormCartelera()" style="background: #95a5a6; display: none;" id="btnCancelarCartelera">Cancelar</button>
+            <button onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Guardar / Publicar</button>
+            <button onclick="limpiarFormCartelera()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarCartelera">Cancelar</button>
         </div>
         <div id="listaCarteleraContainer"></div>
     </div>
 
     <!-- PESTAÑA 3: REPORTAR NOVEDAD -->
     <div id="tab-reportar" class="tab-content">
-        <h2>Módulo de Reportar Novedad</h2>
-        
-        <!-- Formulario visible para vecinos y admin -->
-        <div class="card" id="form-reporte-vecino">
-            <h4>Enviar un Reporte o Requerimiento</h4>
+        <h2>Reportar Novedad o Requerimiento</h2>
+        <div class="card">
+            <h4>Formulario de Reporte</h4>
             <div class="flex-row">
-                <input type="number" id="inputCasaReporte" placeholder="Nº de Casa (1 - 112)" min="1" max="112">
-                <select id="selectTipoReporte">
-                    <option value="Daño">Tipo: Daño / Afectación</option>
-                    <option value="Jardinería / Mantenimiento">Tipo: Jardinería / Mantenimiento</option>
-                    <option value="Convivencia / Otro">Tipo: Convivencia / Otro</option>
-                </select>
+                <div>
+                    <label>Número de Casa (1 - 112):</label>
+                    <input type="number" id="inputCasaReporte" placeholder="Ej. 45" min="1" max="112">
+                </div>
+                <div>
+                    <label>Tipo de Requerimiento:</label>
+                    <select id="selectTipoReporte">
+                        <option value="Daño / Afectación">Daño / Afectación</option>
+                        <option value="Jardinería / Mantenimiento">Jardinería / Mantenimiento</option>
+                        <option value="Convivencia / Otro">Convivencia / Otro</option>
+                    </select>
+                </div>
             </div>
             <div class="flex-row">
-                <select id="selectPrioridadReporte">
-                    <option value="Normal">Prioridad: Normal</option>
-                    <option value="Urgente">Prioridad: Urgente 🚨</option>
-                </select>
+                <div>
+                    <label>Prioridad:</label>
+                    <select id="selectPrioridadReporte">
+                        <option value="Normal">Normal</option>
+                        <option value="Urgente">Urgente 🚨</option>
+                    </select>
+                </div>
             </div>
-            <textarea id="textoNovedad" placeholder="Describa detalladamente el daño o requerimiento..."></textarea>
-            <button onclick="crearNovedad()" class="success">Enviar Reporte</button>
+            <label>Descripción del Problema:</label>
+            <textarea id="textoNovedad" placeholder="Describa el requerimiento o daño..."></textarea>
+            <button onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
         </div>
 
-        <h3>Bandeja de Reportes (Vista exclusiva del Administrador)</h3>
+        <h3>Bandeja de Gestión (Acceso Exclusivo Administrador)</h3>
         <div id="listaNovedadesContainer"></div>
     </div>
 
@@ -137,15 +172,15 @@
             <input type="hidden" id="editIdBeneficio" value="">
             <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio">
             <textarea id="inputDescBeneficio" placeholder="Detalles del beneficio..."></textarea>
-            <button onclick="guardarBeneficio()" class="success">Guardar Beneficio</button>
-            <button onclick="limpiarFormBeneficio()" style="background: #95a5a6; display: none;" id="btnCancelarBeneficio">Cancelar</button>
+            <button onclick="guardarBeneficio()" class="btn btn-success btn-responsive">Guardar Beneficio</button>
+            <button onclick="limpiarFormBeneficio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarBeneficio">Cancelar</button>
         </div>
         <div id="listaBeneficiosContainer"></div>
     </div>
 
     <!-- PESTAÑA 5: DIRECTORIO CASAS -->
     <div id="tab-directorio" class="tab-content">
-        <h2>Directorio de Casas (112 Viviendas)</h2>
+        <h2>Directorio de Viviendas (112 Casas)</h2>
         <div id="admin-controls-vecinos" style="display: none;" class="card">
             <h4 id="titulo-form-vecino">Registrar / Actualizar Datos de Casa</h4>
             <div class="flex-row">
@@ -154,11 +189,11 @@
             </div>
             <div class="flex-row">
                 <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
-                <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado)">
+                <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado admin)">
             </div>
             <div class="flex-row">
                 <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario (opcional)">
-                <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado)">
+                <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado admin)">
             </div>
             <div class="flex-row">
                 <select id="selectEstadoCasa">
@@ -172,12 +207,12 @@
                 <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
                 <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
             </div>
-            <button onclick="guardarVecino()" class="success">Guardar Registro de Casa</button>
+            <button onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
         </div>
 
         <div class="card">
-            <h3>Listado General de Viviendas</h3>
-            <div style="overflow-x: auto;">
+            <h3>Listado Completo</h3>
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -188,9 +223,9 @@
                             <th>Arrendatario</th>
                             <th>Teléfono 2</th>
                             <th>Estado</th>
-                            <th>Hab.</th>
+                            <th>Habitantes</th>
                             <th>Niños</th>
-                            <th>Masc.</th>
+                            <th>Mascotas</th>
                             <th id="th-acciones-dir" style="display: none;">Acciones</th>
                         </tr>
                     </thead>
@@ -207,23 +242,23 @@
             <h4 id="titulo-form-servicio">Registrar / Editar Servicio</h4>
             <input type="hidden" id="editIdServicio" value="">
             <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
-            <textarea id="inputDescServicio" placeholder="Horarios y detalles..."></textarea>
-            <button onclick="guardarServicio()" class="success">Guardar Servicio</button>
-            <button onclick="limpiarFormServicio()" style="background: #95a5a6; display: none;" id="btnCancelarServicio">Cancelar</button>
+            <textarea id="inputDescServicio" placeholder="Detalles y horarios..."></textarea>
+            <button onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
+            <button onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
         </div>
         <div id="listaServiciosContainer"></div>
     </div>
 
     <!-- PESTAÑA 7: EMERGENCIAS -->
     <div id="tab-emergencias" class="tab-content">
-        <h2>Números y Protocolos de Emergencia</h2>
+        <h2>Contactos de Emergencia</h2>
         <div id="admin-controls-emergencias" style="display: none;" class="card">
             <h4 id="titulo-form-emergencia">Registrar / Editar Contacto</h4>
             <input type="hidden" id="editIdEmergencia" value="">
-            <input type="text" id="inputNombreEmergencia" placeholder="Institución / Contacto">
+            <input type="text" id="inputNombreEmergencia" placeholder="Institución / Nombre">
             <input type="text" id="inputNumeroEmergencia" placeholder="Número telefónico">
-            <button onclick="guardarEmergencia()" class="success">Guardar Contacto</button>
-            <button onclick="limpiarFormEmergencia()" style="background: #95a5a6; display: none;" id="btnCancelarEmergencia">Cancelar</button>
+            <button onclick="guardarEmergencia()" class="btn btn-success btn-responsive">Guardar Contacto</button>
+            <button onclick="limpiarFormEmergencia()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarEmergencia">Cancelar</button>
         </div>
         <div id="listaEmergenciasContainer"></div>
     </div>
@@ -232,37 +267,37 @@
     <div id="tab-reglamento" class="tab-content">
         <h2>Reglamento Interno</h2>
         <div id="admin-controls-reglamento" style="display: none;" class="card">
-            <h4 id="titulo-form-reglamento">Registrar / Editar Apartado del Reglamento</h4>
+            <h4 id="titulo-form-reglamento">Registrar / Editar Norma</h4>
             <input type="hidden" id="editIdReglamento" value="">
             <input type="text" id="inputTituloReglamento" placeholder="Título de la norma">
-            <textarea id="inputDescReglamento" placeholder="Contenido de la norma..."></textarea>
-            <button onclick="guardarReglamento()" class="success">Guardar Norma</button>
-            <button onclick="limpiarFormReglamento()" style="background: #95a5a6; display: none;" id="btnCancelarReglamento">Cancelar</button>
+            <textarea id="inputDescReglamento" placeholder="Detalles de la norma..."></textarea>
+            <button onclick="guardarReglamento()" class="btn btn-success btn-responsive">Guardar Norma</button>
+            <button onclick="limpiarFormReglamento()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarReglamento">Cancelar</button>
         </div>
         <div id="listaReglamentosContainer"></div>
     </div>
 </div>
 
 <script>
-    // --- 1. DATOS Y PERSISTENCIA ---
+    // --- PERSISTENCIA Y ESTRUCTURA ---
     let datosApp = JSON.parse(localStorage.getItem('elCondeData')) || {
         vecinos: [],
         novedades: [],
         cartelera: [
-            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 viviendas).", fecha: "2026-10-13" }
+            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Portal oficial del Conjunto Habitacional El Conde 2.", fecha: "2026-10-13" }
         ],
         beneficios: [
-            { id: 1, titulo: "Uso de Cancha de Uso Múltiple", contenido: "Reservas disponibles en administración." }
+            { id: 1, titulo: "Cancha Deportiva", contenido: "Reservas habilitadas mediante administración." }
         ],
         servicios: [
-            { id: 1, titulo: "Recolección de Basura", contenido: "Lunes, miércoles y viernes a partir de las 07:00 AM." }
+            { id: 1, titulo: "Recolección de Basura", contenido: "Lunes, miércoles y viernes a primera hora." }
         ],
         emergencias: [
-            { id: 1, nombre: "ECU 911 (Emergencias Generales)", numero: "911" },
+            { id: 1, nombre: "ECU 911", numero: "911" },
             { id: 2, nombre: "UPC Guamaní", numero: "0999999999" }
         ],
         reglamento: [
-            { id: 1, titulo: "Control de Mascotas", contenido: "Uso obligatorio de correa y recolección de heces." }
+            { id: 1, titulo: "Mascotas", contenido: "Uso obligatorio de correa y recolección de heces en áreas comunes." }
         ]
     };
 
@@ -270,7 +305,6 @@
         localStorage.setItem('elCondeData', JSON.stringify(datosApp));
     }
 
-    // --- 2. NAVEGACIÓN ---
     function cambiarPestaña(nombreTab) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
@@ -280,7 +314,6 @@
         renderizarTodo();
     }
 
-    // --- 3. AUTENTICACIÓN ---
     function obtenerPasswordAdmin() {
         return localStorage.getItem('adminPasswordDirecta') || 'admin123';
     }
@@ -289,7 +322,7 @@
         const pass = document.getElementById('inputPasswordAdmin').value;
         if (pass === obtenerPasswordAdmin()) {
             sessionStorage.setItem('adminAutenticado', 'true');
-            alert("¡Bienvenido, Administrador!");
+            alert("¡Sesión iniciada como Administrador!");
             verificarSesion();
         } else {
             alert("Contraseña incorrecta.");
@@ -302,12 +335,14 @@
         const thAccionesDir = document.getElementById('th-acciones-dir');
 
         if (esAuth) {
+            document.getElementById('seccion-login').style.display = 'none';
             document.getElementById('panel-admin').style.display = 'block';
             badge.textContent = "Modo Administrador";
             badge.style.background = "#27ae60";
             document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'block');
             if(thAccionesDir) thAccionesDir.style.display = 'table-cell';
         } else {
+            document.getElementById('seccion-login').style.display = 'block';
             document.getElementById('panel-admin').style.display = 'none';
             badge.textContent = "Modo Vecino";
             badge.style.background = "#7f8c8d";
@@ -326,38 +361,36 @@
         return sessionStorage.getItem('adminAutenticado') === 'true';
     }
 
-    // --- 4. DIRECTORIO DE CASAS ---
+    // --- DIRECTORIO ---
     function guardarVecino() {
         if (!esAdmin()) return;
         const idCasa = parseInt(document.getElementById('inputCasa').value);
-        const parqueadero = document.getElementById('inputParqueadero').value.trim();
-        const propietario = document.getElementById('inputPropietario').value.trim();
-        const telefono1 = document.getElementById('inputTelefono1').value.trim();
-        const arrendatario = document.getElementById('inputArrendatario').value.trim();
-        const telefono2 = document.getElementById('inputTelefono2').value.trim();
-        const estado = document.getElementById('selectEstadoCasa').value;
-        const habitantes = parseInt(document.getElementById('inputHabitantes').value) || 0;
-        const ninos = parseInt(document.getElementById('inputNinos').value) || 0;
-        const mascotas = parseInt(document.getElementById('inputMascotas').value) || 0;
-
         if (!idCasa || idCasa < 1 || idCasa > 112) {
-            alert("Ingrese un número de casa válido entre 1 y 112.");
+            alert("Ingrese un número de casa válido (1 - 112).");
             return;
         }
 
-        let index = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
-        const registro = { idCasa, parqueadero, propietario, telefono1, arrendatario, telefono2, estado, habitantes, ninos, mascotas };
+        const registro = {
+            idCasa,
+            parqueadero: document.getElementById('inputParqueadero').value.trim(),
+            propietario: document.getElementById('inputPropietario').value.trim(),
+            telefono1: document.getElementById('inputTelefono1').value.trim(),
+            arrendatario: document.getElementById('inputArrendatario').value.trim(),
+            telefono2: document.getElementById('inputTelefono2').value.trim(),
+            estado: document.getElementById('selectEstadoCasa').value,
+            habitantes: parseInt(document.getElementById('inputHabitantes').value) || 0,
+            ninos: parseInt(document.getElementById('inputNinos').value) || 0,
+            mascotas: parseInt(document.getElementById('inputMascotas').value) || 0
+        };
 
-        if (index >= 0) {
-            datosApp.vecinos[index] = registro;
-        } else {
-            datosApp.vecinos.push(registro);
-        }
+        let index = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
+        if (index >= 0) datosApp.vecinos[index] = registro;
+        else datosApp.vecinos.push(registro);
 
         guardarEnLocalStorage();
         renderizarVecinos();
         limpiarFormVecino();
-        alert("Casa guardada con éxito.");
+        alert("Registro de casa guardado.");
     }
 
     function limpiarFormVecino() {
@@ -403,28 +436,22 @@
         const tbody = document.getElementById('tablaVecinosBody');
         tbody.innerHTML = '';
         
-        // Rellenar automáticamente con las 112 casas si están vacías o mostrar las registradas
         datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
 
         if (datosApp.vecinos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;">No hay casas registradas en el directorio.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;">No hay viviendas registradas aún.</td></tr>`;
             return;
         }
 
         datosApp.vecinos.forEach(v => {
             const tr = document.createElement('tr');
-            
-            // Si es vecino, ocultar teléfonos con etiqueta protegida
-            let tel1 = esAdmin() ? (v.telefono1 || 'N/A') : '<span class="private-info">🔒 [Protegido]</span>';
-            let tel2 = esAdmin() ? (v.telefono2 || 'N/A') : '<span class="private-info">🔒 [Protegido]</span>';
+            let tel1 = esAdmin() ? (v.telefono1 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
+            let tel2 = esAdmin() ? (v.telefono2 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
 
-            let tdAcciones = '';
-            if (esAdmin()) {
-                tdAcciones = `<td>
-                    <button onclick="editarVecino(${v.idCasa})" class="warning" style="padding:4px 8px;font-size:0.8em;">Editar</button>
-                    <button onclick="eliminarVecino(${v.idCasa})" class="danger" style="padding:4px 8px;font-size:0.8em;">Eliminar</button>
-                </td>`;
-            }
+            let tdAcciones = esAdmin() ? `<td>
+                <button onclick="editarVecino(${v.idCasa})" class="btn-inline btn-warning">Editar</button>
+                <button onclick="eliminarVecino(${v.idCasa})" class="btn-inline btn-danger">Eliminar</button>
+            </td>` : '';
 
             tr.innerHTML = `
                 <td><strong>Casa ${v.idCasa}</strong></td>
@@ -443,7 +470,7 @@
         });
     }
 
-    // --- 5. REPORTAR NOVEDAD ---
+    // --- NOVEDADES ---
     function crearNovedad() {
         const casa = parseInt(document.getElementById('inputCasaReporte').value);
         const tipo = document.getElementById('selectTipoReporte').value;
@@ -451,7 +478,7 @@
         const descripcion = document.getElementById('textoNovedad').value.trim();
 
         if (!casa || casa < 1 || casa > 112 || !descripcion) {
-            alert("Por favor ingrese un número de casa válido (1 - 112) y la descripción del reporte.");
+            alert("Ingrese un número de casa válido (1 - 112) y detalle la novedad.");
             return;
         }
 
@@ -464,149 +491,3 @@
             estado: 'Pendiente',
             fecha: new Date().toLocaleString()
         });
-
-        guardarEnLocalStorage();
-        renderizarNovedades();
-        document.getElementById('inputCasaReporte').value = '';
-        document.getElementById('textoNovedad').value = '';
-        alert("¡Reporte enviado exitosamente a la administración!");
-    }
-
-    function atenderNovedad(id) {
-        if (!esAdmin()) return;
-        const n = datosApp.novedades.find(item => item.id === id);
-        if (n) {
-            n.estado = 'Atendido';
-            guardarEnLocalStorage();
-            renderizarNovedades();
-        }
-    }
-
-    function eliminarNovedad(id) {
-        if (!esAdmin()) return;
-        if (confirm("¿Está seguro de eliminar este reporte?")) {
-            datosApp.novedades = datosApp.novedades.filter(n => n.id !== id);
-            guardarEnLocalStorage();
-            renderizarNovedades();
-        }
-    }
-
-    function renderizarNovedades() {
-        const cont = document.getElementById('listaNovedadesContainer');
-        const formVecino = document.getElementById('form-reporte-vecino');
-        
-        // El formulario de reporte lo ven todos, pero la bandeja de reportes solo la ve el admin
-        if (!esAdmin()) {
-            cont.innerHTML = `<div class="card" style="background:#f9f9f9; text-align:center;"><p>🔒 Los reportes y requerimientos enviados son de acceso exclusivo para la revisión y gestión de la administración.</p></div>`;
-            return;
-        }
-
-        cont.innerHTML = '';
-        if (datosApp.novedades.length === 0) {
-            cont.innerHTML = '<p>No hay reportes de novedades registrados.</p>';
-            return;
-        }
-
-        datosApp.novedades.slice().reverse().forEach(n => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            const colorPrioridad = n.prioridad === 'Urgente' ? 'red' : 'green';
-            
-            let botones = '';
-            if (n.estado === 'Pendiente') {
-                botones += `<button onclick="atenderNovedad(${n.id})" class="success">Marcar como Atendido</button> `;
-            }
-            botones += `<button onclick="eliminarNovedad(${n.id})" class="danger">Eliminar Reporte</button>`;
-
-            div.innerHTML = `
-                <strong>Casa Nº ${n.casa}</strong> | Tipo: <em>${n.tipo}</em> | Prioridad: <span style="color:${colorPrioridad}; font-weight:bold;">${n.prioridad}</span> <span style="float:right; font-size:0.85em; color:#666;">${n.fecha}</span>
-                <p><strong>Estado:</strong> <span style="color:${n.estado==='Atendido'?'green':'orange'}">${n.estado}</span></p>
-                <p>${n.descripcion}</p>
-                <div style="margin-top: 10px;">${botones}</div>
-            `;
-            cont.appendChild(div);
-        });
-    }
-
-    // --- 6. CARTELERA ---
-    function guardarAnuncioCartelera() {
-        if (!esAdmin()) return;
-        const idEdit = document.getElementById('editIdCartelera').value;
-        const titulo = document.getElementById('inputTituloCartelera').value.trim();
-        const contenido = document.getElementById('inputContenidoCartelera').value.trim();
-        if (!titulo || !contenido) { alert("Complete los campos"); return; }
-
-        if (idEdit) {
-            let item = datosApp.cartelera.find(c => c.id == idEdit);
-            if(item) { item.titulo = titulo; item.contenido = contenido; }
-        } else {
-            datosApp.cartelera.push({ id: Date.now(), titulo, contenido, fecha: new Date().toLocaleDateString() });
-        }
-        guardarEnLocalStorage();
-        renderizarCartelera();
-        limpiarFormCartelera();
-    }
-    function editarCartelera(id) {
-        if (!esAdmin()) return;
-        const c = datosApp.cartelera.find(item => item.id === id);
-        if(c) {
-            document.getElementById('editIdCartelera').value = c.id;
-            document.getElementById('inputTituloCartelera').value = c.titulo;
-            document.getElementById('inputContenidoCartelera').value = c.contenido;
-            document.getElementById('titulo-form-cartelera').textContent = "Editar Anuncio";
-            document.getElementById('btnCancelarCartelera').style.display = 'inline-block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
-    function limpiarFormCartelera() {
-        document.getElementById('editIdCartelera').value = '';
-        document.getElementById('inputTituloCartelera').value = '';
-        document.getElementById('inputContenidoCartelera').value = '';
-        document.getElementById('titulo-form-cartelera').textContent = "Publicar Nuevo Anuncio";
-        document.getElementById('btnCancelarCartelera').style.display = 'none';
-    }
-    function eliminarCartelera(id) {
-        if (!esAdmin()) return;
-        datosApp.cartelera = datosApp.cartelera.filter(c => c.id !== id);
-        guardarEnLocalStorage();
-        renderizarCartelera();
-    }
-    function renderizarCartelera() {
-        const cont = document.getElementById('listaCarteleraContainer');
-        cont.innerHTML = '';
-        if (datosApp.cartelera.length === 0) { cont.innerHTML = '<p>No hay anuncios en la cartelera.</p>'; return; }
-        datosApp.cartelera.slice().reverse().forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            let botones = '';
-            if (esAdmin()) {
-                botones = `<button onclick="editarCartelera(${c.id})" class="warning" style="padding:4px 8px;">Editar</button> <button onclick="eliminarCartelera(${c.id})" class="danger" style="padding:4px 8px;">Eliminar</button>`;
-            }
-            div.innerHTML = `<h3>${c.titulo}</h3><small>${c.fecha}</small><p>${c.contenido}</p><div style="margin-top:10px;">${botones}</div>`;
-            cont.appendChild(div);
-        });
-    }
-
-    // --- 7. BENEFICIOS ---
-    function guardarBeneficio() {
-        if (!esAdmin()) return;
-        const idEdit = document.getElementById('editIdBeneficio').value;
-        const titulo = document.getElementById('inputTituloBeneficio').value.trim();
-        const contenido = document.getElementById('inputDescBeneficio').value.trim();
-        if (!titulo) return;
-
-        if (idEdit) {
-            let b = datosApp.beneficios.find(item => item.id == idEdit);
-            if(b) { b.titulo = titulo; b.contenido = contenido; }
-        } else {
-            datosApp.beneficios.push({ id: Date.now(), titulo, contenido });
-        }
-        guardarEnLocalStorage(); renderizarBeneficios(); limpiarFormBeneficio();
-    }
-    function editarBeneficio(id) {
-        if (!esAdmin()) return;
-        const b = datosApp.beneficios.find(i => i.id === id);
-        if(b) {
-            document.getElementById('editIdBeneficio').value = b.id;
-            document.getElementById('inputTituloBeneficio').value = b.titulo;
-            document.getElementById('inputDescBeneficio').value
