@@ -330,9 +330,15 @@
 
     let db = null;
     try {
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      db = firebase.database();
-    } catch(e) { console.warn("Firebase no activo:", e); }
+      if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+      }
+    } catch(e) { 
+      console.warn("Firebase no activo:", e); 
+    }
 
     let isAdmin = false;
     let dataCasas = {};
@@ -343,140 +349,167 @@
     let dataEmergencias = {};
 
     function switchTab(tabId, e) {
-      document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      
-      const targetTab = document.getElementById('tab-' + tabId);
-      if (targetTab) targetTab.classList.remove('hidden');
-      
-      if (e && e.currentTarget) {
-        e.currentTarget.classList.add('active');
-      } else {
-        // Fallback si se llama sin evento
-        const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (btn) btn.classList.add('active');
+      try {
+        document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        const targetTab = document.getElementById('tab-' + tabId);
+        if (targetTab) targetTab.classList.remove('hidden');
+        
+        if (e && e.currentTarget) {
+          e.currentTarget.classList.add('active');
+        } else {
+          const btns = document.querySelectorAll('.nav-btn');
+          btns.forEach(b => {
+            if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabId)) {
+              b.classList.add('active');
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Error al cambiar pestaña:", err);
       }
     }
 
     function toggleRole() {
-      if (!isAdmin) {
-        let pass = prompt("Ingrese la clave de Administrador:");
-        if (pass === "admin123") {
-          isAdmin = true;
-          document.getElementById('roleLabel').innerText = "Modo: Administrador";
-          document.getElementById('roleBtn').innerText = "Salir de Admin";
-          document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-        } else if (pass !== null) {
-          alert("Clave incorrecta.");
+      try {
+        if (!isAdmin) {
+          let pass = prompt("Ingrese la clave de Administrador:");
+          if (pass === "admin123") {
+            isAdmin = true;
+            document.getElementById('roleLabel').innerText = "Modo: Administrador";
+            document.getElementById('roleBtn').innerText = "Salir de Admin";
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+          } else if (pass !== null) {
+            alert("Clave incorrecta.");
+          }
+        } else {
+          isAdmin = false;
+          document.getElementById('roleLabel').innerText = "Modo: Vecino";
+          document.getElementById('roleBtn').innerText = "Ingresar como Admin";
+          document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
         }
-      } else {
-        isAdmin = false;
-        document.getElementById('roleLabel').innerText = "Modo: Vecino";
-        document.getElementById('roleBtn').innerText = "Ingresar como Admin";
-        document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+        renderCasas();
+        renderComunicadosHTML(dataComunicados);
+        renderBeneficiosHTML(dataBeneficios);
+        renderServiciosHTML(dataServicios);
+        renderEmergenciasHTML(dataEmergencias);
+        renderNovedadesHTML(dataNovedades);
+      } catch (err) {
+        console.error("Error en toggleRole:", err);
       }
-      renderCasas();
-      renderComunicadosHTML(dataComunicados);
-      renderBeneficiosHTML(dataBeneficios);
-      renderServiciosHTML(dataServicios);
-      renderEmergenciasHTML(dataEmergencias);
-      renderNovedadesHTML(dataNovedades);
     }
 
-    function showForm(id) { document.getElementById(id).classList.remove('hidden'); }
-    function hideForm(id) { document.getElementById(id).classList.add('hidden'); }
+    function showForm(id) { 
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden'); 
+    }
+    
+    function hideForm(id) { 
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden'); 
+    }
 
-    // --- CARGA DE DATOS ROBUSTA ---
+    // --- CARGA Y SINCRONIZACIÓN BLINDADA ---
 
     function initAllListeners() {
-      // 1. Comunicados
-      dataComunicados = JSON.parse(localStorage.getItem('conde2_comunicados') || '{}');
-      renderComunicadosHTML(dataComunicados);
-      if (db) {
-        db.ref('comunicados').on('value', snapshot => {
-          dataComunicados = snapshot.val() || {};
-          localStorage.setItem('conde2_comunicados', JSON.stringify(dataComunicados));
-          renderComunicadosHTML(dataComunicados);
-        }, err => console.error("Error Firebase comunicados:", err));
-      }
+      try {
+        // 1. Comunicados
+        dataComunicados = JSON.parse(localStorage.getItem('conde2_comunicados') || '{}');
+        renderComunicadosHTML(dataComunicados);
+        if (db) {
+          db.ref('comunicados').on('value', snapshot => {
+            dataComunicados = snapshot.val() || {};
+            localStorage.setItem('conde2_comunicados', JSON.stringify(dataComunicados));
+            renderComunicadosHTML(dataComunicados);
+          }, err => console.error("Firebase comunicados err:", err));
+        }
 
-      // 2. Beneficios
-      dataBeneficios = JSON.parse(localStorage.getItem('conde2_beneficios') || '{}');
-      renderBeneficiosHTML(dataBeneficios);
-      if (db) {
-        db.ref('beneficios').on('value', snapshot => {
-          dataBeneficios = snapshot.val() || {};
-          localStorage.setItem('conde2_beneficios', JSON.stringify(dataBeneficios));
-          renderBeneficiosHTML(dataBeneficios);
-        }, err => console.error("Error Firebase beneficios:", err));
-      }
+        // 2. Beneficios
+        dataBeneficios = JSON.parse(localStorage.getItem('conde2_beneficios') || '{}');
+        renderBeneficiosHTML(dataBeneficios);
+        if (db) {
+          db.ref('beneficios').on('value', snapshot => {
+            dataBeneficios = snapshot.val() || {};
+            localStorage.setItem('conde2_beneficios', JSON.stringify(dataBeneficios));
+            renderBeneficiosHTML(dataBeneficios);
+          }, err => console.error("Firebase beneficios err:", err));
+        }
 
-      // 3. Casas
-      dataCasas = JSON.parse(localStorage.getItem('conde2_casas') || '{}');
-      renderCasas();
-      if (db) {
-        db.ref('casas').on('value', snapshot => {
-          dataCasas = snapshot.val() || {};
-          localStorage.setItem('conde2_casas', JSON.stringify(dataCasas));
-          renderCasas();
-        }, err => console.error("Error Firebase casas:", err));
-      }
+        // 3. Casas
+        dataCasas = JSON.parse(localStorage.getItem('conde2_casas') || '{}');
+        renderCasas();
+        if (db) {
+          db.ref('casas').on('value', snapshot => {
+            dataCasas = snapshot.val() || {};
+            localStorage.setItem('conde2_casas', JSON.stringify(dataCasas));
+            renderCasas();
+          }, err => console.error("Firebase casas err:", err));
+        }
 
-      // 4. Novedades
-      dataNovedades = JSON.parse(localStorage.getItem('conde2_novedades') || '{}');
-      renderNovedadesHTML(dataNovedades);
-      if (db) {
-        db.ref('novedades').on('value', snapshot => {
-          dataNovedades = snapshot.val() || {};
-          localStorage.setItem('conde2_novedades', JSON.stringify(dataNovedades));
-          renderNovedadesHTML(dataNovedades);
-        }, err => console.error("Error Firebase novedades:", err));
-      }
+        // 4. Novedades
+        dataNovedades = JSON.parse(localStorage.getItem('conde2_novedades') || '{}');
+        renderNovedadesHTML(dataNovedades);
+        if (db) {
+          db.ref('novedades').on('value', snapshot => {
+            dataNovedades = snapshot.val() || {};
+            localStorage.setItem('conde2_novedades', JSON.stringify(dataNovedades));
+            renderNovedadesHTML(dataNovedades);
+          }, err => console.error("Firebase novedades err:", err));
+        }
 
-      // 5. Servicios
-      dataServicios = JSON.parse(localStorage.getItem('conde2_servicios') || '{}');
-      renderServiciosHTML(dataServicios);
-      if (db) {
-        db.ref('servicios').on('value', snapshot => {
-          dataServicios = snapshot.val() || {};
-          localStorage.setItem('conde2_servicios', JSON.stringify(dataServicios));
-          renderServiciosHTML(dataServicios);
-        }, err => console.error("Error Firebase servicios:", err));
-      }
+        // 5. Servicios
+        dataServicios = JSON.parse(localStorage.getItem('conde2_servicios') || '{}');
+        renderServiciosHTML(dataServicios);
+        if (db) {
+          db.ref('servicios').on('value', snapshot => {
+            dataServicios = snapshot.val() || {};
+            localStorage.setItem('conde2_servicios', JSON.stringify(dataServicios));
+            renderServiciosHTML(dataServicios);
+          }, err => console.error("Firebase servicios err:", err));
+        }
 
-      // 6. Emergencias
-      dataEmergencias = JSON.parse(localStorage.getItem('conde2_emergencias') || '{}');
-      renderEmergenciasHTML(dataEmergencias);
-      if (db) {
-        db.ref('emergencias').on('value', snapshot => {
-          dataEmergencias = snapshot.val() || {};
-          localStorage.setItem('conde2_emergencias', JSON.stringify(dataEmergencias));
-          renderEmergenciasHTML(dataEmergencias);
-        }, err => console.error("Error Firebase emergencias:", err));
-      }
+        // 6. Emergencias
+        dataEmergencias = JSON.parse(localStorage.getItem('conde2_emergencias') || '{}');
+        renderEmergenciasHTML(dataEmergencias);
+        if (db) {
+          db.ref('emergencias').on('value', snapshot => {
+            dataEmergencias = snapshot.val() || {};
+            localStorage.setItem('conde2_emergencias', JSON.stringify(dataEmergencias));
+            renderEmergenciasHTML(dataEmergencias);
+          }, err => console.error("Firebase emergencias err:", err));
+        }
 
-      // 7. Reglamento
-      const cachedReg = localStorage.getItem('conde2_reglamento');
-      if (cachedReg) {
-        document.getElementById('reglamento-texto').innerText = cachedReg;
-        document.getElementById('reg-texto-input').value = cachedReg;
-      }
-      if (db) {
-        db.ref('reglamento').on('value', snapshot => {
-          const val = snapshot.val();
-          if (val && val.texto) {
-            document.getElementById('reglamento-texto').innerText = val.texto;
-            document.getElementById('reg-texto-input').value = val.texto;
-            localStorage.setItem('conde2_reglamento', val.texto);
-          }
-        }, err => console.error("Error Firebase reglamento:", err));
+        // 7. Reglamento
+        const cachedReg = localStorage.getItem('conde2_reglamento');
+        if (cachedReg) {
+          const regBox = document.getElementById('reglamento-texto');
+          const regInput = document.getElementById('reg-texto-input');
+          if (regBox) regBox.innerText = cachedReg;
+          if (regInput) regInput.value = cachedReg;
+        }
+        if (db) {
+          db.ref('reglamento').on('value', snapshot => {
+            const val = snapshot.val();
+            if (val && val.texto) {
+              const regBox = document.getElementById('reglamento-texto');
+              const regInput = document.getElementById('reg-texto-input');
+              if (regBox) regBox.innerText = val.texto;
+              if (regInput) regInput.value = val.texto;
+              localStorage.setItem('conde2_reglamento', val.texto);
+            }
+          }, err => console.error("Firebase reglamento err:", err));
+        }
+      } catch (e) {
+        console.error("Error general en initAllListeners:", e);
       }
     }
 
-    // --- RENDERIZADO ---
+    // --- RENDERIZADO SEGURO ---
 
     function renderComunicadosHTML(val) {
       const container = document.getElementById('list-comunicados');
+      if (!container) return;
       if (!val || Object.keys(val).length === 0) {
         container.innerHTML = "<p style='color:var(--text-muted);'>No hay comunicados publicados.</p>";
         return;
@@ -497,6 +530,7 @@
 
     function renderBeneficiosHTML(val) {
       const container = document.getElementById('list-beneficios');
+      if (!container) return;
       if (!val || Object.keys(val).length === 0) {
         container.innerHTML = "<p style='color:var(--text-muted);'>No hay beneficios publicados.</p>";
         return;
@@ -568,6 +602,7 @@
 
     function renderNovedadesHTML(val) {
       const container = document.getElementById('list-novedades');
+      if (!container) return;
       if (!val || Object.keys(val).length === 0) {
         container.innerHTML = "<p style='color:var(--text-muted);'>No hay reportes registrados.</p>";
         return;
@@ -602,6 +637,7 @@
 
     function renderServiciosHTML(val) {
       const container = document.getElementById('list-servicios');
+      if (!container) return;
       if (!val || Object.keys(val).length === 0) {
         container.innerHTML = "<p style='color:var(--text-muted);'>No hay servicios registrados.</p>";
         return;
@@ -623,6 +659,7 @@
 
     function renderEmergenciasHTML(val) {
       const container = document.getElementById('list-emergencias');
+      if (!container) return;
       if (!val || Object.keys(val).length === 0) {
         container.innerHTML = "<p style='color:var(--text-muted);'>No hay contactos de emergencia.</p>";
         return;
@@ -807,10 +844,10 @@
       }
     }
 
-    // Inicialización inmediata al cargar
+    // Arranque seguro garantizado
     window.addEventListener('DOMContentLoaded', () => {
       initAllListeners();
     });
   </script>
 </body>
-</html>
+</html> 
