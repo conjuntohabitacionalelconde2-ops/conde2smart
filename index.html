@@ -11,23 +11,22 @@
 
     <style>
         :root {
-            --primary: #0f172a;
-            --primary-light: #1e293b;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --bg-body: #f1f5f9;
+            --primary: #c2410c; /* Naranja oscuro / Terracota */
+            --primary-hover: #9a3412;
+            --accent: #f97316; /* Naranja vibrante */
+            --bg-body: #fff7ed; /* Fondo crema muy suave */
             --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
-            --success: #059669;
+            --text-main: #292524;
+            --text-muted: #78716c;
+            --border: #fed7aa;
+            --success: #16a34a;
             --danger: #dc2626;
             --warning: #d97706;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; padding: 16px; }
-        .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.08); }
+        .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(194, 65, 12, 0.08), 0 8px 10px -6px rgba(194, 65, 12, 0.05); border: 1px solid #ffedd5; }
         
         /* Alerta Flotante */
         #alerta-flotante {
@@ -35,11 +34,11 @@
             position: fixed;
             top: 24px;
             right: 24px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #f97316, #c2410c);
             color: white;
             padding: 14px 22px;
             border-radius: 10px;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3);
             z-index: 1000;
             font-weight: 600;
             animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -55,37 +54,37 @@
         .badge-admin { display: inline-block; padding: 6px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; background: var(--text-muted); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
         .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: var(--primary); padding: 10px; border-radius: 12px; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        .nav-tabs button { flex: 1 1 auto; min-width: 120px; background: transparent; color: #94a3b8; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; transition: all 0.25s ease; }
-        .nav-tabs button:hover { color: white; background: rgba(255,255,255,0.08); }
-        .nav-tabs button.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); }
+        .nav-tabs button { flex: 1 1 auto; min-width: 120px; background: transparent; color: #ffedd5; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; transition: all 0.25s ease; }
+        .nav-tabs button:hover { color: white; background: rgba(255,255,255,0.15); }
+        .nav-tabs button.active { background: #ffffff; color: var(--primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); font-weight: 700; }
 
-        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.2s ease; }
-        .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
+        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(194, 65, 12, 0.03); transition: all 0.2s ease; }
+        .card:hover { box-shadow: 0 6px 16px rgba(194, 65, 12, 0.08); }
         .card h2, .card h3, .card h4 { color: var(--primary); margin-bottom: 14px; font-weight: 700; }
         
-        input, select, textarea { width: 100%; padding: 12px 14px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #f8fafc; color: var(--primary); transition: all 0.2s; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        input, select, textarea { width: 100%; padding: 12px 14px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fffaf5; color: var(--text-main); transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); }
         textarea { min-height: 100px; resize: vertical; }
 
         button.btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         button.btn-inline { width: auto; padding: 7px 14px; font-size: 0.85rem; margin-right: 6px; margin-top: 6px; border-radius: 6px; font-weight: 600; }
         
         .btn-success { background-color: var(--success); color: white; }
-        .btn-success:hover { background-color: #047857; }
+        .btn-success:hover { background-color: #15803d; }
         .btn-danger { background-color: var(--danger); color: white; }
         .btn-danger:hover { background-color: #b91c1c; }
         .btn-warning { background-color: var(--warning); color: white; }
         .btn-warning:hover { background-color: #b45309; }
         .btn-secondary { background-color: var(--text-muted); color: white; }
-        .btn-secondary:hover { background-color: #475569; }
+        .btn-secondary:hover { background-color: #57534e; }
 
         .flex-row { display: flex; flex-direction: column; gap: 14px; }
 
         .table-container { width: 100%; overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
         th, td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
-        th { background-color: #f1f5f9; color: var(--primary); font-weight: 700; }
-        tr:nth-child(even) { background-color: #f8fafc; }
+        th { background-color: #ffedd5; color: var(--primary); font-weight: 700; }
+        tr:nth-child(even) { background-color: #fffaf5; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
@@ -137,7 +136,7 @@
         </div>
 
         <div id="panel-admin" style="display: none;">
-            <div class="card" style="background: #eff6ff; border-color: #bfdbfe;">
+            <div class="card" style="background: #fff7ed; border-color: #fed7aa;">
                 <h3>Panel de Control Activo</h3>
                 <p style="font-size:0.9rem; margin-bottom:14px;">Tiene privilegios completos. Los cambios se sincronizarán en tiempo real para toda la comunidad.</p>
                 <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
@@ -319,3 +318,184 @@
         <h2>Reglamento Interno</h2>
         <div id="admin-controls-reglamento" style="display: none;" class="card">
             <h4 id="titulo-form-reglamento">Registrar / Editar Norma</h4>
+            <input type="hidden" id="editIdReglamento" value="">
+            <input type="text" id="inputTituloReglamento" placeholder="Título de la norma">
+            <textarea id="inputDescReglamento" placeholder="Detalles de la norma..."></textarea>
+            <button type="button" onclick="guardarReglamento()" class="btn btn-success btn-responsive">Guardar Norma</button>
+            <button type="button" onclick="limpiarFormReglamento()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarReglamento">Cancelar</button>
+        </div>
+        <div id="listaReglamentosContainer"></div>
+    </div>
+</div>
+
+<script>
+    // --- 1. CONFIGURACIÓN DE FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCkJgHVOizyRxAcIeWWjoLW7VzlLGcizPk",
+        authDomain: "el-conde-2.firebaseapp.com",
+        databaseURL: "https://el-conde-2-default-rtdb.firebaseio.com",
+        projectId: "el-conde-2",
+        storageBucket: "el-conde-2.appspot.com",
+        messagingSenderId: "997046551123",
+        appId: "1:997046551123:web:18214bac891eaf4fd4bca6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let datosApp = {
+        vecinos: [],
+        novedades: [],
+        cartelera: [
+            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 Viviendas).", fecha: "2026-10-13" }
+        ],
+        beneficios: [
+            { id: 1, titulo: "Cancha Deportiva", contenido: "Reservas habilitadas mediante administración." }
+        ],
+        servicios: [
+            { id: 1, titulo: "Recolección de Basura", contenido: "Lunes, miércoles y viernes a primera hora." }
+        ],
+        emergencias: [
+            { id: 1, nombre: "ECU 911", numero: "911" },
+            { id: 2, nombre: "UPC Guamaní", numero: "0999999999" }
+        ],
+        reglamento: [
+            { id: 1, titulo: "Mascotas", contenido: "Uso obligatorio de correa y recolección de heces en áreas comunes." }
+        ]
+    };
+
+    let primerCarga = true;
+
+    db.ref('elCondeData').on('value', (snapshot) => {
+        const dataRemota = snapshot.val();
+        if (dataRemota) {
+            datosApp = dataRemota;
+            if(!datosApp.vecinos) datosApp.vecinos = [];
+            if(!datosApp.novedades) datosApp.novedades = [];
+            if(!datosApp.cartelera) datosApp.cartelera = [];
+            if(!datosApp.beneficios) datosApp.beneficios = [];
+            if(!datosApp.servicios) datosApp.servicios = [];
+            if(!datosApp.emergencias) datosApp.emergencias = [];
+            if(!datosApp.reglamento) datosApp.reglamento = [];
+        } else {
+            sincronizarConNube();
+        }
+
+        if (!primerCarga) {
+            mostrarAlertaFlotante();
+        }
+        primerCarga = false;
+
+        renderizarTodo();
+    });
+
+    function mostrarAlertaFlotante() {
+        const alerta = document.getElementById('alerta-flotante');
+        alerta.style.display = 'block';
+        setTimeout(() => {
+            alerta.style.display = 'none';
+        }, 4000);
+    }
+
+    function sincronizarConNube() {
+        db.ref('elCondeData').set(datosApp);
+    }
+
+    // --- 2. NAVEGACIÓN ---
+    function cambiarPestaña(nombreTab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
+
+        document.getElementById('tab-' + nombreTab).classList.add('active');
+        document.getElementById('btn-' + nombreTab).classList.add('active');
+        renderizarTodo();
+    }
+
+    // --- 3. AUTENTICACIÓN ADMIN ROBUSTA ---
+    function obtenerPasswordAdmin() {
+        return localStorage.getItem('adminPasswordDirecta') || 'admin123';
+    }
+
+    function intentarLoginAdmin() {
+        const passIngresada = document.getElementById('inputPasswordAdmin').value.trim();
+        const passwordCorrecta = obtenerPasswordAdmin();
+        
+        if (passIngresada === passwordCorrecta) {
+            sessionStorage.setItem('adminAutenticado', 'true');
+            document.getElementById('inputPasswordAdmin').value = '';
+            alert("¡Acceso concedido como Administrador!");
+            verificarSesion();
+        } else {
+            alert("Contraseña incorrecta. (Por defecto es: admin123)");
+        }
+    }
+
+    function verificarSesion() {
+        const esAuth = sessionStorage.getItem('adminAutenticado') === 'true';
+        const badge = document.getElementById('label-estado-rol');
+        const thAccionesDir = document.getElementById('th-acciones-dir');
+
+        if (esAuth) {
+            document.getElementById('seccion-login').style.display = 'none';
+            document.getElementById('panel-admin').style.display = 'block';
+            badge.textContent = "Modo Administrador";
+            badge.style.background = "#c2410c";
+            document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'block');
+            if(thAccionesDir) thAccionesDir.style.display = 'table-cell';
+        } else {
+            document.getElementById('seccion-login').style.display = 'block';
+            document.getElementById('panel-admin').style.display = 'none';
+            badge.textContent = "Modo Vecino";
+            badge.style.background = "#78716c";
+            document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'none');
+            if(thAccionesDir) thAccionesDir.style.display = 'none';
+        }
+        renderizarTodo();
+    }
+
+    function cerrarSesionAdmin() {
+        sessionStorage.removeItem('adminAutenticado');
+        verificarSesion();
+    }
+
+    function esAdmin() {
+        return sessionStorage.getItem('adminAutenticado') === 'true';
+    }
+
+    // --- 4. DIRECTORIO DE CASAS ---
+    function guardarVecino() {
+        if (!esAdmin()) return;
+        const idCasa = parseInt(document.getElementById('inputCasa').value);
+        if (!idCasa || idCasa < 1 || idCasa > 112) {
+            alert("Ingrese un número de casa válido (1 - 112).");
+            return;
+        }
+
+        const registro = {
+            idCasa,
+            parqueadero: document.getElementById('inputParqueadero').value.trim(),
+            propietario: document.getElementById('inputPropietario').value.trim(),
+            telefono1: document.getElementById('inputTelefono1').value.trim(),
+            arrendatario: document.getElementById('inputArrendatario').value.trim(),
+            telefono2: document.getElementById('inputTelefono2').value.trim(),
+            estado: document.getElementById('selectEstadoCasa').value,
+            habitantes: parseInt(document.getElementById('inputHabitantes').value) || 0,
+            ninos: parseInt(document.getElementById('inputNinos').value) || 0,
+            mascotas: parseInt(document.getElementById('inputMascotas').value) || 0
+        };
+
+        if(!datosApp.vecinos) datosApp.vecinos = [];
+        let index = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
+        if (index >= 0) datosApp.vecinos[index] = registro;
+        else datosApp.vecinos.push(registro);
+
+        sincronizarConNube();
+        limpiarFormVecino();
+        alert("Registro de casa guardado en la nube.");
+    }
+
+    function limpiarFormVecino() {
+        document.getElementById('inputCasa').value = '';
+        document.getElementById('inputParqueadero').value = '';
+        document.getElementById('inputPropietario').value = '';
+        document.getElementById('input
