@@ -33,7 +33,7 @@
     <!-- PANTALLA DE LOGIN DE ADMINISTRADOR -->
     <div id="seccion-login" class="card">
         <h3>Acceso de Administrador</h3>
-        <p>Ingrese la contraseña de administrador para gestionar vecinos y novedades.</p>
+        <p>Ingrese la contraseña de administrador para gestionar vecinos y novedades (Contraseña inicial: <strong>admin123</strong>)</p>
         <input type="password" id="inputPasswordAdmin" placeholder="Contraseña de administrador">
         <button onclick="loginAdministrador()" class="success">Ingresar</button>
     </div>
@@ -121,28 +121,16 @@
         localStorage.setItem('elCondeData', JSON.stringify(datosApp));
     }
 
-    // --- 2. SEGURIDAD Y HASH DE CONTRASEÑA ---
-    async function generarHash(password) {
-        const msgBuffer = new TextEncoder().encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    // --- 2. SEGURIDAD Y CONTRASEÑA DIRECTA ---
+    function obtenerPasswordAdmin() {
+        return localStorage.getItem('adminPasswordDirecta') || 'admin123';
     }
 
-    async function inicializarAdmin() {
-        if (!localStorage.getItem('adminHashPassword')) {
-            const passwordInicial = "AdminElConde2026*"; // Contraseña por defecto inicial
-            const hashInicial = await generarHash(passwordInicial);
-            localStorage.setItem('adminHashPassword', hashInicial);
-        }
-    }
-
-    async function loginAdministrador() {
+    function loginAdministrador() {
         const passwordIngresada = document.getElementById('inputPasswordAdmin').value;
-        const hashIngresado = await generarHash(passwordIngresada);
-        const hashGuardado = localStorage.getItem('adminHashPassword');
+        const passwordReal = obtenerPasswordAdmin();
 
-        if (hashIngresado === hashGuardado) {
+        if (passwordIngresada === passwordReal) {
             sessionStorage.setItem('adminAutenticado', 'true');
             alert("¡Bienvenido, Administrador!");
             verificarSesion();
@@ -173,10 +161,10 @@
         return sessionStorage.getItem('adminAutenticado') === 'true';
     }
 
-    // --- 3. GESTIÓN DE VECINOS (CREAR, GUARDAR, BLOQUEAR, ELIMINAR) ---
+    // --- 3. GESTIÓN DE VECINOS ---
     function guardarVecino() {
         if (!esAdmin()) {
-            alert("Acceso denegado. Solo el administrador puede registrar o modificar vecinos.");
+            alert("Acceso denegado.");
             return;
         }
 
@@ -186,7 +174,7 @@
         const tieneAcceso = document.getElementById('selectAcceso').value === 'true';
 
         if (!idCasa || idCasa < 1 || idCasa > 112) {
-            alert("Por favor, ingrese un número de casa válido entre 1 y 112.");
+            alert("Ingrese un número de casa válido entre 1 y 112.");
             return;
         }
         if (!nombre) {
@@ -196,17 +184,14 @@
 
         let index = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
         if (index >= 0) {
-            // Actualizar
             datosApp.vecinos[index] = { idCasa, nombre, telefono, tieneAcceso };
         } else {
-            // Crear nuevo
             datosApp.vecinos.push({ idCasa, nombre, telefono, tieneAcceso });
         }
 
         guardarEnLocalStorage();
         renderizarVecinos();
 
-        // Limpiar campos
         document.getElementById('inputCasa').value = '';
         document.getElementById('inputNombreVecino').value = '';
         document.getElementById('inputTelefonoVecino').value = '';
@@ -214,11 +199,7 @@
     }
 
     function eliminarVecino(idCasa) {
-        if (!esAdmin()) {
-            alert("Acceso denegado.");
-            return;
-        }
-
+        if (!esAdmin()) return;
         if (confirm(`¿Está seguro de eliminar el registro de la casa ${idCasa}?`)) {
             datosApp.vecinos = datosApp.vecinos.filter(v => v.idCasa !== idCasa);
             guardarEnLocalStorage();
@@ -235,7 +216,6 @@
             return;
         }
 
-        // Ordenar por número de casa
         datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
 
         datosApp.vecinos.forEach(v => {
@@ -274,17 +254,17 @@
         }
     }
 
-    // --- 4. MÓDULO DE NOVEDADES Y REPORTES ---
+    // --- 4. MÓDULO DE NOVEDADES ---
     function crearNovedad() {
         const casaReporte = parseInt(document.getElementById('inputCasaReporte').value);
         const descripcion = document.getElementById('textoNovedad').value.trim();
 
         if (!casaReporte || casaReporte < 1 || casaReporte > 112) {
-            alert("Ingrese un número de casa válido (1 a 112) para el reporte.");
+            alert("Ingrese un número de casa válido (1 a 112).");
             return;
         }
         if (!descripcion) {
-            alert("La descripción de la novedad no puede estar vacía.");
+            alert("La descripción no puede estar vacía.");
             return;
         }
 
@@ -316,11 +296,8 @@
     }
 
     function eliminarNovedad(idNovedad) {
-        if (!esAdmin()) {
-            alert("Acceso denegado.");
-            return;
-        }
-        if (confirm("¿Está seguro de eliminar este reporte de novedad?")) {
+        if (!esAdmin()) return;
+        if (confirm("¿Está seguro de eliminar este reporte?")) {
             datosApp.novedades = datosApp.novedades.filter(n => n.id !== idNovedad);
             guardarEnLocalStorage();
             renderizarNovedades();
@@ -361,8 +338,8 @@
         });
     }
 
-    // --- 5. CAMBIAR CONTRASEÑA DE ADMINISTRADOR ---
-    async function cambiarPasswordAdmin() {
+    // --- 5. CAMBIAR CONTRASEÑA ---
+    function cambiarPasswordAdmin() {
         if (!esAdmin()) return;
 
         const passwordActual = document.getElementById('inputPasswordActual').value;
@@ -370,7 +347,7 @@
         const passwordConfirmar = document.getElementById('inputPasswordConfirmar').value;
 
         if (!passwordActual || !passwordNueva || !passwordConfirmar) {
-            alert("Por favor, complete todos los campos de contraseña.");
+            alert("Complete todos los campos de contraseña.");
             return;
         }
 
@@ -384,12 +361,24 @@
             return;
         }
 
-        const hashActualIngresado = await generarHash(passwordActual);
-        const hashGuardado = localStorage.getItem('adminHashPassword');
-
-        if (hashActualIngresado !== hashGuardado) {
+        if (passwordActual !== obtenerPasswordAdmin()) {
             alert("La contraseña actual es incorrecta.");
             return;
         }
 
-        const nuevoHash = await generar
+        localStorage.setItem('adminPasswordDirecta', passwordNueva);
+        alert("¡Contraseña actualizada exitosamente! Su sesión se cerrará.");
+        
+        document.getElementById('inputPasswordActual').value = '';
+        document.getElementById('inputPasswordNueva').value = '';
+        document.getElementById('inputPasswordConfirmar').value = '';
+        cerrarSesionAdmin();
+    }
+
+    window.onload = function() {
+        verificarSesion();
+    };
+</script>
+
+</body>
+</html>
