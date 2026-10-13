@@ -11,80 +11,85 @@
 
     <style>
         :root {
-            --primary: #1e3a8a;
-            --primary-hover: #1e40af;
-            --accent: #f59e0b;
-            --bg-main: #f8fafc;
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg-body: #f1f5f9;
             --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; padding: 12px; }
-        .container { max-width: 1100px; margin: 0 auto; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; padding: 16px; }
+        .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.08); }
         
-        /* Banner de Alerta Flotante en Tiempo Real */
+        /* Alerta Flotante */
         #alerta-flotante {
             display: none;
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            top: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
-            padding: 14px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 14px 22px;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
             z-index: 1000;
-            font-weight: bold;
-            animation: bounceIn 0.5s ease;
+            font-weight: 600;
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes bounceIn {
-            0% { transform: translateY(-20px); opacity: 0; }
+        @keyframes slideIn {
+            0% { transform: translateY(-30px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
 
-        .header { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; }
-        .header-titles h1 { font-size: 1.6rem; color: var(--primary); font-weight: 800; }
-        .header-titles p { font-size: 0.95rem; color: var(--text-muted); }
-        .badge-admin { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: white; background: var(--text-muted); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .header { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .header-titles h1 { font-size: 1.8rem; color: var(--primary); font-weight: 800; letter-spacing: -0.025em; }
+        .header-titles p { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
+        .badge-admin { display: inline-block; padding: 6px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; background: var(--text-muted); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        .nav-tabs { display: flex; flex-wrap: wrap; gap: 6px; background: var(--primary); padding: 10px; border-radius: 10px; margin-bottom: 25px; }
-        .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 12px; cursor: pointer; border-radius: 6px; font-size: 0.88rem; font-weight: 600; text-align: center; transition: all 0.2s; }
-        .nav-tabs button:hover, .nav-tabs button.active { background: white; color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: var(--primary); padding: 10px; border-radius: 12px; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .nav-tabs button { flex: 1 1 auto; min-width: 120px; background: transparent; color: #94a3b8; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; transition: all 0.25s ease; }
+        .nav-tabs button:hover { color: white; background: rgba(255,255,255,0.08); }
+        .nav-tabs button.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); }
 
-        .card { background: #fff; border: 1px solid var(--border); padding: 18px; margin-bottom: 18px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s; }
-        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .card h2, .card h3, .card h4 { color: var(--primary); margin-bottom: 12px; font-weight: 700; }
+        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.2s ease; }
+        .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
+        .card h2, .card h3, .card h4 { color: var(--primary); margin-bottom: 14px; font-weight: 700; }
         
-        input, select, textarea { width: 100%; padding: 11px; margin: 6px 0 14px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fff; transition: border-color 0.2s; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
-        textarea { min-height: 90px; resize: vertical; }
+        input, select, textarea { width: 100%; padding: 12px 14px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #f8fafc; color: var(--primary); transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        textarea { min-height: 100px; resize: vertical; }
 
-        button.btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: filter 0.2s; margin-top: 5px; }
-        button.btn-inline { width: auto; padding: 6px 12px; font-size: 0.85rem; margin-right: 6px; margin-top: 5px; border-radius: 6px; }
+        button.btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        button.btn-inline { width: auto; padding: 7px 14px; font-size: 0.85rem; margin-right: 6px; margin-top: 6px; border-radius: 6px; font-weight: 600; }
         
         .btn-success { background-color: var(--success); color: white; }
-        .btn-success:hover { filter: brightness(0.9); }
+        .btn-success:hover { background-color: #047857; }
         .btn-danger { background-color: var(--danger); color: white; }
-        .btn-danger:hover { filter: brightness(0.9); }
+        .btn-danger:hover { background-color: #b91c1c; }
         .btn-warning { background-color: var(--warning); color: white; }
-        .btn-warning:hover { filter: brightness(0.9); }
+        .btn-warning:hover { background-color: #b45309; }
         .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-secondary:hover { background-color: #475569; }
 
-        .flex-row { display: flex; flex-direction: column; gap: 12px; }
+        .flex-row { display: flex; flex-direction: column; gap: 14px; }
 
-        .table-container { width: 100%; overflow-x: auto; margin-top: 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
-        th, td { border: 1px solid var(--border); padding: 11px; text-align: left; }
+        th, td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
         th { background-color: #f1f5f9; color: var(--primary); font-weight: 700; }
+        tr:nth-child(even) { background-color: #f8fafc; }
         
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .private-info { color: var(--text-muted); font-style: italic; font-size: 0.85rem; }
 
         @media (min-width: 768px) {
@@ -126,7 +131,7 @@
     <div id="tab-inicio" class="tab-content active">
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <p style="margin-bottom:10px; font-size:0.9rem;">Ingrese la contraseña de administrador (Por defecto: <strong>admin123</strong>):</p>
+            <p style="margin-bottom:12px; font-size:0.9rem;">Ingrese la contraseña de administrador (Por defecto: <strong>admin123</strong>):</p>
             <input type="password" id="inputPasswordAdmin" autocomplete="current-password" placeholder="Contraseña de administrador">
             <button type="button" onclick="intentarLoginAdmin()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
         </div>
@@ -134,7 +139,7 @@
         <div id="panel-admin" style="display: none;">
             <div class="card" style="background: #eff6ff; border-color: #bfdbfe;">
                 <h3>Panel de Control Activo</h3>
-                <p style="font-size:0.9rem; margin-bottom:12px;">Tiene privilegios completos. Los cambios se sincronizarán en línea para toda la comunidad.</p>
+                <p style="font-size:0.9rem; margin-bottom:14px;">Tiene privilegios completos. Los cambios se sincronizarán en tiempo real para toda la comunidad.</p>
                 <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
             </div>
 
@@ -157,4 +162,160 @@
             <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
             <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
             <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Guardar / Publicar</button>
-            <button type
+            <button type="button" onclick="limpiarFormCartelera()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarCartelera">Cancelar</button>
+        </div>
+        <div id="listaCarteleraContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 3: REPORTAR NOVEDAD Y CONSULTAR ESTADO -->
+    <div id="tab-reportar" class="tab-content">
+        <h2>Reportes y Requerimientos</h2>
+        <div class="card">
+            <h4>Formulario de Reporte</h4>
+            <div class="flex-row">
+                <div>
+                    <label>Número de Casa (1 - 112):</label>
+                    <input type="number" id="inputCasaReporte" placeholder="Ej. 45" min="1" max="112">
+                </div>
+                <div>
+                    <label>Tipo de Requerimiento:</label>
+                    <select id="selectTipoReporte">
+                        <option value="Daño / Afectación">Daño / Afectación</option>
+                        <option value="Jardinería / Mantenimiento">Jardinería / Mantenimiento</option>
+                        <option value="Convivencia / Otro">Convivencia / Otro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div>
+                    <label>Prioridad:</label>
+                    <select id="selectPrioridadReporte">
+                        <option value="Normal">Normal</option>
+                        <option value="Urgente">Urgente 🚨</option>
+                    </select>
+                </div>
+            </div>
+            <label>Descripción del Problema:</label>
+            <textarea id="textoNovedad" placeholder="Describa el requerimiento o daño..."></textarea>
+            <button type="button" onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
+        </div>
+
+        <!-- Consulta de Estado para Vecinos -->
+        <div class="card" style="background: #fffbeb; border-color: #fde68a;">
+            <h4>🔍 Consultar Estado de mi Reporte</h4>
+            <p style="font-size: 0.9rem; margin-bottom: 10px;">Ingrese su número de casa para verificar si la administración ya atendió su novedad y leyó su respuesta:</p>
+            <div class="flex-row">
+                <input type="number" id="inputCasaConsulta" placeholder="Nº de Casa" min="1" max="112">
+                <button type="button" onclick="consultarEstadoVecino()" class="btn btn-warning btn-responsive" style="margin-top:6px;">Consultar Mis Reportes</button>
+            </div>
+            <div id="resultadoConsultaVecino" style="margin-top: 14px;"></div>
+        </div>
+
+        <h3>Bandeja de Gestión (Acceso Exclusivo Administrador)</h3>
+        <div id="listaNovedadesContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 4: BENEFICIOS -->
+    <div id="tab-beneficios" class="tab-content">
+        <h2>Beneficios para la Comunidad</h2>
+        <div id="admin-controls-beneficios" style="display: none;" class="card">
+            <h4 id="titulo-form-beneficio">Registrar / Editar Beneficio</h4>
+            <input type="hidden" id="editIdBeneficio" value="">
+            <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio">
+            <textarea id="inputDescBeneficio" placeholder="Detalles del beneficio..."></textarea>
+            <button type="button" onclick="guardarBeneficio()" class="btn btn-success btn-responsive">Guardar Beneficio</button>
+            <button type="button" onclick="limpiarFormBeneficio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarBeneficio">Cancelar</button>
+        </div>
+        <div id="listaBeneficiosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 5: DIRECTORIO CASAS -->
+    <div id="tab-directorio" class="tab-content">
+        <h2>Directorio de Viviendas (112 Casas)</h2>
+        <div id="admin-controls-vecinos" style="display: none;" class="card">
+            <h4 id="titulo-form-vecino">Registrar / Actualizar Datos de Casa</h4>
+            <div class="flex-row">
+                <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
+                <input type="text" id="inputParqueadero" placeholder="Parqueadero (Ej. P-12)">
+            </div>
+            <div class="flex-row">
+                <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
+                <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado admin)">
+            </div>
+            <div class="flex-row">
+                <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario (opcional)">
+                <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado admin)">
+            </div>
+            <div class="flex-row">
+                <select id="selectEstadoCasa">
+                    <option value="Habitado por Propietario">Habitado por Propietario</option>
+                    <option value="Arrendado">Arrendado</option>
+                    <option value="Desocupado">Desocupado</option>
+                </select>
+                <input type="number" id="inputHabitantes" placeholder="Nº Habitantes" min="0">
+            </div>
+            <div class="flex-row">
+                <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
+                <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
+            </div>
+            <button type="button" onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
+        </div>
+
+        <div class="card">
+            <h3>Listado Completo (10 Columnas)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Casa</th>
+                            <th>Parqueadero</th>
+                            <th>Propietario</th>
+                            <th>Teléfono 1</th>
+                            <th>Arrendatario</th>
+                            <th>Teléfono 2</th>
+                            <th>Estado</th>
+                            <th>Habitantes</th>
+                            <th>Niños</th>
+                            <th>Mascotas</th>
+                            <th id="th-acciones-dir" style="display: none;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVecinosBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 6: SERVICIOS -->
+    <div id="tab-servicios" class="tab-content">
+        <h2>Servicios del Conjunto</h2>
+        <div id="admin-controls-servicios" style="display: none;" class="card">
+            <h4 id="titulo-form-servicio">Registrar / Editar Servicio</h4>
+            <input type="hidden" id="editIdServicio" value="">
+            <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
+            <textarea id="inputDescServicio" placeholder="Detalles y horarios..."></textarea>
+            <button type="button" onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
+            <button type="button" onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
+        </div>
+        <div id="listaServiciosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 7: EMERGENCIAS -->
+    <div id="tab-emergencias" class="tab-content">
+        <h2>Contactos de Emergencia</h2>
+        <div id="admin-controls-emergencias" style="display: none;" class="card">
+            <h4 id="titulo-form-emergencia">Registrar / Editar Contacto</h4>
+            <input type="hidden" id="editIdEmergencia" value="">
+            <input type="text" id="inputNombreEmergencia" placeholder="Institución / Nombre">
+            <input type="text" id="inputNumeroEmergencia" placeholder="Número telefónico">
+            <button type="button" onclick="guardarEmergencia()" class="btn btn-success btn-responsive">Guardar Contacto</button>
+            <button type="button" onclick="limpiarFormEmergencia()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarEmergencia">Cancelar</button>
+        </div>
+        <div id="listaEmergenciasContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 8: REGLAMENTO -->
+    <div id="tab-reglamento" class="tab-content">
+        <h2>Reglamento Interno</h2>
+        <div id="admin-controls-reglamento" style="display: none;" class="card">
+            <h4 id="titulo-form-reglamento">Registrar / Editar Norma</h4>
