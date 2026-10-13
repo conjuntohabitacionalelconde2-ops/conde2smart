@@ -9,25 +9,21 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; line-height: 1.5; padding: 10px; }
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         
-        /* Encabezado */
         .header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; text-align: center; }
         .header-titles h1 { font-size: 1.5rem; color: #2c3e50; }
         .header-titles p { font-size: 0.9rem; color: #7f8c8d; }
         .badge-admin { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: white; background: #7f8c8d; margin-top: 5px; }
 
-        /* Pestañas */
         .nav-tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #2c3e50; padding: 8px; border-radius: 8px; margin-bottom: 20px; }
         .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: #34495e; color: white; border: none; padding: 10px 8px; cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: bold; text-align: center; }
         .nav-tabs button:hover, .nav-tabs button.active { background: #3498db; }
 
-        /* Tarjetas y Formularios */
         .card { background: #fff; border: 1px solid #e1e8ed; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .card h2, .card h3, .card h4 { color: #2c3e50; margin-bottom: 10px; }
         
         input, select, textarea { width: 100%; padding: 10px; margin: 6px 0 12px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }
         textarea { min-height: 80px; resize: vertical; }
 
-        /* Botones */
         button.btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 5px; }
         button.btn-inline { width: auto; padding: 6px 12px; font-size: 0.85rem; margin-right: 5px; margin-top: 5px; }
         
@@ -39,10 +35,8 @@
         .btn-warning:hover { background-color: #d35400; }
         .btn-secondary { background-color: #95a5a6; color: white; }
 
-        /* Layout */
         .flex-row { display: flex; flex-direction: column; gap: 10px; }
 
-        /* Tablas Responsivas */
         .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #ddd; }
         table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
         th, td { border: 1px solid #e1e8ed; padding: 10px; text-align: left; }
@@ -63,7 +57,6 @@
 <body>
 
 <div class="container">
-    <!-- ENCABEZADO -->
     <div class="header">
         <div class="header-titles">
             <h1>Conjunto Habitacional El Conde 2</h1>
@@ -74,7 +67,6 @@
         </div>
     </div>
 
-    <!-- MENÚ DE PESTAÑAS -->
     <div class="nav-tabs">
         <button type="button" onclick="cambiarPestaña('inicio')" id="btn-inicio" class="active">Inicio / Admin</button>
         <button type="button" onclick="cambiarPestaña('cartelera')" id="btn-cartelera">Cartelera</button>
@@ -90,15 +82,15 @@
     <div id="tab-inicio" class="tab-content active">
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <p style="margin-bottom:10px; font-size:0.9rem;">Ingrese la contraseña de administrador (Contraseña actual: <strong>admin123</strong>):</p>
+            <p style="margin-bottom:10px; font-size:0.9rem;">Ingrese la contraseña de administrador (Por defecto: <strong>admin123</strong>):</p>
             <input type="password" id="inputPasswordAdmin" autocomplete="current-password" placeholder="Escriba aquí la contraseña">
-            <button type="button" id="btnProcesarLogin" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
+            <button type="button" onclick="intentarLogin()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
         </div>
 
         <div id="panel-admin" style="display: none;">
             <div class="card" style="background: #eaf2f8;">
                 <h3>Panel de Control Activo</h3>
-                <p style="font-size:0.9rem; margin-bottom:10px;">Tiene acceso completo para publicar, modificar, eliminar contenido y ver los teléfonos privados del directorio.</p>
+                <p style="font-size:0.9rem; margin-bottom:10px;">Tiene acceso completo para gestionar el conjunto.</p>
                 <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
             </div>
 
@@ -278,7 +270,6 @@
 </div>
 
 <script>
-    // --- PERSISTENCIA ---
     let datosApp = JSON.parse(localStorage.getItem('elCondeData')) || {
         vecinos: [],
         novedades: [],
@@ -313,25 +304,23 @@
         renderizarTodo();
     }
 
-    function obtenerPasswordAdmin() {
-        return (localStorage.getItem('adminPasswordDirecta') || 'admin123').trim();
-    }
-
-    // --- AUTENTICACIÓN DIRECTA CORREGIDA ---
-    function ejecutarLoginAdmin() {
-        const inputField = document.getElementById('inputPasswordAdmin');
-        if (!inputField) return;
+    // --- ACCESO DE ADMINISTRADOR BLINDADO Y DIRECTO ---
+    function intentarLogin() {
+        const passwordEscrita = document.getElementById('inputPasswordAdmin').value.trim();
         
-        const passIngresada = inputField.value.trim();
-        const passCorrecta = obtenerPasswordAdmin();
+        // Obtiene la clave guardada o usa 'admin123' por defecto de forma estricta
+        let passwordValida = localStorage.getItem('adminPasswordDirecta');
+        if (!passwordValida || passwordValida === 'null' || passwordValida === '') {
+            passwordValida = 'admin123';
+        }
 
-        if (passIngresada === passCorrecta) {
+        if (passwordEscrita === passwordValida) {
             sessionStorage.setItem('adminAutenticado', 'true');
-            inputField.value = '';
-            alert("¡Autenticación correcta! Sesión de Administrador iniciada.");
+            document.getElementById('inputPasswordAdmin').value = '';
+            alert("¡Acceso concedido como Administrador!");
             verificarSesion();
         } else {
-            alert("Contraseña incorrecta. Verifique que esté escribiendo: admin123");
+            alert("Contraseña incorrecta. La contraseña actual es: admin123");
         }
     }
 
@@ -749,3 +738,67 @@
     function editarReglamento(id) {
         if (!esAdmin()) return;
         const r = datosApp.reglamento.find(i => i.id === id);
+        if(r) {
+            document.getElementById('editIdReglamento').value = r.id;
+            document.getElementById('inputTituloReglamento').value = r.titulo;
+            document.getElementById('inputDescReglamento').value = r.contenido;
+            document.getElementById('titulo-form-reglamento').textContent = "Editar Norma";
+            document.getElementById('btnCancelarReglamento').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    function limpiarFormReglamento() {
+        document.getElementById('editIdReglamento').value = '';
+        document.getElementById('inputTituloReglamento').value = '';
+        document.getElementById('inputDescReglamento').value = '';
+        document.getElementById('titulo-form-reglamento').textContent = "Registrar / Editar Norma";
+        document.getElementById('btnCancelarReglamento').style.display = 'none';
+    }
+    function renderizarReglamentos() {
+        const cont = document.getElementById('listaReglamentosContainer'); cont.innerHTML = '';
+        if (datosApp.reglamento.length === 0) { cont.innerHTML = '<p>No hay normas registradas.</p>'; return; }
+        datosApp.reglamento.forEach(r => {
+            let botones = esAdmin() ? `<button type="button" onclick="editarReglamento(${r.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.reglamento=datosApp.reglamento.filter(x=>x.id!==${r.id});guardarEnLocalStorage();renderizarReglamentos();" class="btn-inline btn-danger">Eliminar</button>` : '';
+            cont.innerHTML += `<div class="card"><h3>${r.titulo}</h3><p style="margin-top:8px;">${r.contenido}</p><div>${botones}</div></div>`;
+        });
+    }
+
+    function cambiarPasswordAdmin() {
+        if (!esAdmin()) return;
+        const actual = document.getElementById('inputPasswordActual').value.trim();
+        const nueva = document.getElementById('inputPasswordNueva').value.trim();
+        const confirmar = document.getElementById('inputPasswordConfirmar').value.trim();
+        
+        let passwordValida = localStorage.getItem('adminPasswordDirecta') || 'admin123';
+
+        if (nueva !== confirmar || nueva.length < 6) { 
+            alert("Compruebe que las contraseñas coincidan y tengan al menos 6 caracteres."); 
+            return; 
+        }
+        if (actual !== passwordValida) { 
+            alert("Contraseña actual incorrecta."); 
+            return; 
+        }
+        
+        localStorage.setItem('adminPasswordDirecta', nueva);
+        alert("Contraseña actualizada exitosamente. Se cerrará la sesión.");
+        cerrarSesionAdmin();
+    }
+
+    function renderizarTodo() {
+        renderizarVecinos();
+        renderizarCartelera();
+        renderizarNovedades();
+        renderizarBeneficios();
+        renderizarServicios();
+        renderizarEmergencias();
+        renderizarReglamentos();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        verificarSesion();
+    });
+</script>
+
+</body>
+</html>
