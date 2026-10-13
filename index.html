@@ -15,7 +15,7 @@
         .header-titles p { font-size: 0.9rem; color: #7f8c8d; }
         .badge-admin { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: white; background: #7f8c8d; margin-top: 5px; }
 
-        /* Pestañas / Menú Responsivo */
+        /* Pestañas */
         .nav-tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #2c3e50; padding: 8px; border-radius: 8px; margin-bottom: 20px; }
         .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: #34495e; color: white; border: none; padding: 10px 8px; cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: bold; text-align: center; }
         .nav-tabs button:hover, .nav-tabs button.active { background: #3498db; }
@@ -39,12 +39,12 @@
         .btn-warning:hover { background-color: #d35400; }
         .btn-secondary { background-color: #95a5a6; color: white; }
 
-        /* Layout de Formularios */
+        /* Layout */
         .flex-row { display: flex; flex-direction: column; gap: 10px; }
 
         /* Tablas Responsivas */
         .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; min-width: 850px; font-size: 0.88rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
         th, td { border: 1px solid #e1e8ed; padding: 10px; text-align: left; }
         th { background-color: #f8f9fa; color: #2c3e50; }
         
@@ -52,7 +52,6 @@
         .tab-content.active { display: block; }
         .private-info { color: #95a5a6; font-style: italic; font-size: 0.85rem; }
 
-        /* Adaptación específica para Pantallas Grandes (Escritorio) */
         @media (min-width: 768px) {
             .header { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
             .flex-row { flex-direction: row; }
@@ -77,30 +76,30 @@
 
     <!-- MENÚ DE PESTAÑAS -->
     <div class="nav-tabs">
-        <button onclick="cambiarPestaña('inicio')" id="btn-inicio" class="active">Inicio / Admin</button>
-        <button onclick="cambiarPestaña('cartelera')" id="btn-cartelera">Cartelera</button>
-        <button onclick="cambiarPestaña('reportar')" id="btn-reportar">Reportar Novedad</button>
-        <button onclick="cambiarPestaña('beneficios')" id="btn-beneficios">Beneficios</button>
-        <button onclick="cambiarPestaña('directorio')" id="btn-directorio">Directorio Casas</button>
-        <button onclick="cambiarPestaña('servicios')" id="btn-servicios">Servicios</button>
-        <button onclick="cambiarPestaña('emergencias')" id="btn-emergencias">Emergencias</button>
-        <button onclick="cambiarPestaña('reglamento')" id="btn-reglamento">Reglamento</button>
+        <button type="button" onclick="cambiarPestaña('inicio')" id="btn-inicio" class="active">Inicio / Admin</button>
+        <button type="button" onclick="cambiarPestaña('cartelera')" id="btn-cartelera">Cartelera</button>
+        <button type="button" onclick="cambiarPestaña('reportar')" id="btn-reportar">Reportar Novedad</button>
+        <button type="button" onclick="cambiarPestaña('beneficios')" id="btn-beneficios">Beneficios</button>
+        <button type="button" onclick="cambiarPestaña('directorio')" id="btn-directorio">Directorio Casas</button>
+        <button type="button" onclick="cambiarPestaña('servicios')" id="btn-servicios">Servicios</button>
+        <button type="button" onclick="cambiarPestaña('emergencias')" id="btn-emergencias">Emergencias</button>
+        <button type="button" onclick="cambiarPestaña('reglamento')" id="btn-reglamento">Reglamento</button>
     </div>
 
     <!-- PESTAÑA 1: INICIO / ACCESO ADMINISTRADOR -->
     <div id="tab-inicio" class="tab-content active">
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <p style="margin-bottom:10px; font-size:0.9rem;">Ingrese la contraseña de administrador para desbloquear las opciones de edición y gestión (Contraseña inicial: <strong>admin123</strong>):</p>
-            <input type="password" id="inputPasswordAdmin" placeholder="Contraseña de administrador">
-            <button onclick="loginAdministrador()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
+            <p style="margin-bottom:10px; font-size:0.9rem;">Ingrese la contraseña de administrador (Contraseña actual: <strong>admin123</strong>):</p>
+            <input type="password" id="inputPasswordAdmin" autocomplete="current-password" placeholder="Escriba aquí la contraseña">
+            <button type="button" id="btnProcesarLogin" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
         </div>
 
         <div id="panel-admin" style="display: none;">
             <div class="card" style="background: #eaf2f8;">
                 <h3>Panel de Control Activo</h3>
-                <p style="font-size:0.9rem; margin-bottom:10px;">Tiene acceso completo para publicar, modificar y eliminar contenido, así como para consultar teléfonos privados del directorio.</p>
-                <button onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
+                <p style="font-size:0.9rem; margin-bottom:10px;">Tiene acceso completo para publicar, modificar, eliminar contenido y ver los teléfonos privados del directorio.</p>
+                <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
             </div>
 
             <div class="card">
@@ -108,7 +107,7 @@
                 <input type="password" id="inputPasswordActual" placeholder="Contraseña Actual">
                 <input type="password" id="inputPasswordNueva" placeholder="Nueva Contraseña (mínimo 6 caracteres)">
                 <input type="password" id="inputPasswordConfirmar" placeholder="Confirmar Nueva Contraseña">
-                <button onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña</button>
+                <button type="button" onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña</button>
             </div>
         </div>
     </div>
@@ -121,8 +120,8 @@
             <input type="hidden" id="editIdCartelera" value="">
             <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
             <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
-            <button onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Guardar / Publicar</button>
-            <button onclick="limpiarFormCartelera()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarCartelera">Cancelar</button>
+            <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Guardar / Publicar</button>
+            <button type="button" onclick="limpiarFormCartelera()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarCartelera">Cancelar</button>
         </div>
         <div id="listaCarteleraContainer"></div>
     </div>
@@ -157,7 +156,7 @@
             </div>
             <label>Descripción del Problema:</label>
             <textarea id="textoNovedad" placeholder="Describa el requerimiento o daño..."></textarea>
-            <button onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
+            <button type="button" onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
         </div>
 
         <h3>Bandeja de Gestión (Acceso Exclusivo Administrador)</h3>
@@ -172,8 +171,8 @@
             <input type="hidden" id="editIdBeneficio" value="">
             <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio">
             <textarea id="inputDescBeneficio" placeholder="Detalles del beneficio..."></textarea>
-            <button onclick="guardarBeneficio()" class="btn btn-success btn-responsive">Guardar Beneficio</button>
-            <button onclick="limpiarFormBeneficio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarBeneficio">Cancelar</button>
+            <button type="button" onclick="guardarBeneficio()" class="btn btn-success btn-responsive">Guardar Beneficio</button>
+            <button type="button" onclick="limpiarFormBeneficio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarBeneficio">Cancelar</button>
         </div>
         <div id="listaBeneficiosContainer"></div>
     </div>
@@ -207,11 +206,11 @@
                 <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
                 <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
             </div>
-            <button onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
+            <button type="button" onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
         </div>
 
         <div class="card">
-            <h3>Listado Completo</h3>
+            <h3>Listado Completo (10 Columnas)</h3>
             <div class="table-container">
                 <table>
                     <thead>
@@ -243,8 +242,8 @@
             <input type="hidden" id="editIdServicio" value="">
             <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
             <textarea id="inputDescServicio" placeholder="Detalles y horarios..."></textarea>
-            <button onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
-            <button onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
+            <button type="button" onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
+            <button type="button" onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
         </div>
         <div id="listaServiciosContainer"></div>
     </div>
@@ -257,8 +256,8 @@
             <input type="hidden" id="editIdEmergencia" value="">
             <input type="text" id="inputNombreEmergencia" placeholder="Institución / Nombre">
             <input type="text" id="inputNumeroEmergencia" placeholder="Número telefónico">
-            <button onclick="guardarEmergencia()" class="btn btn-success btn-responsive">Guardar Contacto</button>
-            <button onclick="limpiarFormEmergencia()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarEmergencia">Cancelar</button>
+            <button type="button" onclick="guardarEmergencia()" class="btn btn-success btn-responsive">Guardar Contacto</button>
+            <button type="button" onclick="limpiarFormEmergencia()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarEmergencia">Cancelar</button>
         </div>
         <div id="listaEmergenciasContainer"></div>
     </div>
@@ -271,20 +270,20 @@
             <input type="hidden" id="editIdReglamento" value="">
             <input type="text" id="inputTituloReglamento" placeholder="Título de la norma">
             <textarea id="inputDescReglamento" placeholder="Detalles de la norma..."></textarea>
-            <button onclick="guardarReglamento()" class="btn btn-success btn-responsive">Guardar Norma</button>
-            <button onclick="limpiarFormReglamento()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarReglamento">Cancelar</button>
+            <button type="button" onclick="guardarReglamento()" class="btn btn-success btn-responsive">Guardar Norma</button>
+            <button type="button" onclick="limpiarFormReglamento()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarReglamento">Cancelar</button>
         </div>
         <div id="listaReglamentosContainer"></div>
     </div>
 </div>
 
 <script>
-    // --- PERSISTENCIA Y ESTRUCTURA ---
+    // --- PERSISTENCIA ---
     let datosApp = JSON.parse(localStorage.getItem('elCondeData')) || {
         vecinos: [],
         novedades: [],
         cartelera: [
-            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Portal oficial del Conjunto Habitacional El Conde 2.", fecha: "2026-10-13" }
+            { id: 1, titulo: "Bienvenido a la plataforma", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 Viviendas).", fecha: "2026-10-13" }
         ],
         beneficios: [
             { id: 1, titulo: "Cancha Deportiva", contenido: "Reservas habilitadas mediante administración." }
@@ -315,17 +314,24 @@
     }
 
     function obtenerPasswordAdmin() {
-        return localStorage.getItem('adminPasswordDirecta') || 'admin123';
+        return (localStorage.getItem('adminPasswordDirecta') || 'admin123').trim();
     }
 
-    function loginAdministrador() {
-        const pass = document.getElementById('inputPasswordAdmin').value;
-        if (pass === obtenerPasswordAdmin()) {
+    // --- AUTENTICACIÓN DIRECTA CORREGIDA ---
+    function ejecutarLoginAdmin() {
+        const inputField = document.getElementById('inputPasswordAdmin');
+        if (!inputField) return;
+        
+        const passIngresada = inputField.value.trim();
+        const passCorrecta = obtenerPasswordAdmin();
+
+        if (passIngresada === passCorrecta) {
             sessionStorage.setItem('adminAutenticado', 'true');
-            alert("¡Sesión iniciada como Administrador!");
+            inputField.value = '';
+            alert("¡Autenticación correcta! Sesión de Administrador iniciada.");
             verificarSesion();
         } else {
-            alert("Contraseña incorrecta.");
+            alert("Contraseña incorrecta. Verifique que esté escribiendo: admin123");
         }
     }
 
@@ -439,7 +445,7 @@
         datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
 
         if (datosApp.vecinos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;">No hay viviendas registradas aún.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;">No hay viviendas registradas en el directorio.</td></tr>`;
             return;
         }
 
@@ -449,8 +455,8 @@
             let tel2 = esAdmin() ? (v.telefono2 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
 
             let tdAcciones = esAdmin() ? `<td>
-                <button onclick="editarVecino(${v.idCasa})" class="btn-inline btn-warning">Editar</button>
-                <button onclick="eliminarVecino(${v.idCasa})" class="btn-inline btn-danger">Eliminar</button>
+                <button type="button" onclick="editarVecino(${v.idCasa})" class="btn-inline btn-warning">Editar</button>
+                <button type="button" onclick="eliminarVecino(${v.idCasa})" class="btn-inline btn-danger">Eliminar</button>
             </td>` : '';
 
             tr.innerHTML = `
@@ -491,3 +497,255 @@
             estado: 'Pendiente',
             fecha: new Date().toLocaleString()
         });
+
+        guardarEnLocalStorage();
+        renderizarNovedades();
+        document.getElementById('inputCasaReporte').value = '';
+        document.getElementById('textoNovedad').value = '';
+        alert("Reporte enviado con éxito a la administración.");
+    }
+
+    function atenderNovedad(id) {
+        if (!esAdmin()) return;
+        const n = datosApp.novedades.find(item => item.id === id);
+        if (n) { n.estado = 'Atendido'; guardarEnLocalStorage(); renderizarNovedades(); }
+    }
+
+    function eliminarNovedad(id) {
+        if (!esAdmin()) return;
+        if (confirm("¿Eliminar este reporte?")) {
+            datosApp.novedades = datosApp.novedades.filter(n => n.id !== id);
+            guardarEnLocalStorage();
+            renderizarNovedades();
+        }
+    }
+
+    function renderizarNovedades() {
+        const cont = document.getElementById('listaNovedadesContainer');
+        if (!esAdmin()) {
+            cont.innerHTML = `<div class="card"><p style="font-size:0.9rem; color:#7f8c8d; text-align:center;">🔒 La bandeja de reportes enviados es administrada exclusivamente por la directiva del conjunto.</p></div>`;
+            return;
+        }
+
+        cont.innerHTML = '';
+        if (datosApp.novedades.length === 0) {
+            cont.innerHTML = '<p>No hay reportes de novedades registrados.</p>';
+            return;
+        }
+
+        datosApp.novedades.slice().reverse().forEach(n => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            const colorP = n.prioridad === 'Urgente' ? '#e74c3c' : '#2ecc71';
+            
+            let botones = '';
+            if (n.estado === 'Pendiente') {
+                botones += `<button type="button" onclick="atenderNovedad(${n.id})" class="btn-inline btn-success">Marcar Atendido</button>`;
+            }
+            botones += `<button type="button" onclick="eliminarNovedad(${n.id})" class="btn-inline btn-danger">Eliminar</button>`;
+
+            div.innerHTML = `
+                <strong>Casa Nº ${n.casa}</strong> | <em>${n.tipo}</em> | Prioridad: <strong style="color:${colorP};">${n.prioridad}</strong>
+                <p style="margin:8px 0;">${n.descripcion}</p>
+                <small style="color:#7f8c8d;">Fecha: ${n.fecha} | Estado: <strong>${n.estado}</strong></small>
+                <div style="margin-top:8px;">${botones}</div>
+            `;
+            cont.appendChild(div);
+        });
+    }
+
+    // --- CARTELERA ---
+    function guardarAnuncioCartelera() {
+        if (!esAdmin()) return;
+        const idEdit = document.getElementById('editIdCartelera').value;
+        const titulo = document.getElementById('inputTituloCartelera').value.trim();
+        const contenido = document.getElementById('inputContenidoCartelera').value.trim();
+        if (!titulo || !contenido) return;
+
+        if (idEdit) {
+            let item = datosApp.cartelera.find(c => c.id == idEdit);
+            if(item) { item.titulo = titulo; item.contenido = contenido; }
+        } else {
+            datosApp.cartelera.push({ id: Date.now(), titulo, contenido, fecha: new Date().toLocaleDateString() });
+        }
+        guardarEnLocalStorage(); renderizarCartelera(); limpiarFormCartelera();
+    }
+    function editarCartelera(id) {
+        if (!esAdmin()) return;
+        const c = datosApp.cartelera.find(item => item.id === id);
+        if(c) {
+            document.getElementById('editIdCartelera').value = c.id;
+            document.getElementById('inputTituloCartelera').value = c.titulo;
+            document.getElementById('inputContenidoCartelera').value = c.contenido;
+            document.getElementById('titulo-form-cartelera').textContent = "Editar Anuncio";
+            document.getElementById('btnCancelarCartelera').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    function limpiarFormCartelera() {
+        document.getElementById('editIdCartelera').value = '';
+        document.getElementById('inputTituloCartelera').value = '';
+        document.getElementById('inputContenidoCartelera').value = '';
+        document.getElementById('titulo-form-cartelera').textContent = "Publicar Nuevo Anuncio";
+        document.getElementById('btnCancelarCartelera').style.display = 'none';
+    }
+    function renderizarCartelera() {
+        const cont = document.getElementById('listaCarteleraContainer'); cont.innerHTML = '';
+        if (datosApp.cartelera.length === 0) { cont.innerHTML = '<p>No hay anuncios.</p>'; return; }
+        datosApp.cartelera.slice().reverse().forEach(c => {
+            let botones = esAdmin() ? `<button type="button" onclick="editarCartelera(${c.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.cartelera=datosApp.cartelera.filter(x=>x.id!==${c.id});guardarEnLocalStorage();renderizarCartelera();" class="btn-inline btn-danger">Eliminar</button>` : '';
+            cont.innerHTML += `<div class="card"><h3>${c.titulo}</h3><small style="color:#7f8c8d;">${c.fecha}</small><p style="margin-top:8px;">${c.contenido}</p><div>${botones}</div></div>`;
+        });
+    }
+
+    // --- BENEFICIOS ---
+    function guardarBeneficio() {
+        if (!esAdmin()) return;
+        const idEdit = document.getElementById('editIdBeneficio').value;
+        const titulo = document.getElementById('inputTituloBeneficio').value.trim();
+        const contenido = document.getElementById('inputDescBeneficio').value.trim();
+        if (!titulo) return;
+
+        if (idEdit) {
+            let b = datosApp.beneficios.find(i => i.id == idEdit);
+            if(b) { b.titulo = titulo; b.contenido = contenido; }
+        } else {
+            datosApp.beneficios.push({ id: Date.now(), titulo, contenido });
+        }
+        guardarEnLocalStorage(); renderizarBeneficios(); limpiarFormBeneficio();
+    }
+    function editarBeneficio(id) {
+        if (!esAdmin()) return;
+        const b = datosApp.beneficios.find(i => i.id === id);
+        if(b) {
+            document.getElementById('editIdBeneficio').value = b.id;
+            document.getElementById('inputTituloBeneficio').value = b.titulo;
+            document.getElementById('inputDescBeneficio').value = b.contenido;
+            document.getElementById('titulo-form-beneficio').textContent = "Editar Beneficio";
+            document.getElementById('btnCancelarBeneficio').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    function limpiarFormBeneficio() {
+        document.getElementById('editIdBeneficio').value = '';
+        document.getElementById('inputTituloBeneficio').value = '';
+        document.getElementById('inputDescBeneficio').value = '';
+        document.getElementById('titulo-form-beneficio').textContent = "Registrar / Editar Beneficio";
+        document.getElementById('btnCancelarBeneficio').style.display = 'none';
+    }
+    function renderizarBeneficios() {
+        const cont = document.getElementById('listaBeneficiosContainer'); cont.innerHTML = '';
+        if (datosApp.beneficios.length === 0) { cont.innerHTML = '<p>No hay beneficios registrados.</p>'; return; }
+        datosApp.beneficios.forEach(b => {
+            let botones = esAdmin() ? `<button type="button" onclick="editarBeneficio(${b.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.beneficios=datosApp.beneficios.filter(x=>x.id!==${b.id});guardarEnLocalStorage();renderizarBeneficios();" class="btn-inline btn-danger">Eliminar</button>` : '';
+            cont.innerHTML += `<div class="card"><h3>${b.titulo}</h3><p style="margin-top:8px;">${b.contenido}</p><div>${botones}</div></div>`;
+        });
+    }
+
+    // --- SERVICIOS ---
+    function guardarServicio() {
+        if (!esAdmin()) return;
+        const idEdit = document.getElementById('editIdServicio').value;
+        const titulo = document.getElementById('inputTituloServicio').value.trim();
+        const contenido = document.getElementById('inputDescServicio').value.trim();
+        if (!titulo) return;
+
+        if (idEdit) {
+            let s = datosApp.servicios.find(i => i.id == idEdit);
+            if(s) { s.titulo = titulo; s.contenido = contenido; }
+        } else {
+            datosApp.servicios.push({ id: Date.now(), titulo, contenido });
+        }
+        guardarEnLocalStorage(); renderizarServicios(); limpiarFormServicio();
+    }
+    function editarServicio(id) {
+        if (!esAdmin()) return;
+        const s = datosApp.servicios.find(i => i.id === id);
+        if(s) {
+            document.getElementById('editIdServicio').value = s.id;
+            document.getElementById('inputTituloServicio').value = s.titulo;
+            document.getElementById('inputDescServicio').value = s.contenido;
+            document.getElementById('titulo-form-servicio').textContent = "Editar Servicio";
+            document.getElementById('btnCancelarServicio').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    function limpiarFormServicio() {
+        document.getElementById('editIdServicio').value = '';
+        document.getElementById('inputTituloServicio').value = '';
+        document.getElementById('inputDescServicio').value = '';
+        document.getElementById('titulo-form-servicio').textContent = "Registrar / Editar Servicio";
+        document.getElementById('btnCancelarServicio').style.display = 'none';
+    }
+    function renderizarServicios() {
+        const cont = document.getElementById('listaServiciosContainer'); cont.innerHTML = '';
+        if (datosApp.servicios.length === 0) { cont.innerHTML = '<p>No hay servicios registrados.</p>'; return; }
+        datosApp.servicios.forEach(s => {
+            let botones = esAdmin() ? `<button type="button" onclick="editarServicio(${s.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.servicios=datosApp.servicios.filter(x=>x.id!==${s.id});guardarEnLocalStorage();renderizarServicios();" class="btn-inline btn-danger">Eliminar</button>` : '';
+            cont.innerHTML += `<div class="card"><h3>${s.titulo}</h3><p style="margin-top:8px;">${s.contenido}</p><div>${botones}</div></div>`;
+        });
+    }
+
+    // --- EMERGENCIAS ---
+    function guardarEmergencia() {
+        if (!esAdmin()) return;
+        const idEdit = document.getElementById('editIdEmergencia').value;
+        const nombre = document.getElementById('inputNombreEmergencia').value.trim();
+        const numero = document.getElementById('inputNumeroEmergencia').value.trim();
+        if (!nombre) return;
+
+        if (idEdit) {
+            let e = datosApp.emergencias.find(i => i.id == idEdit);
+            if(e) { e.nombre = nombre; e.numero = numero; }
+        } else {
+            datosApp.emergencias.push({ id: Date.now(), nombre, numero });
+        }
+        guardarEnLocalStorage(); renderizarEmergencias(); limpiarFormEmergencia();
+    }
+    function editarEmergencia(id) {
+        if (!esAdmin()) return;
+        const e = datosApp.emergencias.find(i => i.id === id);
+        if(e) {
+            document.getElementById('editIdEmergencia').value = e.id;
+            document.getElementById('inputNombreEmergencia').value = e.nombre;
+            document.getElementById('inputNumeroEmergencia').value = e.numero;
+            document.getElementById('titulo-form-emergencia').textContent = "Editar Contacto";
+            document.getElementById('btnCancelarEmergencia').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    function limpiarFormEmergencia() {
+        document.getElementById('editIdEmergencia').value = '';
+        document.getElementById('inputNombreEmergencia').value = '';
+        document.getElementById('inputNumeroEmergencia').value = '';
+        document.getElementById('titulo-form-emergencia').textContent = "Registrar / Editar Contacto";
+        document.getElementById('btnCancelarEmergencia').style.display = 'none';
+    }
+    function renderizarEmergencias() {
+        const cont = document.getElementById('listaEmergenciasContainer'); cont.innerHTML = '';
+        if (datosApp.emergencias.length === 0) { cont.innerHTML = '<p>No hay contactos de emergencia.</p>'; return; }
+        datosApp.emergencias.forEach(e => {
+            let botones = esAdmin() ? `<button type="button" onclick="editarEmergencia(${e.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.emergencias=datosApp.emergencias.filter(x=>x.id!==${e.id});guardarEnLocalStorage();renderizarEmergencias();" class="btn-inline btn-danger">Eliminar</button>` : '';
+            cont.innerHTML += `<div class="card"><h3>${e.nombre}</h3><p style="margin-top:4px;">Teléfono: <strong>${e.numero}</strong></p><div>${botones}</div></div>`;
+        });
+    }
+
+    // --- REGLAMENTO ---
+    function guardarReglamento() {
+        if (!esAdmin()) return;
+        const idEdit = document.getElementById('editIdReglamento').value;
+        const titulo = document.getElementById('inputTituloReglamento').value.trim();
+        const contenido = document.getElementById('inputDescReglamento').value.trim();
+        if (!titulo) return;
+
+        if (idEdit) {
+            let r = datosApp.reglamento.find(i => i.id == idEdit);
+            if(r) { r.titulo = titulo; r.contenido = contenido; }
+        } else {
+            datosApp.reglamento.push({ id: Date.now(), titulo, contenido });
+        }
+        guardarEnLocalStorage(); renderizarReglamentos(); limpiarFormReglamento();
+    }
+    function editarReglamento(id) {
+        if (!esAdmin()) return;
+        const r = datosApp.reglamento.find(i => i.id === id);
