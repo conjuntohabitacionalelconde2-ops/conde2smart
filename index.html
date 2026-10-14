@@ -3,60 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EL CONDE 2 SMART - PRUEBA</title>
+    <title>EL CONDE 2 SMART</title>
+    
+    <!-- SDKs de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
-        body { font-family: sans-serif; background: #fff7ed; padding: 40px; color: #292524; }
-        .box { max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 2px solid #fed7aa; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; margin: 10px 0 20px 0; border: 1px solid #fed7aa; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #15803d; }
-        #panel { display: none; margin-top: 20px; padding: 15px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; }
+        :root {
+            --primary: #c2410c; 
+            --accent: #f97316; 
+            --bg-body: #fff7ed; 
+            --card-bg: #ffffff;
+            --text-main: #292524;
+            --text-muted: #78716c;
+            --border: #fed7aa;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 16px; }
+        .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(194, 65, 12, 0.08); border: 1px solid #ffedd5; }
+        
+        .header { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .header-titles h1 { font-size: 1.8rem; color: var(--primary); font-weight: 800; }
+        .header-titles p { font-size: 0.95rem; color: var(--text-muted); }
+        .badge-admin { display: inline-block; padding: 6px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; background: var(--text-muted); }
+
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: var(--primary); padding: 10px; border-radius: 12px; margin-bottom: 25px; }
+        .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: transparent; color: #ffedd5; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; }
+        .nav-tabs button:hover { color: white; background: rgba(255,255,255,0.15); }
+        .nav-tabs button.active { background: #ffffff; color: var(--primary); font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(194, 65, 12, 0.03); }
+        .card h2, .card h3, .card h4 { color: var(--primary); margin-bottom: 14px; font-weight: 700; }
+        
+        input, select, textarea { width: 100%; padding: 12px 14px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fffaf5; color: var(--text-main); }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); }
+        textarea { min-height: 100px; resize: vertical; }
+
+        button.btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        button.btn-inline { width: auto; padding: 7px 14px; font-size: 0.85rem; margin-right: 6px; margin-top: 6px; border-radius: 6px; font-weight: 600; }
+        
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-success:hover { background-color: #15803d; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #b91c1c; }
+        .btn-warning { background-color: var(--warning); color: white; }
+        .btn-warning:hover { background-color: #b45309; }
+        .btn-secondary { background-color: var(--text-muted); color: white; }
+
+        .flex-row { display: flex; flex-direction: column; gap: 14px; }
+
+        .table-container { width: 100%; overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
+        th, td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
+        th { background-color: #ffedd5; color: var(--primary); font-weight: 700; }
+        tr:nth-child(even) { background-color: #fffaf5; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .private-info { color: var(--text-muted); font-style: italic; font-size: 0.85rem; }
+
+        @media (min-width: 768px) {
+            .header { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
+            .flex-row { flex-direction: row; }
+            .flex-row > * { flex: 1; }
+            button.btn-responsive { width: auto; }
+        }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>EL CONDE 2 SMART</h2>
-    <p>Prueba de Acceso Directo</p>
-    
-    <div id="login-box">
-        <label>Contraseña de Administrador:</label>
-        <input type="password" id="pass" placeholder="Escribe admin123">
-        <button onclick="probarLogin()">Ingresar</button>
+<div class="container">
+    <div class="header">
+        <div class="header-titles">
+            <h1>EL CONDE 2 SMART</h1>
+            <p>Plataforma Comunitaria Sincronizada (112 Viviendas)</p>
+        </div>
+        <div>
+            <span id="label-estado-rol" class="badge-admin">Modo Vecino</span>
+        </div>
     </div>
 
-    <div id="panel">
-        <h3 style="color: #16a34a;">¡Acceso Exitoso!</h3>
-        <p>El sistema funciona correctamente. El problema anterior era caché o retardo de red.</p>
-        <button onclick="cerrarSesion()" style="background: #dc2626; margin-top: 10px;">Cerrar Sesión</button>
+    <div class="nav-tabs">
+        <button type="button" onclick="cambiarPestaña('inicio')" id="btn-inicio" class="active">Inicio / Admin</button>
+        <button type="button" onclick="cambiarPestaña('cartelera')" id="btn-cartelera">Cartelera</button>
+        <button type="button" onclick="cambiarPestaña('reportar')" id="btn-reportar">Reportar Novedad</button>
+        <button type="button" onclick="cambiarPestaña('beneficios')" id="btn-beneficios">Beneficios</button>
+        <button type="button" onclick="cambiarPestaña('directorio')" id="btn-directorio">Directorio Casas</button>
+        <button type="button" onclick="cambiarPestaña('servicios')" id="btn-servicios">Servicios</button>
+        <button type="button" onclick="cambiarPestaña('emergencias')" id="btn-emergencias">Emergencias</button>
+        <button type="button" onclick="cambiarPestaña('reglamento')" id="btn-reglamento">Reglamento</button>
     </div>
-</div>
 
-<script>
-    function probarLogin() {
-        const valor = document.getElementById('pass').value.trim();
-        if(valor === "admin123" || valor === "admin") {
-            sessionStorage.setItem('ok', '1');
-            verificar();
-        } else {
-            alert("Contraseña incorrecta. Usa admin123");
-        }
-    }
+    <!-- PESTAÑA 1: INICIO / ADMIN -->
+    <div id="tab-inicio" class="tab-content active">
+        <div id="seccion-login" class="card">
+            <h3>Acceso de Administrador</h3>
+            <input type="password" id="inputPasswordAdmin" autocomplete="current-password" placeholder="Contraseña de administrador">
+            <button type="button" onclick="intentarLoginAdmin()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
+        </div>
 
-    function cerrarSesion() {
-        sessionStorage.removeItem('ok');
-        document.getElementById('pass').value = '';
-        verificar();
-    }
+        <div id="panel-admin" style="display: none;">
+            <div class="card" style="background: #fff7ed; border-color: #fed7aa;">
+                <h3>Panel de Control Activo</h3>
+                <p style="font-size:0.9rem; margin-bottom:14px;">Tienes privilegios completos de administración.</p>
+                <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
+            </div>
+        </div>
+    </div>
 
-    function verificar() {
-        const autorizado = sessionStorage.getItem('ok') === '1';
-        document.getElementById('login-box').style.display = autorizado ? 'none' : 'block';
-        document.getElementById('panel').style.display = autorizado ? 'block' : 'none';
-    }
+    <!-- PESTAÑA 2: CARTELERA -->
+    <div id="tab-cartelera" class="tab-content">
+        <h2>Cartelera Comunitaria</h2>
+        <div id="admin-controls-cartelera" style="display: none;" class="card">
+            <h4>Publicar Nuevo Anuncio</h4>
+            <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
+            <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
+            <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Publicar Anuncio</button>
+        </div>
+        <div id="listaCarteleraContainer"></div>
+    </div>
 
-    verificar();
-</script>
+    <!-- PESTAÑA 3: REPORTAR NOVEDAD -->
+    <div id="tab-reportar" class="tab-content">
+        <h2>Reportes y Requerimientos</h2>
+        <div class="card">
+            <h4>Formulario de Reporte</h4>
+            <div class="flex-row">
+                <div>
+                    <label>Número de Casa (1 - 112):</label>
+                    <input type="number" id="inputCasaReporte" placeholder="Ej. 45" min="1" max="112">
+                </div>
+                <div>
+                    <label>Tipo de Requerimiento:</label>
+                    <select id="selectTipoReporte">
+                        <option value="Daño / Afectación">Daño / Afectación</option>
+                        <option value="Jardinería / Mantenimiento">Jardinería / Mantenimiento</option>
+                        <option value="Convivencia / Otro">Convivencia / Otro</option>
+                    </select>
+                </div>
+            </div>
+            <label>Descripción del Problema:</label>
+            <textarea id="textoNovedad" placeholder="Describa el requerimiento o daño..."></textarea>
+            <button type="button" onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
+        </div>
+        <div id="listaNovedadesContainer"></div>
+    </div>
 
-</body>
-</html>
+    <!-- PESTAÑA 4: BENEFICIOS -->
+    <div id="tab-beneficios" class="tab-content">
+        <h2>Beneficios para la Comunidad</h2>
+        <div id="listaBeneficiosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 5: DIRECTORIO DE CASAS -->
+    <div id="tab-directorio" class="tab-content">
+        <h2>Directorio de Viviendas (112 Casas)</h2>
+        <div id="admin-controls-vecinos" style="display: none;" class="card">
+            <h4>Registrar / Actualizar Datos de Casa</h4>
+            <div class="flex-row">
+                <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
+                <input type="
