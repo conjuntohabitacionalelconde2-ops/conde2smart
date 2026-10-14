@@ -27,50 +27,31 @@
         body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 16px; }
         .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(194, 65, 12, 0.08); border: 1px solid #ffedd5; }
         
-        #alerta-flotante {
-            display: none;
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            background: linear-gradient(135deg, #f97316, #c2410c);
-            color: white;
-            padding: 14px 22px;
-            border-radius: 10px;
-            box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3);
-            z-index: 1000;
-            font-weight: 600;
-        }
-
         .header { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
         .header-titles h1 { font-size: 1.8rem; color: var(--primary); font-weight: 800; }
         .header-titles p { font-size: 0.95rem; color: var(--text-muted); }
         .badge-admin { display: inline-block; padding: 6px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; background: var(--text-muted); }
 
-        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: var(--primary); padding: 10px; border-radius: 12px; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: transparent; color: #ffedd5; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; transition: all 0.2s; }
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: var(--primary); padding: 10px; border-radius: 12px; margin-bottom: 25px; }
+        .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: transparent; color: #ffedd5; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; }
         .nav-tabs button:hover { color: white; background: rgba(255,255,255,0.15); }
-        .nav-tabs button.active { background: #ffffff; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-weight: 700; }
+        .nav-tabs button.active { background: #ffffff; color: var(--primary); font-weight: 700; }
 
-        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(194, 65, 12, 0.03); }
+        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; }
         .card h2, .card h3, .card h4 { color: var(--primary); margin-bottom: 14px; font-weight: 700; }
         
         input, select, textarea { width: 100%; padding: 12px 14px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fffaf5; color: var(--text-main); }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); }
         textarea { min-height: 100px; resize: vertical; }
 
-        button.btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        button.btn-inline { width: auto; padding: 7px 14px; font-size: 0.85rem; margin-right: 6px; margin-top: 6px; border-radius: 6px; font-weight: 600; }
+        button.btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
+        button.btn-inline { width: auto; padding: 7px 14px; font-size: 0.85rem; margin-right: 6px; margin-top: 6px; border-radius: 6px; }
         
         .btn-success { background-color: var(--success); color: white; }
-        .btn-success:hover { background-color: #15803d; }
         .btn-danger { background-color: var(--danger); color: white; }
-        .btn-danger:hover { background-color: #b91c1c; }
         .btn-warning { background-color: var(--warning); color: white; }
-        .btn-warning:hover { background-color: #b45309; }
         .btn-secondary { background-color: var(--text-muted); color: white; }
 
         .flex-row { display: flex; flex-direction: column; gap: 14px; }
-
         .table-container { width: 100%; overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
         th, td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
@@ -85,19 +66,16 @@
             .header { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
             .flex-row { flex-direction: row; }
             .flex-row > * { flex: 1; }
-            button.btn-responsive { width: auto; }
         }
     </style>
 </head>
 <body>
 
-<div id="alerta-flotante">🔔 Sistema Activo</div>
-
 <div class="container">
     <div class="header">
         <div class="header-titles">
             <h1>EL CONDE 2 SMART</h1>
-            <p>Plataforma Comunitaria Sincronizada (112 Viviendas)</p>
+            <p>Plataforma Comunitaria (112 Viviendas)</p>
         </div>
         <div>
             <span id="label-estado-rol" class="badge-admin">Modo Vecino</span>
@@ -115,46 +93,36 @@
         <button type="button" onclick="cambiarPestaña('reglamento')" id="btn-reglamento">Reglamento</button>
     </div>
 
-    <!-- PESTAÑA 1: INICIO / ADMIN -->
+    <!-- INICIO / ADMIN -->
     <div id="tab-inicio" class="tab-content active">
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <input type="password" id="inputPasswordAdmin" autocomplete="current-password" placeholder="Contraseña de administrador">
-            <button type="button" onclick="intentarLoginAdmin()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
+            <input type="password" id="inputPasswordAdmin" placeholder="Contraseña de administrador">
+            <button type="button" onclick="intentarLoginAdmin()" class="btn btn-success">Ingresar como Administrador</button>
         </div>
 
         <div id="panel-admin" style="display: none;">
-            <div class="card" style="background: #fff7ed; border-color: #fed7aa;">
+            <div class="card" style="background: #fff7ed;">
                 <h3>Panel de Control Activo</h3>
-                <p style="font-size:0.9rem; margin-bottom:14px;">Tiene privilegios completos de administración.</p>
-                <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
-            </div>
-
-            <div class="card">
-                <h4>Cambiar Contraseña de Administrador</h4>
-                <input type="password" id="inputPasswordActual" placeholder="Contraseña Actual">
-                <input type="password" id="inputPasswordNueva" placeholder="Nueva Contraseña (mínimo 6 caracteres)">
-                <input type="password" id="inputPasswordConfirmar" placeholder="Confirmar Nueva Contraseña">
-                <button type="button" onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña</button>
+                <p style="font-size:0.9rem; margin-bottom:14px;">Tienes privilegios completos de administración.</p>
+                <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger">Cerrar Sesión de Administrador</button>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA 2: CARTELERA -->
+    <!-- CARTELERA -->
     <div id="tab-cartelera" class="tab-content">
         <h2>Cartelera Comunitaria</h2>
         <div id="admin-controls-cartelera" style="display: none;" class="card">
-            <h4 id="titulo-form-cartelera">Publicar Nuevo Anuncio</h4>
-            <input type="hidden" id="editIdCartelera" value="">
+            <h4>Publicar Nuevo Anuncio</h4>
             <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
             <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
-            <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Guardar / Publicar</button>
-            <button type="button" onclick="limpiarFormCartelera()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarCartelera">Cancelar</button>
+            <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success">Publicar Anuncio</button>
         </div>
         <div id="listaCarteleraContainer"></div>
     </div>
 
-    <!-- PESTAÑA 3: REPORTAR NOVEDAD -->
+    <!-- REPORTAR NOVEDAD -->
     <div id="tab-reportar" class="tab-content">
         <h2>Reportes y Requerimientos</h2>
         <div class="card">
@@ -173,102 +141,46 @@
                     </select>
                 </div>
             </div>
-            <div class="flex-row">
-                <div>
-                    <label>Prioridad:</label>
-                    <select id="selectPrioridadReporte">
-                        <option value="Normal">Normal</option>
-                        <option value="Urgente">Urgente 🚨</option>
-                    </select>
-                </div>
-            </div>
             <label>Descripción del Problema:</label>
-            <textarea id="textoNovedad" placeholder="Describa el requerimiento o daño..."></textarea>
-            <button type="button" onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
+            <textarea id="textoNovedad" placeholder="Describa el requerimiento..."></textarea>
+            <button type="button" onclick="crearNovedad()" class="btn btn-success">Enviar Reporte</button>
         </div>
-
-        <div class="card" style="background: #fffbeb; border-color: #fde68a;">
-            <h4>🔍 Consultar Estado de mi Reporte</h4>
-            <p style="font-size: 0.9rem; margin-bottom: 10px;">Ingrese su número de casa para verificar si la administración ya atendió su novedad y leyó su respuesta:</p>
-            <div class="flex-row">
-                <input type="number" id="inputCasaConsulta" placeholder="Nº de Casa" min="1" max="112">
-                <button type="button" onclick="consultarEstadoVecino()" class="btn btn-warning btn-responsive" style="margin-top:6px;">Consultar Mis Reportes</button>
-            </div>
-            <div id="resultadoConsultaVecino" style="margin-top: 14px;"></div>
-        </div>
-
-        <h3>Bandeja de Gestión (Acceso Exclusivo Administrador)</h3>
         <div id="listaNovedadesContainer"></div>
     </div>
 
-    <!-- PESTAÑA 4: BENEFICIOS -->
+    <!-- BENEFICIOS -->
     <div id="tab-beneficios" class="tab-content">
         <h2>Beneficios para la Comunidad</h2>
-        <div id="admin-controls-beneficios" style="display: none;" class="card">
-            <h4 id="titulo-form-beneficio">Registrar / Editar Beneficio</h4>
-            <input type="hidden" id="editIdBeneficio" value="">
-            <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio">
-            <textarea id="inputDescBeneficio" placeholder="Detalles del beneficio..."></textarea>
-            <button type="button" onclick="guardarBeneficio()" class="btn btn-success btn-responsive">Guardar Beneficio</button>
-            <button type="button" onclick="limpiarFormBeneficio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarBeneficio">Cancelar</button>
-        </div>
         <div id="listaBeneficiosContainer"></div>
     </div>
 
-    <!-- PESTAÑA 5: DIRECTORIO DE CASAS -->
+    <!-- DIRECTORIO -->
     <div id="tab-directorio" class="tab-content">
         <h2>Directorio de Viviendas (112 Casas)</h2>
         <div id="admin-controls-vecinos" style="display: none;" class="card">
-            <h4 id="titulo-form-vecino">Registrar / Actualizar Datos de Casa</h4>
+            <h4>Registrar / Actualizar Datos de Casa</h4>
             <div class="flex-row">
                 <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
-                <input type="text" id="inputParqueadero" placeholder="Parqueadero (Ej. P-12)">
-            </div>
-            <div class="flex-row">
                 <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
-                <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado admin)">
             </div>
             <div class="flex-row">
-                <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario (opcional)">
-                <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado admin)">
-            </div>
-            <div class="flex-row">
-                <select id="selectEstadoCasa">
-                    <option value="Habitado por Propietario">Habitado por Propietario</option>
-                    <option value="Arrendado">Arrendado</option>
-                    <option value="Desocupado">Desocupado</option>
-                </select>
+                <input type="text" id="inputTelefono1" placeholder="Teléfono (Privado admin)">
                 <select id="selectAccesoCasa">
-                    <option value="Activo">Acceso Permitido (Activo)</option>
-                    <option value="Restringido">Acceso Restringido (Ya no pertenece)</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Restringido">Restringido</option>
                 </select>
             </div>
-            <div class="flex-row">
-                <input type="number" id="inputHabitantes" placeholder="Nº Habitantes" min="0">
-                <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
-                <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
-            </div>
-            <button type="button" onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
+            <button type="button" onclick="guardarVecino()" class="btn btn-success">Guardar Datos</button>
         </div>
-
         <div class="card">
-            <h3>Listado Completo</h3>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Casa</th>
-                            <th>Parqueadero</th>
                             <th>Propietario</th>
-                            <th>Teléfono 1</th>
-                            <th>Arrendatario</th>
-                            <th>Teléfono 2</th>
-                            <th>Estado</th>
+                            <th>Teléfono</th>
                             <th>Acceso</th>
-                            <th>Habitantes</th>
-                            <th>Niños</th>
-                            <th>Mascotas</th>
-                            <th id="th-acciones-dir" style="display: none;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tablaVecinosBody"></tbody>
@@ -277,46 +189,26 @@
         </div>
     </div>
 
-    <!-- PESTAÑA 6: SERVICIOS -->
+    <!-- SERVICIOS -->
     <div id="tab-servicios" class="tab-content">
         <h2>Servicios del Conjunto</h2>
-        <div id="admin-controls-servicios" style="display: none;" class="card">
-            <h4 id="titulo-form-servicio">Registrar / Editar Servicio</h4>
-            <input type="hidden" id="editIdServicio" value="">
-            <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
-            <textarea id="inputDescServicio" placeholder="Detalles y horarios..."></textarea>
-            <button type="button" onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
-            <button type="button" onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
-        </div>
         <div id="listaServiciosContainer"></div>
     </div>
 
-    <!-- PESTAÑA 7: EMERGENCIAS -->
+    <!-- EMERGENCIAS -->
     <div id="tab-emergencias" class="tab-content">
         <h2>Contactos de Emergencia</h2>
-        <div id="admin-controls-emergencias" style="display: none;" class="card">
-            <h4 id="titulo-form-emergencia">Registrar / Editar Contacto</h4>
-            <input type="hidden" id="editIdEmergencia" value="">
-            <input type="text" id="inputNombreEmergencia" placeholder="Institución / Nombre">
-            <input type="text" id="inputNumeroEmergencia" placeholder="Número telefónico">
-            <button type="button" onclick="guardarEmergencia()" class="btn btn-success btn-responsive">Guardar Contacto</button>
-            <button type="button" onclick="limpiarFormEmergencia()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarEmergencia">Cancelar</button>
+        <div id="listaEmergenciasContainer">
+            <div class="card"><h3>ECU 911</h3><p>Teléfono: <b>911</b></p></div>
         </div>
-        <div id="listaEmergenciasContainer"></div>
     </div>
 
-    <!-- PESTAÑA 8: REGLAMENTO -->
+    <!-- REGLAMENTO -->
     <div id="tab-reglamento" class="tab-content">
         <h2>Reglamento Interno</h2>
-        <div id="admin-controls-reglamento" style="display: none;" class="card">
-            <h4 id="titulo-form-reglamento">Registrar / Editar Norma</h4>
-            <input type="hidden" id="editIdReglamento" value="">
-            <input type="text" id="inputTituloReglamento" placeholder="Título de la norma">
-            <textarea id="inputDescReglamento" placeholder="Detalles de la norma..."></textarea>
-            <button type="button" onclick="guardarReglamento()" class="btn btn-success btn-responsive">Guardar Norma</button>
-            <button type="button" onclick="limpiarFormReglamento()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarReglamento">Cancelar</button>
+        <div id="listaReglamentosContainer">
+            <div class="card"><h3>Mascotas</h3><p>Uso obligatorio de correa en áreas comunes.</p></div>
         </div>
-        <div id="listaReglamentosContainer"></div>
     </div>
 </div>
 
@@ -324,4 +216,174 @@
     const firebaseConfig = {
         apiKey: "AIzaSyCkJgHVOizyRxAcIeWWjoLW7VzlLGcizPk",
         authDomain: "el-conde-2.firebaseapp.com",
-        database
+        databaseURL: "https://el-conde-2-default-rtdb.firebaseio.com",
+        projectId: "el-conde-2",
+        storageBucket: "el-conde-2.appspot.com",
+        messagingSenderId: "997046551123",
+        appId: "1:997046551123:web:18214bac891eaf4fd4bca6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let datosApp = {
+        vecinos: [],
+        novedades: [],
+        cartelera: [{ id: 1, titulo: "Bienvenido a EL CONDE 2 SMART", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 Viviendas)." }]
+    };
+
+    // Carga segura con respaldo local automático
+    if(localStorage.getItem('elCondeDataBackup')) {
+        try { datosApp = JSON.parse(localStorage.getItem('elCondeDataBackup')); } catch(e){}
+    }
+
+    db.ref('elCondeData').on('value', (snapshot) => {
+        const val = snapshot.val();
+        if(val) {
+            datosApp = val;
+            if(!datosApp.vecinos) datosApp.vecinos = [];
+            if(!datosApp.novedades) datosApp.novedades = [];
+            if(!datosApp.cartelera) datosApp.cartelera = [];
+            localStorage.setItem('elCondeDataBackup', JSON.stringify(datosApp));
+        }
+        renderizarTodo();
+    }, (err) => {
+        renderizarTodo();
+    });
+
+    function sincronizar() {
+        localStorage.setItem('elCondeDataBackup', JSON.stringify(datosApp));
+        db.ref('elCondeData').set(datosApp).catch(e => {});
+    }
+
+    function cambiarPestaña(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+        document.getElementById('btn-' + tab).classList.add('active');
+        renderizarTodo();
+    }
+
+    function intentarLoginAdmin() {
+        const pass = document.getElementById('inputPasswordAdmin').value.trim();
+        if(pass === "admin123" || pass === "admin") {
+            sessionStorage.setItem('adminAutenticado', 'true');
+            document.getElementById('inputPasswordAdmin').value = '';
+            alert("¡Acceso concedido como Administrador!");
+            verificarSesion();
+        } else {
+            alert("Contraseña incorrecta. Usa admin123");
+        }
+    }
+
+    function cerrarSesionAdmin() {
+        sessionStorage.removeItem('adminAutenticado');
+        verificarSesion();
+    }
+
+    function esAdmin() {
+        return sessionStorage.getItem('adminAutenticado') === 'true';
+    }
+
+    function verificarSesion() {
+        const auth = esAdmin();
+        document.getElementById('seccion-login').style.display = auth ? 'none' : 'block';
+        document.getElementById('panel-admin').style.display = auth ? 'block' : 'none';
+        
+        const badge = document.getElementById('label-estado-rol');
+        badge.textContent = auth ? "Modo Administrador" : "Modo Vecino";
+        badge.style.background = auth ? "#c2410c" : "#78716c";
+
+        document.querySelectorAll('[id^="admin-controls-"]').forEach(el => {
+            el.style.display = auth ? 'block' : 'none';
+        });
+        renderizarTodo();
+    }
+
+    function guardarVecino() {
+        if(!esAdmin()) return;
+        const idCasa = parseInt(document.getElementById('inputCasa').value);
+        if(!idCasa || idCasa < 1 || idCasa > 112) { alert("Casa del 1 al 112"); return; }
+        
+        const prop = document.getElementById('inputPropietario').value.trim();
+        const tel = document.getElementById('inputTelefono1').value.trim();
+        const acc = document.getElementById('selectAccesoCasa').value;
+
+        if(!datosApp.vecinos) datosApp.vecinos = [];
+        let idx = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
+        if(idx >= 0) {
+            datosApp.vecinos[idx] = { idCasa, propietario: prop, telefono1: tel, acceso: acc };
+        } else {
+            datosApp.vecinos.push({ idCasa, propietario: prop, telefono1: tel, acceso: acc });
+        }
+        sincronizar();
+        alert("Guardado con éxito");
+    }
+
+    function guardarAnuncioCartelera() {
+        if(!esAdmin()) return;
+        const tit = document.getElementById('inputTituloCartelera').value.trim();
+        const con = document.getElementById('inputContenidoCartelera').value.trim();
+        if(!tit || !con) return;
+        datosApp.cartelera.push({ id: Date.now(), titulo: tit, contenido: con, fecha: new Date().toLocaleDateString() });
+        sincronizar();
+        document.getElementById('inputTituloCartelera').value = '';
+        document.getElementById('inputContenidoCartelera').value = '';
+        alert("Anuncio publicado");
+    }
+
+    function crearNovedad() {
+        const casa = parseInt(document.getElementById('inputCasaReporte').value);
+        const tipo = document.getElementById('selectTipoReporte').value;
+        const desc = document.getElementById('textoNovedad').value.trim();
+        if(!casa || !desc) { alert("Completa los campos"); return; }
+        datosApp.novedades.push({ id: Date.now(), casa, tipo, descripcion: desc, estado: 'Pendiente' });
+        sincronizar();
+        document.getElementById('inputCasaReporte').value = '';
+        document.getElementById('textoNovedad').value = '';
+        alert("Reporte enviado");
+    }
+
+    function renderizarVecinos() {
+        const tbody = document.getElementById('tablaVecinosBody');
+        tbody.innerHTML = '';
+        if(!datosApp.vecinos || datosApp.vecinos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay viviendas registradas.</td></tr>`;
+            return;
+        }
+        datosApp.vecinos.sort((a,b)=>a.idCasa - b.idCasa).forEach(v => {
+            if(!esAdmin() && v.acceso === 'Restringido') return;
+            const tel = esAdmin() ? (v.telefono1 || '-') : '<span class="private-info">🔒 [Privado]</span>';
+            tbody.innerHTML += `<tr><td><strong>Casa ${v.idCasa}</strong></td><td>${v.propietario || '-'}</td><td>${tel}</td><td>${v.acceso || 'Activo'}</td></tr>`;
+        });
+    }
+
+    function renderizarCartelera() {
+        const cont = document.getElementById('listaCarteleraContainer');
+        cont.innerHTML = '';
+        datosApp.cartelera.slice().reverse().forEach(c => {
+            cont.innerHTML += `<div class="card"><h3>${c.titulo}</h3><small>${c.fecha || ''}</small><p>${c.contenido}</p></div>`;
+        });
+    }
+
+    function renderizarNovedades() {
+        const cont = document.getElementById('listaNovedadesContainer');
+        if(!esAdmin()) { cont.innerHTML = ''; return; }
+        cont.innerHTML = '<h3>Bandeja de Reportes</h3>';
+        datosApp.novedades.slice().reverse().forEach(n => {
+            cont.innerHTML += `<div class="card">Casa Nº ${n.casa} | <em>${n.tipo}</em><p>${n.descripcion}</p><small>Estado: <b>${n.estado}</b></small></div>`;
+        });
+    }
+
+    function renderizarTodo() {
+        renderizarVecinos();
+        renderizarCartelera();
+        renderizarNovedades();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        verificarSesion();
+    });
+</script>
+</body>
+</html>
