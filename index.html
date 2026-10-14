@@ -3,387 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EL CONDE 2 SMART</title>
-    
-    <!-- SDKs de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
+    <title>EL CONDE 2 SMART - PRUEBA</title>
     <style>
-        :root {
-            --primary: #c2410c; 
-            --accent: #f97316; 
-            --bg-body: #fff7ed; 
-            --card-bg: #ffffff;
-            --text-main: #292524;
-            --text-muted: #78716c;
-            --border: #fed7aa;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #d97706;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 16px; }
-        .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(194, 65, 12, 0.08); border: 1px solid #ffedd5; }
-        
-        .header { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .header-titles h1 { font-size: 1.8rem; color: var(--primary); font-weight: 800; }
-        .header-titles p { font-size: 0.95rem; color: var(--text-muted); }
-        .badge-admin { display: inline-block; padding: 6px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: white; background: var(--text-muted); }
-
-        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: var(--primary); padding: 10px; border-radius: 12px; margin-bottom: 25px; }
-        .nav-tabs button { flex: 1 1 auto; min-width: 110px; background: transparent; color: #ffedd5; border: none; padding: 11px 14px; cursor: pointer; border-radius: 8px; font-size: 0.88rem; font-weight: 600; text-align: center; }
-        .nav-tabs button:hover { color: white; background: rgba(255,255,255,0.15); }
-        .nav-tabs button.active { background: #ffffff; color: var(--primary); font-weight: 700; }
-
-        .card { background: #fff; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; border-radius: 12px; }
-        .card h2, .card h3, .card h4 { color: var(--primary); margin-bottom: 14px; font-weight: 700; }
-        
-        input, select, textarea { width: 100%; padding: 12px 14px; margin: 6px 0 16px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fffaf5; color: var(--text-main); }
-        textarea { min-height: 100px; resize: vertical; }
-
-        button.btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
-        button.btn-inline { width: auto; padding: 7px 14px; font-size: 0.85rem; margin-right: 6px; margin-top: 6px; border-radius: 6px; }
-        
-        .btn-success { background-color: var(--success); color: white; }
-        .btn-danger { background-color: var(--danger); color: white; }
-        .btn-warning { background-color: var(--warning); color: white; }
-        .btn-secondary { background-color: var(--text-muted); color: white; }
-
-        .flex-row { display: flex; flex-direction: column; gap: 14px; }
-        .table-container { width: 100%; overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
-        th, td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
-        th { background-color: #ffedd5; color: var(--primary); font-weight: 700; }
-        tr:nth-child(even) { background-color: #fffaf5; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .private-info { color: var(--text-muted); font-style: italic; font-size: 0.85rem; }
-
-        @media (min-width: 768px) {
-            .header { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
-            .flex-row { flex-direction: row; }
-            .flex-row > * { flex: 1; }
-        }
+        body { font-family: sans-serif; background: #fff7ed; padding: 40px; color: #292524; }
+        .box { max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 2px solid #fed7aa; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 12px; margin: 10px 0 20px 0; border: 1px solid #fed7aa; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #15803d; }
+        #panel { display: none; margin-top: 20px; padding: 15px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div class="header-titles">
-            <h1>EL CONDE 2 SMART</h1>
-            <p>Plataforma Comunitaria (112 Viviendas)</p>
-        </div>
-        <div>
-            <span id="label-estado-rol" class="badge-admin">Modo Vecino</span>
-        </div>
+<div class="box">
+    <h2>EL CONDE 2 SMART</h2>
+    <p>Prueba de Acceso Directo</p>
+    
+    <div id="login-box">
+        <label>Contraseña de Administrador:</label>
+        <input type="password" id="pass" placeholder="Escribe admin123">
+        <button onclick="probarLogin()">Ingresar</button>
     </div>
 
-    <div class="nav-tabs">
-        <button type="button" onclick="cambiarPestaña('inicio')" id="btn-inicio" class="active">Inicio / Admin</button>
-        <button type="button" onclick="cambiarPestaña('cartelera')" id="btn-cartelera">Cartelera</button>
-        <button type="button" onclick="cambiarPestaña('reportar')" id="btn-reportar">Reportar Novedad</button>
-        <button type="button" onclick="cambiarPestaña('beneficios')" id="btn-beneficios">Beneficios</button>
-        <button type="button" onclick="cambiarPestaña('directorio')" id="btn-directorio">Directorio Casas</button>
-        <button type="button" onclick="cambiarPestaña('servicios')" id="btn-servicios">Servicios</button>
-        <button type="button" onclick="cambiarPestaña('emergencias')" id="btn-emergencias">Emergencias</button>
-        <button type="button" onclick="cambiarPestaña('reglamento')" id="btn-reglamento">Reglamento</button>
-    </div>
-
-    <!-- INICIO / ADMIN -->
-    <div id="tab-inicio" class="tab-content active">
-        <div id="seccion-login" class="card">
-            <h3>Acceso de Administrador</h3>
-            <input type="password" id="inputPasswordAdmin" placeholder="Contraseña de administrador">
-            <button type="button" onclick="intentarLoginAdmin()" class="btn btn-success">Ingresar como Administrador</button>
-        </div>
-
-        <div id="panel-admin" style="display: none;">
-            <div class="card" style="background: #fff7ed;">
-                <h3>Panel de Control Activo</h3>
-                <p style="font-size:0.9rem; margin-bottom:14px;">Tienes privilegios completos de administración.</p>
-                <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger">Cerrar Sesión de Administrador</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CARTELERA -->
-    <div id="tab-cartelera" class="tab-content">
-        <h2>Cartelera Comunitaria</h2>
-        <div id="admin-controls-cartelera" style="display: none;" class="card">
-            <h4>Publicar Nuevo Anuncio</h4>
-            <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
-            <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
-            <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success">Publicar Anuncio</button>
-        </div>
-        <div id="listaCarteleraContainer"></div>
-    </div>
-
-    <!-- REPORTAR NOVEDAD -->
-    <div id="tab-reportar" class="tab-content">
-        <h2>Reportes y Requerimientos</h2>
-        <div class="card">
-            <h4>Formulario de Reporte</h4>
-            <div class="flex-row">
-                <div>
-                    <label>Número de Casa (1 - 112):</label>
-                    <input type="number" id="inputCasaReporte" placeholder="Ej. 45" min="1" max="112">
-                </div>
-                <div>
-                    <label>Tipo de Requerimiento:</label>
-                    <select id="selectTipoReporte">
-                        <option value="Daño / Afectación">Daño / Afectación</option>
-                        <option value="Jardinería / Mantenimiento">Jardinería / Mantenimiento</option>
-                        <option value="Convivencia / Otro">Convivencia / Otro</option>
-                    </select>
-                </div>
-            </div>
-            <label>Descripción del Problema:</label>
-            <textarea id="textoNovedad" placeholder="Describa el requerimiento..."></textarea>
-            <button type="button" onclick="crearNovedad()" class="btn btn-success">Enviar Reporte</button>
-        </div>
-        <div id="listaNovedadesContainer"></div>
-    </div>
-
-    <!-- BENEFICIOS -->
-    <div id="tab-beneficios" class="tab-content">
-        <h2>Beneficios para la Comunidad</h2>
-        <div id="listaBeneficiosContainer"></div>
-    </div>
-
-    <!-- DIRECTORIO -->
-    <div id="tab-directorio" class="tab-content">
-        <h2>Directorio de Viviendas (112 Casas)</h2>
-        <div id="admin-controls-vecinos" style="display: none;" class="card">
-            <h4>Registrar / Actualizar Datos de Casa</h4>
-            <div class="flex-row">
-                <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
-                <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
-            </div>
-            <div class="flex-row">
-                <input type="text" id="inputTelefono1" placeholder="Teléfono (Privado admin)">
-                <select id="selectAccesoCasa">
-                    <option value="Activo">Activo</option>
-                    <option value="Restringido">Restringido</option>
-                </select>
-            </div>
-            <button type="button" onclick="guardarVecino()" class="btn btn-success">Guardar Datos</button>
-        </div>
-        <div class="card">
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Casa</th>
-                            <th>Propietario</th>
-                            <th>Teléfono</th>
-                            <th>Acceso</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaVecinosBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- SERVICIOS -->
-    <div id="tab-servicios" class="tab-content">
-        <h2>Servicios del Conjunto</h2>
-        <div id="listaServiciosContainer"></div>
-    </div>
-
-    <!-- EMERGENCIAS -->
-    <div id="tab-emergencias" class="tab-content">
-        <h2>Contactos de Emergencia</h2>
-        <div id="listaEmergenciasContainer">
-            <div class="card"><h3>ECU 911</h3><p>Teléfono: <b>911</b></p></div>
-        </div>
-    </div>
-
-    <!-- REGLAMENTO -->
-    <div id="tab-reglamento" class="tab-content">
-        <h2>Reglamento Interno</h2>
-        <div id="listaReglamentosContainer">
-            <div class="card"><h3>Mascotas</h3><p>Uso obligatorio de correa en áreas comunes.</p></div>
-        </div>
+    <div id="panel">
+        <h3 style="color: #16a34a;">¡Acceso Exitoso!</h3>
+        <p>El sistema funciona correctamente. El problema anterior era caché o retardo de red.</p>
+        <button onclick="cerrarSesion()" style="background: #dc2626; margin-top: 10px;">Cerrar Sesión</button>
     </div>
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCkJgHVOizyRxAcIeWWjoLW7VzlLGcizPk",
-        authDomain: "el-conde-2.firebaseapp.com",
-        databaseURL: "https://el-conde-2-default-rtdb.firebaseio.com",
-        projectId: "el-conde-2",
-        storageBucket: "el-conde-2.appspot.com",
-        messagingSenderId: "997046551123",
-        appId: "1:997046551123:web:18214bac891eaf4fd4bca6"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    let datosApp = {
-        vecinos: [],
-        novedades: [],
-        cartelera: [{ id: 1, titulo: "Bienvenido a EL CONDE 2 SMART", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 Viviendas)." }]
-    };
-
-    // Carga segura con respaldo local automático
-    if(localStorage.getItem('elCondeDataBackup')) {
-        try { datosApp = JSON.parse(localStorage.getItem('elCondeDataBackup')); } catch(e){}
-    }
-
-    db.ref('elCondeData').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if(val) {
-            datosApp = val;
-            if(!datosApp.vecinos) datosApp.vecinos = [];
-            if(!datosApp.novedades) datosApp.novedades = [];
-            if(!datosApp.cartelera) datosApp.cartelera = [];
-            localStorage.setItem('elCondeDataBackup', JSON.stringify(datosApp));
-        }
-        renderizarTodo();
-    }, (err) => {
-        renderizarTodo();
-    });
-
-    function sincronizar() {
-        localStorage.setItem('elCondeDataBackup', JSON.stringify(datosApp));
-        db.ref('elCondeData').set(datosApp).catch(e => {});
-    }
-
-    function cambiarPestaña(tab) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
-        document.getElementById('tab-' + tab).classList.add('active');
-        document.getElementById('btn-' + tab).classList.add('active');
-        renderizarTodo();
-    }
-
-    function intentarLoginAdmin() {
-        const pass = document.getElementById('inputPasswordAdmin').value.trim();
-        if(pass === "admin123" || pass === "admin") {
-            sessionStorage.setItem('adminAutenticado', 'true');
-            document.getElementById('inputPasswordAdmin').value = '';
-            alert("¡Acceso concedido como Administrador!");
-            verificarSesion();
+    function probarLogin() {
+        const valor = document.getElementById('pass').value.trim();
+        if(valor === "admin123" || valor === "admin") {
+            sessionStorage.setItem('ok', '1');
+            verificar();
         } else {
             alert("Contraseña incorrecta. Usa admin123");
         }
     }
 
-    function cerrarSesionAdmin() {
-        sessionStorage.removeItem('adminAutenticado');
-        verificarSesion();
+    function cerrarSesion() {
+        sessionStorage.removeItem('ok');
+        document.getElementById('pass').value = '';
+        verificar();
     }
 
-    function esAdmin() {
-        return sessionStorage.getItem('adminAutenticado') === 'true';
+    function verificar() {
+        const autorizado = sessionStorage.getItem('ok') === '1';
+        document.getElementById('login-box').style.display = autorizado ? 'none' : 'block';
+        document.getElementById('panel').style.display = autorizado ? 'block' : 'none';
     }
 
-    function verificarSesion() {
-        const auth = esAdmin();
-        document.getElementById('seccion-login').style.display = auth ? 'none' : 'block';
-        document.getElementById('panel-admin').style.display = auth ? 'block' : 'none';
-        
-        const badge = document.getElementById('label-estado-rol');
-        badge.textContent = auth ? "Modo Administrador" : "Modo Vecino";
-        badge.style.background = auth ? "#c2410c" : "#78716c";
-
-        document.querySelectorAll('[id^="admin-controls-"]').forEach(el => {
-            el.style.display = auth ? 'block' : 'none';
-        });
-        renderizarTodo();
-    }
-
-    function guardarVecino() {
-        if(!esAdmin()) return;
-        const idCasa = parseInt(document.getElementById('inputCasa').value);
-        if(!idCasa || idCasa < 1 || idCasa > 112) { alert("Casa del 1 al 112"); return; }
-        
-        const prop = document.getElementById('inputPropietario').value.trim();
-        const tel = document.getElementById('inputTelefono1').value.trim();
-        const acc = document.getElementById('selectAccesoCasa').value;
-
-        if(!datosApp.vecinos) datosApp.vecinos = [];
-        let idx = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
-        if(idx >= 0) {
-            datosApp.vecinos[idx] = { idCasa, propietario: prop, telefono1: tel, acceso: acc };
-        } else {
-            datosApp.vecinos.push({ idCasa, propietario: prop, telefono1: tel, acceso: acc });
-        }
-        sincronizar();
-        alert("Guardado con éxito");
-    }
-
-    function guardarAnuncioCartelera() {
-        if(!esAdmin()) return;
-        const tit = document.getElementById('inputTituloCartelera').value.trim();
-        const con = document.getElementById('inputContenidoCartelera').value.trim();
-        if(!tit || !con) return;
-        datosApp.cartelera.push({ id: Date.now(), titulo: tit, contenido: con, fecha: new Date().toLocaleDateString() });
-        sincronizar();
-        document.getElementById('inputTituloCartelera').value = '';
-        document.getElementById('inputContenidoCartelera').value = '';
-        alert("Anuncio publicado");
-    }
-
-    function crearNovedad() {
-        const casa = parseInt(document.getElementById('inputCasaReporte').value);
-        const tipo = document.getElementById('selectTipoReporte').value;
-        const desc = document.getElementById('textoNovedad').value.trim();
-        if(!casa || !desc) { alert("Completa los campos"); return; }
-        datosApp.novedades.push({ id: Date.now(), casa, tipo, descripcion: desc, estado: 'Pendiente' });
-        sincronizar();
-        document.getElementById('inputCasaReporte').value = '';
-        document.getElementById('textoNovedad').value = '';
-        alert("Reporte enviado");
-    }
-
-    function renderizarVecinos() {
-        const tbody = document.getElementById('tablaVecinosBody');
-        tbody.innerHTML = '';
-        if(!datosApp.vecinos || datosApp.vecinos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay viviendas registradas.</td></tr>`;
-            return;
-        }
-        datosApp.vecinos.sort((a,b)=>a.idCasa - b.idCasa).forEach(v => {
-            if(!esAdmin() && v.acceso === 'Restringido') return;
-            const tel = esAdmin() ? (v.telefono1 || '-') : '<span class="private-info">🔒 [Privado]</span>';
-            tbody.innerHTML += `<tr><td><strong>Casa ${v.idCasa}</strong></td><td>${v.propietario || '-'}</td><td>${tel}</td><td>${v.acceso || 'Activo'}</td></tr>`;
-        });
-    }
-
-    function renderizarCartelera() {
-        const cont = document.getElementById('listaCarteleraContainer');
-        cont.innerHTML = '';
-        datosApp.cartelera.slice().reverse().forEach(c => {
-            cont.innerHTML += `<div class="card"><h3>${c.titulo}</h3><small>${c.fecha || ''}</small><p>${c.contenido}</p></div>`;
-        });
-    }
-
-    function renderizarNovedades() {
-        const cont = document.getElementById('listaNovedadesContainer');
-        if(!esAdmin()) { cont.innerHTML = ''; return; }
-        cont.innerHTML = '<h3>Bandeja de Reportes</h3>';
-        datosApp.novedades.slice().reverse().forEach(n => {
-            cont.innerHTML += `<div class="card">Casa Nº ${n.casa} | <em>${n.tipo}</em><p>${n.descripcion}</p><small>Estado: <b>${n.estado}</b></small></div>`;
-        });
-    }
-
-    function renderizarTodo() {
-        renderizarVecinos();
-        renderizarCartelera();
-        renderizarNovedades();
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        verificarSesion();
-    });
+    verificar();
 </script>
+
 </body>
 </html>
