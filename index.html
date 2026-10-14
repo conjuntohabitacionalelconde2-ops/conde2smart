@@ -147,4 +147,153 @@
         <div id="admin-controls-cartelera" style="display: none;" class="card">
             <h4 id="titulo-form-cartelera">Publicar Nuevo Anuncio</h4>
             <input type="hidden" id="editIdCartelera" value="">
-            <input type="text"
+            <input type="text" id="inputTituloCartelera" placeholder="Título del anuncio">
+            <textarea id="inputContenidoCartelera" placeholder="Escriba el comunicado oficial..."></textarea>
+            <button type="button" onclick="guardarAnuncioCartelera()" class="btn btn-success btn-responsive">Guardar / Publicar</button>
+            <button type="button" onclick="limpiarFormCartelera()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarCartelera">Cancelar</button>
+        </div>
+        <div id="listaCarteleraContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 3: REPORTAR NOVEDAD -->
+    <div id="tab-reportar" class="tab-content">
+        <h2>Reportes y Requerimientos</h2>
+        <div class="card">
+            <h4>Formulario de Reporte</h4>
+            <div class="flex-row">
+                <div>
+                    <label>Número de Casa (1 - 112):</label>
+                    <input type="number" id="inputCasaReporte" placeholder="Ej. 45" min="1" max="112">
+                </div>
+                <div>
+                    <label>Tipo de Requerimiento:</label>
+                    <select id="selectTipoReporte">
+                        <option value="Daño / Afectación">Daño / Afectación</option>
+                        <option value="Jardinería / Mantenimiento">Jardinería / Mantenimiento</option>
+                        <option value="Convivencia / Otro">Convivencia / Otro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div>
+                    <label>Prioridad:</label>
+                    <select id="selectPrioridadReporte">
+                        <option value="Normal">Normal</option>
+                        <option value="Urgente">Urgente 🚨</option>
+                    </select>
+                </div>
+            </div>
+            <label>Descripción del Problema:</label>
+            <textarea id="textoNovedad" placeholder="Describa el requerimiento o daño..."></textarea>
+            <button type="button" onclick="crearNovedad()" class="btn btn-success btn-responsive">Enviar Reporte</button>
+        </div>
+
+        <div class="card" style="background: #fffbeb; border-color: #fde68a;">
+            <h4>🔍 Consultar Estado de mi Reporte</h4>
+            <p style="font-size: 0.9rem; margin-bottom: 10px;">Ingrese su número de casa para verificar si la administración ya atendió su novedad y leyó su respuesta:</p>
+            <div class="flex-row">
+                <input type="number" id="inputCasaConsulta" placeholder="Nº de Casa" min="1" max="112">
+                <button type="button" onclick="consultarEstadoVecino()" class="btn btn-warning btn-responsive" style="margin-top:6px;">Consultar Mis Reportes</button>
+            </div>
+            <div id="resultadoConsultaVecino" style="margin-top: 14px;"></div>
+        </div>
+
+        <h3>Bandeja de Gestión (Acceso Exclusivo Administrador)</h3>
+        <div id="listaNovedadesContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 4: BENEFICIOS -->
+    <div id="tab-beneficios" class="tab-content">
+        <h2>Beneficios para la Comunidad</h2>
+        <div id="admin-controls-beneficios" style="display: none;" class="card">
+            <h4 id="titulo-form-beneficio">Registrar / Editar Beneficio</h4>
+            <input type="hidden" id="editIdBeneficio" value="">
+            <input type="text" id="inputTituloBeneficio" placeholder="Título del beneficio">
+            <textarea id="inputDescBeneficio" placeholder="Detalles del beneficio..."></textarea>
+            <button type="button" onclick="guardarBeneficio()" class="btn btn-success btn-responsive">Guardar Beneficio</button>
+            <button type="button" onclick="limpiarFormBeneficio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarBeneficio">Cancelar</button>
+        </div>
+        <div id="listaBeneficiosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 5: DIRECTORIO DE CASAS -->
+    <div id="tab-directorio" class="tab-content">
+        <h2>Directorio de Viviendas (112 Casas)</h2>
+        <div id="admin-controls-vecinos" style="display: none;" class="card">
+            <h4 id="titulo-form-vecino">Registrar / Actualizar Datos de Casa</h4>
+            <div class="flex-row">
+                <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
+                <input type="text" id="inputParqueadero" placeholder="Parqueadero (Ej. P-12)">
+            </div>
+            <div class="flex-row">
+                <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
+                <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado admin)">
+            </div>
+            <div class="flex-row">
+                <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario (opcional)">
+                <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado admin)">
+            </div>
+            <div class="flex-row">
+                <select id="selectEstadoCasa">
+                    <option value="Habitado por Propietario">Habitado por Propietario</option>
+                    <option value="Arrendado">Arrendado</option>
+                    <option value="Desocupado">Desocupado</option>
+                </select>
+                <select id="selectAccesoCasa">
+                    <option value="Activo">Acceso Permitido (Activo)</option>
+                    <option value="Restringido">Acceso Restringido (Ya no pertenece)</option>
+                </select>
+            </div>
+            <div class="flex-row">
+                <input type="number" id="inputHabitantes" placeholder="Nº Habitantes" min="0">
+                <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
+                <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
+            </div>
+            <button type="button" onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
+        </div>
+
+        <div class="card">
+            <h3>Listado Completo</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Casa</th>
+                            <th>Parqueadero</th>
+                            <th>Propietario</th>
+                            <th>Teléfono 1</th>
+                            <th>Arrendatario</th>
+                            <th>Teléfono 2</th>
+                            <th>Estado</th>
+                            <th>Acceso</th>
+                            <th>Habitantes</th>
+                            <th>Niños</th>
+                            <th>Mascotas</th>
+                            <th id="th-acciones-dir" style="display: none;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVecinosBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 6: SERVICIOS -->
+    <div id="tab-servicios" class="tab-content">
+        <h2>Servicios del Conjunto</h2>
+        <div id="admin-controls-servicios" style="display: none;" class="card">
+            <h4 id="titulo-form-servicio">Registrar / Editar Servicio</h4>
+            <input type="hidden" id="editIdServicio" value="">
+            <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
+            <textarea id="inputDescServicio" placeholder="Detalles y horarios..."></textarea>
+            <button type="button" onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
+            <button type="button" onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
+        </div>
+        <div id="listaServiciosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 7: EMERGENCIAS -->
+    <div id="tab-emergencias" class="tab-content">
+        <h2>Contactos de Emergencia</h2>
+        <div id="admin-controls-emergencias" style="display: none;" class="card">
+            <h4
