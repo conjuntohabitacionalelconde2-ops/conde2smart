@@ -119,7 +119,7 @@
     <div id="tab-inicio" class="tab-content active">
         <div id="seccion-login" class="card">
             <h3>Acceso de Administrador</h3>
-            <p style="margin-bottom:12px; font-size:0.9rem;">Ingrese la contraseña de administrador:</p>
+            <p style="margin-bottom:12px; font-size:0.9rem;">Ingrese la contraseña de administrador (por defecto <strong>admin123</strong>):</p>
             <input type="password" id="inputPasswordAdmin" autocomplete="current-password" placeholder="Contraseña de administrador">
             <button type="button" onclick="intentarLoginAdmin()" class="btn btn-success btn-responsive">Ingresar como Administrador</button>
         </div>
@@ -131,13 +131,13 @@
                 <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
             </div>
 
-            <!-- Módulo para cambiar contraseña de administrador sincronizada en Firebase -->
+            <!-- Módulo para cambiar contraseña de administrador de forma segura -->
             <div class="card">
                 <h4>Cambiar Contraseña de Administrador</h4>
                 <input type="password" id="inputPasswordActual" placeholder="Contraseña Actual">
                 <input type="password" id="inputPasswordNueva" placeholder="Nueva Contraseña (mínimo 6 caracteres)">
                 <input type="password" id="inputPasswordConfirmar" placeholder="Confirmar Nueva Contraseña">
-                <button type="button" onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña en la Nube</button>
+                <button type="button" onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña</button>
             </div>
         </div>
     </div>
@@ -285,4 +285,314 @@
         <div id="admin-controls-servicios" style="display: none;" class="card">
             <h4 id="titulo-form-servicio">Registrar / Editar Servicio</h4>
             <input type="hidden" id="editIdServicio" value="">
-            <input type="text" id="inputTituloServicio" placeholder="
+            <input type="text" id="inputTituloServicio" placeholder="Nombre del servicio">
+            <textarea id="inputDescServicio" placeholder="Detalles y horarios..."></textarea>
+            <button type="button" onclick="guardarServicio()" class="btn btn-success btn-responsive">Guardar Servicio</button>
+            <button type="button" onclick="limpiarFormServicio()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarServicio">Cancelar</button>
+        </div>
+        <div id="listaServiciosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 7: EMERGENCIAS -->
+    <div id="tab-emergencias" class="tab-content">
+        <h2>Contactos de Emergencia</h2>
+        <div id="admin-controls-emergencias" style="display: none;" class="card">
+            <h4 id="titulo-form-emergencia">Registrar / Editar Contacto</h4>
+            <input type="hidden" id="editIdEmergencia" value="">
+            <input type="text" id="inputNombreEmergencia" placeholder="Institución / Nombre">
+            <input type="text" id="inputNumeroEmergencia" placeholder="Número telefónico">
+            <button type="button" onclick="guardarEmergencia()" class="btn btn-success btn-responsive">Guardar Contacto</button>
+            <button type="button" onclick="limpiarFormEmergencia()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarEmergencia">Cancelar</button>
+        </div>
+        <div id="listaEmergenciasContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 8: REGLAMENTO -->
+    <div id="tab-reglamento" class="tab-content">
+        <h2>Reglamento Interno</h2>
+        <div id="admin-controls-reglamento" style="display: none;" class="card">
+            <h4 id="titulo-form-reglamento">Registrar / Editar Norma</h4>
+            <input type="hidden" id="editIdReglamento" value="">
+            <input type="text" id="inputTituloReglamento" placeholder="Título de la norma">
+            <textarea id="inputDescReglamento" placeholder="Detalles de la norma..."></textarea>
+            <button type="button" onclick="guardarReglamento()" class="btn btn-success btn-responsive">Guardar Norma</button>
+            <button type="button" onclick="limpiarFormReglamento()" class="btn btn-secondary btn-responsive" style="display: none;" id="btnCancelarReglamento">Cancelar</button>
+        </div>
+        <div id="listaReglamentosContainer"></div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCkJgHVOizyRxAcIeWWjoLW7VzlLGcizPk",
+        authDomain: "el-conde-2.firebaseapp.com",
+        databaseURL: "https://el-conde-2-default-rtdb.firebaseio.com",
+        projectId: "el-conde-2",
+        storageBucket: "el-conde-2.appspot.com",
+        messagingSenderId: "997046551123",
+        appId: "1:997046551123:web:18214bac891eaf4fd4bca6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let datosApp = {
+        vecinos: [],
+        novedades: [],
+        cartelera: [{ id: 1, titulo: "Bienvenido a EL CONDE 2 SMART", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 Viviendas).", fecha: "2026-10-13" }],
+        beneficios: [{ id: 1, titulo: "Cancha Deportiva", contenido: "Reservas habilitadas mediante administración." }],
+        servicios: [{ id: 1, titulo: "Recolección de Basura", contenido: "Lunes, miércoles y viernes a primera hora." }],
+        emergencias: [{ id: 1, nombre: "ECU 911", numero: "911" }, { id: 2, nombre: "UPC Guamaní", numero: "0999999999" }],
+        reglamento: [{ id: 1, titulo: "Mascotas", contenido: "Uso obligatorio de correa y recolección de heces en áreas comunes." }]
+    };
+
+    let primerCarga = true;
+
+    db.ref('elCondeData').on('value', (snapshot) => {
+        const dataRemota = snapshot.val();
+        if (dataRemota) {
+            datosApp = dataRemota;
+            if(!datosApp.vecinos) datosApp.vecinos = [];
+            if(!datosApp.novedades) datosApp.novedades = [];
+            if(!datosApp.cartelera) datosApp.cartelera = [];
+            if(!datosApp.beneficios) datosApp.beneficios = [];
+            if(!datosApp.servicios) datosApp.servicios = [];
+            if(!datosApp.emergencias) datosApp.emergencias = [];
+            if(!datosApp.reglamento) datosApp.reglamento = [];
+        } else {
+            sincronizarConNube();
+        }
+
+        if (!primerCarga) {
+            mostrarAlertaFlotante();
+        }
+        primerCarga = false;
+        renderizarTodo();
+    });
+
+    function mostrarAlertaFlotante() {
+        const alerta = document.getElementById('alerta-flotante');
+        alerta.style.display = 'block';
+        setTimeout(() => { alerta.style.display = 'none'; }, 4000);
+    }
+
+    function sincronizarConNube() {
+        db.ref('elCondeData').set(datosApp);
+    }
+
+    function cambiarPestaña(nombreTab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + nombreTab).classList.add('active');
+        document.getElementById('btn-' + nombreTab).classList.add('active');
+        renderizarTodo();
+    }
+
+    // --- GESTIÓN SEGURA DE CONTRASEÑA ---
+    function obtenerPasswordAdmin() {
+        return localStorage.getItem('adminPasswordPersonalizada') || 'admin123';
+    }
+
+    function intentarLoginAdmin() {
+        const pass = document.getElementById('inputPasswordAdmin').value.trim();
+        if (pass === obtenerPasswordAdmin()) {
+            sessionStorage.setItem('adminAutenticado', 'true');
+            document.getElementById('inputPasswordAdmin').value = '';
+            alert("¡Acceso concedido como Administrador!");
+            verificarSesion();
+        } else {
+            alert("Contraseña incorrecta. (Por defecto es admin123)");
+        }
+    }
+
+    function cambiarPasswordAdmin() {
+        if (!esAdmin()) return;
+        const actual = document.getElementById('inputPasswordActual').value.trim();
+        const nueva = document.getElementById('inputPasswordNueva').value.trim();
+        const confirmar = document.getElementById('inputPasswordConfirmar').value.trim();
+        
+        if (actual !== obtenerPasswordAdmin()) {
+            alert("La contraseña actual es incorrecta.");
+            return;
+        }
+        if (nueva !== confirmar || nueva.length < 6) {
+            alert("Las nuevas contraseñas no coinciden o tienen menos de 6 caracteres.");
+            return;
+        }
+
+        localStorage.setItem('adminPasswordPersonalizada', nueva);
+        
+        document.getElementById('inputPasswordActual').value = '';
+        document.getElementById('inputPasswordNueva').value = '';
+        document.getElementById('inputPasswordConfirmar').value = '';
+
+        alert("¡Contraseña actualizada con éxito! Se cerrará la sesión por seguridad.");
+        cerrarSesionAdmin();
+    }
+
+    function verificarSesion() {
+        const esAuth = sessionStorage.getItem('adminAutenticado') === 'true';
+        const badge = document.getElementById('label-estado-rol');
+        const thAccionesDir = document.getElementById('th-acciones-dir');
+
+        if (esAuth) {
+            document.getElementById('seccion-login').style.display = 'none';
+            document.getElementById('panel-admin').style.display = 'block';
+            badge.textContent = "Modo Administrador";
+            badge.style.background = "#c2410c";
+            document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'block');
+            if(thAccionesDir) thAccionesDir.style.display = 'table-cell';
+        } else {
+            document.getElementById('seccion-login').style.display = 'block';
+            document.getElementById('panel-admin').style.display = 'none';
+            badge.textContent = "Modo Vecino";
+            badge.style.background = "#78716c";
+            document.querySelectorAll('[id^="admin-controls-"]').forEach(el => el.style.display = 'none');
+            if(thAccionesDir) thAccionesDir.style.display = 'none';
+        }
+        renderizarTodo();
+    }
+
+    function cerrarSesionAdmin() {
+        sessionStorage.removeItem('adminAutenticado');
+        verificarSesion();
+    }
+
+    function esAdmin() {
+        return sessionStorage.getItem('adminAutenticado') === 'true';
+    }
+
+    // --- DIRECTORIO CON CONTROL DE ACCESO ---
+    function guardarVecino() {
+        if (!esAdmin()) return;
+        const idCasa = parseInt(document.getElementById('inputCasa').value);
+        if (!idCasa || idCasa < 1 || idCasa > 112) { alert("Ingrese una casa válida (1 - 112)."); return; }
+
+        const registro = {
+            idCasa,
+            parqueadero: document.getElementById('inputParqueadero').value.trim(),
+            propietario: document.getElementById('inputPropietario').value.trim(),
+            telefono1: document.getElementById('inputTelefono1').value.trim(),
+            arrendatario: document.getElementById('inputArrendatario').value.trim(),
+            telefono2: document.getElementById('inputTelefono2').value.trim(),
+            estado: document.getElementById('selectEstadoCasa').value,
+            acceso: document.getElementById('selectAccesoCasa').value,
+            habitantes: parseInt(document.getElementById('inputHabitantes').value) || 0,
+            ninos: parseInt(document.getElementById('inputNinos').value) || 0,
+            mascotas: parseInt(document.getElementById('inputMascotas').value) || 0
+        };
+
+        if(!datosApp.vecinos) datosApp.vecinos = [];
+        let index = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
+        if (index >= 0) datosApp.vecinos[index] = registro;
+        else datosApp.vecinos.push(registro);
+
+        sincronizarConNube();
+        limpiarFormVecino();
+        alert("Registro guardado.");
+    }
+
+    function limpiarFormVecino() {
+        document.getElementById('inputCasa').value = '';
+        document.getElementById('inputParqueadero').value = '';
+        document.getElementById('inputPropietario').value = '';
+        document.getElementById('inputTelefono1').value = '';
+        document.getElementById('inputArrendatario').value = '';
+        document.getElementById('inputTelefono2').value = '';
+        document.getElementById('inputHabitantes').value = '';
+        document.getElementById('inputNinos').value = '';
+        document.getElementById('inputMascotas').value = '';
+    }
+
+    function editarVecino(idCasa) {
+        if (!esAdmin()) return;
+        const v = datosApp.vecinos.find(item => item.idCasa === idCasa);
+        if (v) {
+            document.getElementById('inputCasa').value = v.idCasa;
+            document.getElementById('inputParqueadero').value = v.parqueadero || '';
+            document.getElementById('inputPropietario').value = v.propietario || '';
+            document.getElementById('inputTelefono1').value = v.telefono1 || '';
+            document.getElementById('inputArrendatario').value = v.arrendatario || '';
+            document.getElementById('inputTelefono2').value = v.telefono2 || '';
+            document.getElementById('selectEstadoCasa').value = v.estado || 'Habitado por Propietario';
+            document.getElementById('selectAccesoCasa').value = v.acceso || 'Activo';
+            document.getElementById('inputHabitantes').value = v.habitantes || 0;
+            document.getElementById('inputNinos').value = v.ninos || 0;
+            document.getElementById('inputMascotas').value = v.mascotas || 0;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function eliminarVecino(idCasa) {
+        if (!esAdmin()) return;
+        if (confirm(`¿Eliminar casa ${idCasa}?`)) {
+            datosApp.vecinos = datosApp.vecinos.filter(v => v.idCasa !== idCasa);
+            sincronizarConNube();
+        }
+    }
+
+    function renderizarVecinos() {
+        const tbody = document.getElementById('tablaVecinosBody');
+        tbody.innerHTML = '';
+        if (!datosApp.vecinos || datosApp.vecinos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;">No hay viviendas registradas.</td></tr>`;
+            return;
+        }
+        datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
+        datosApp.vecinos.forEach(v => {
+            const estadoAcceso = v.acceso || 'Activo';
+            if (!esAdmin() && estadoAcceso === 'Restringido') {
+                return; 
+            }
+
+            const tr = document.createElement('tr');
+            let tel1 = esAdmin() ? (v.telefono1 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
+            let tel2 = esAdmin() ? (v.telefono2 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
+            let badgeAcceso = estadoAcceso === 'Restringido' ? '<span style="color:red; font-weight:bold;">Restringido ❌</span>' : '<span style="color:green;">Activo ✔️</span>';
+            let tdAcciones = esAdmin() ? `<td><button type="button" onclick="editarVecino(${v.idCasa})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="eliminarVecino(${v.idCasa})" class="btn-inline btn-danger">Eliminar</button></td>` : '';
+
+            tr.innerHTML = `
+                <td><strong>Casa ${v.idCasa}</strong></td>
+                <td>${v.parqueadero || '-'}</td>
+                <td>${v.propietario || '-'}</td>
+                <td>${tel1}</td>
+                <td>${v.arrendatario || '-'}</td>
+                <td>${tel2}</td>
+                <td>${v.estado || '-'}</td>
+                <td>${badgeAcceso}</td>
+                <td>${v.habitantes || 0}</td>
+                <td>${v.ninos || 0}</td>
+                <td>${v.mascotas || 0}</td>
+                ${tdAcciones}
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // --- NOVEDADES ---
+    function crearNovedad() {
+        const casa = parseInt(document.getElementById('inputCasaReporte').value);
+        const tipo = document.getElementById('selectTipoReporte').value;
+        const prioridad = document.getElementById('selectPrioridadReporte').value;
+        const descripcion = document.getElementById('textoNovedad').value.trim();
+        if (!casa || casa < 1 || casa > 112 || !descripcion) { alert("Ingrese una casa válida y detalle la novedad."); return; }
+
+        const vecinoInfo = datosApp.vecinos.find(v => v.idCasa === casa);
+        if (vecinoInfo && vecinoInfo.acceso === 'Restringido' && !esAdmin()) {
+            alert("Esta vivienda tiene el acceso restringido y no puede enviar reportes.");
+            return;
+        }
+
+        if(!datosApp.novedades) datosApp.novedades = [];
+        datosApp.novedades.push({ id: Date.now(), casa, tipo, prioridad, descripcion, estado: 'Pendiente', respuestaAdmin: '', fecha: new Date().toLocaleString() });
+        sincronizarConNube();
+        document.getElementById('inputCasaReporte').value = '';
+        document.getElementById('textoNovedad').value = '';
+        alert("Reporte enviado.");
+    }
+
+    function atenderNovedad(id) {
+        if (!esAdmin()) return;
+        const respuesta = prompt("Ingrese respuesta para el vecino:");
+        if (respuesta === null) return;
+        const n = datosApp.novedades.find(item => item.id === id);
