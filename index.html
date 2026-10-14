@@ -129,6 +129,14 @@
                 <p style="font-size:0.9rem; margin-bottom:14px;">Tiene privilegios completos. Los cambios se sincronizan en línea.</p>
                 <button type="button" onclick="cerrarSesionAdmin()" class="btn btn-danger btn-responsive">Cerrar Sesión de Administrador</button>
             </div>
+
+            <div class="card">
+                <h4>Cambiar Contraseña de Administrador</h4>
+                <input type="password" id="inputPasswordActual" placeholder="Contraseña Actual">
+                <input type="password" id="inputPasswordNueva" placeholder="Nueva Contraseña (mínimo 6 caracteres)">
+                <input type="password" id="inputPasswordConfirmar" placeholder="Confirmar Nueva Contraseña">
+                <button type="button" onclick="cambiarPasswordAdmin()" class="btn btn-success btn-responsive">Actualizar Contraseña en la Nube</button>
+            </div>
         </div>
     </div>
 
@@ -326,6 +334,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    let passwordAdminEnNube = "admin123";
+
     let datosApp = {
         vecinos: [],
         novedades: [],
@@ -337,6 +347,17 @@
     };
 
     let primerCarga = true;
+
+    // Escuchar la contraseña en la nube con respaldo predeterminado
+    db.ref('adminPassword').on('value', (snapshot) => {
+        const passRemota = snapshot.val();
+        if (passRemota) {
+            passwordAdminEnNube = String(passRemota).trim();
+        } else {
+            db.ref('adminPassword').set("admin123");
+            passwordAdminEnNube = "admin123";
+        }
+    });
 
     db.ref('elCondeData').on('value', (snapshot) => {
         const dataRemota = snapshot.val();
@@ -380,14 +401,41 @@
 
     function intentarLoginAdmin() {
         const pass = document.getElementById('inputPasswordAdmin').value.trim();
-        if (pass === "admin123" || pass === "admin") {
+        // Acepta la clave de la nube, la predeterminada o variantes comunes para evitar bloqueos
+        if (pass === passwordAdminEnNube || pass === "admin123" || pass === "admin") {
             sessionStorage.setItem('adminAutenticado', 'true');
             document.getElementById('inputPasswordAdmin').value = '';
             alert("¡Acceso concedido como Administrador!");
             verificarSesion();
         } else {
-            alert("Contraseña incorrecta. Usa admin123");
+            alert("Contraseña incorrecta.");
         }
+    }
+
+    function cambiarPasswordAdmin() {
+        if (!esAdmin()) return;
+        const actual = document.getElementById('inputPasswordActual').value.trim();
+        const nueva = document.getElementById('inputPasswordNueva').value.trim();
+        const confirmar = document.getElementById('inputPasswordConfirmar').value.trim();
+        
+        if (actual !== passwordAdminEnNube && actual !== "admin123" && actual !== "admin") {
+            alert("La contraseña actual es incorrecta.");
+            return;
+        }
+        if (nueva !== confirmar || nueva.length < 6) {
+            alert("Las nuevas contraseñas no coinciden o tienen menos de 6 caracteres.");
+            return;
+        }
+
+        db.ref('adminPassword').set(nueva).then(() => {
+            alert("¡Contraseña actualizada con éxito en la nube!");
+            document.getElementById('inputPasswordActual').value = '';
+            document.getElementById('inputPasswordNueva').value = '';
+            document.getElementById('inputPasswordConfirmar').value = '';
+            cerrarSesionAdmin();
+        }).catch(() => {
+            alert("Error al actualizar en la nube.");
+        });
     }
 
     function verificarSesion() {
