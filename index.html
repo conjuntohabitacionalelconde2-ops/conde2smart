@@ -167,4 +167,247 @@
             <h4>Registrar / Actualizar Datos de Casa</h4>
             <div class="flex-row">
                 <input type="number" id="inputCasa" placeholder="Casa Nº (1 - 112)" min="1" max="112">
-                <input type="
+                <input type="text" id="inputPropietario" placeholder="Nombre del Propietario">
+            </div>
+            <div class="flex-row">
+                <input type="text" id="inputTelefono1" placeholder="Teléfono (Privado admin)">
+                <select id="selectAccesoCasa">
+                    <option value="Activo">Acceso Permitido (Activo)</option>
+                    <option value="Restringido">Acceso Restringido</option>
+                </select>
+            </div>
+            <button type="button" onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
+        </div>
+
+        <div class="card">
+            <h3>Listado Completo</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Casa</th>
+                            <th>Propietario</th>
+                            <th>Teléfono</th>
+                            <th>Acceso</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVecinosBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 6: SERVICIOS -->
+    <div id="tab-servicios" class="tab-content">
+        <h2>Servicios del Conjunto</h2>
+        <div id="listaServiciosContainer"></div>
+    </div>
+
+    <!-- PESTAÑA 7: EMERGENCIAS -->
+    <div id="tab-emergencias" class="tab-content">
+        <h2>Contactos de Emergencia</h2>
+        <div id="listaEmergenciasContainer">
+            <div class="card"><h3>ECU 911</h3><p>Teléfono: <b>911</b></p></div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 8: REGLAMENTO -->
+    <div id="tab-reglamento" class="tab-content">
+        <h2>Reglamento Interno</h2>
+        <div id="listaReglamentosContainer">
+            <div class="card"><h3>Mascotas</h3><p>Uso obligatorio de correa y recolección de heces en áreas comunes.</p></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCkJgHVOizyRxAcIeWWjoLW7VzlLGcizPk",
+        authDomain: "el-conde-2.firebaseapp.com",
+        databaseURL: "https://el-conde-2-default-rtdb.firebaseio.com",
+        projectId: "el-conde-2",
+        storageBucket: "el-conde-2.appspot.com",
+        messagingSenderId: "997046551123",
+        appId: "1:997046551123:web:18214bac891eaf4fd4bca6"
+    };
+
+    let db = null;
+    try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+    } catch(e) {
+        db = firebase.database();
+    }
+
+    let datosApp = {
+        vecinos: [],
+        novedades: [],
+        cartelera: [{ id: 1, titulo: "Bienvenido a EL CONDE 2 SMART", contenido: "Portal oficial del Conjunto Habitacional El Conde 2 (112 Viviendas).", fecha: "2026-10-13" }]
+    };
+
+    if(localStorage.getItem('elCondeDataBackup')) {
+        try { datosApp = JSON.parse(localStorage.getItem('elCondeDataBackup')); } catch(e){}
+    }
+
+    if(db) {
+        db.ref('elCondeData').on('value', (snapshot) => {
+            const val = snapshot.val();
+            if(val) {
+                datosApp = val;
+                if(!datosApp.vecinos) datosApp.vecinos = [];
+                if(!datosApp.novedades) datosApp.novedades = [];
+                if(!datosApp.cartelera) datosApp.cartelera = [];
+                localStorage.setItem('elCondeDataBackup', JSON.stringify(datosApp));
+            }
+            renderizarTodo();
+        }, (err) => {
+            renderizarTodo();
+        });
+    }
+
+    function sincronizar() {
+        localStorage.setItem('elCondeDataBackup', JSON.stringify(datosApp));
+        if(db) {
+            db.ref('elCondeData').set(datosApp).catch(e => {});
+        }
+    }
+
+    function cambiarPestaña(nombreTab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + nombreTab).classList.add('active');
+        document.getElementById('btn-' + nombreTab).classList.add('active');
+        renderizarTodo();
+    }
+
+    function intentarLoginAdmin() {
+        const pass = document.getElementById('inputPasswordAdmin').value.trim();
+        if(pass === "admin123" || pass === "admin") {
+            sessionStorage.setItem('adminAutenticado', 'true');
+            document.getElementById('inputPasswordAdmin').value = '';
+            alert("¡Acceso concedido como Administrador!");
+            verificarSesion();
+        } else {
+            alert("Contraseña incorrecta. Usa admin123");
+        }
+    }
+
+    function cerrarSesionAdmin() {
+        sessionStorage.removeItem('adminAutenticado');
+        verificarSesion();
+    }
+
+    function esAdmin() {
+        return sessionStorage.getItem('adminAutenticado') === 'true';
+    }
+
+    function verificarSesion() {
+        const auth = esAdmin();
+        document.getElementById('seccion-login').style.display = auth ? 'none' : 'block';
+        document.getElementById('panel-admin').style.display = auth ? 'block' : 'none';
+        
+        const badge = document.getElementById('label-estado-rol');
+        badge.textContent = auth ? "Modo Administrador" : "Modo Vecino";
+        badge.style.background = auth ? "#c2410c" : "#78716c";
+
+        document.querySelectorAll('[id^="admin-controls-"]').forEach(el => {
+            el.style.display = auth ? 'block' : 'none';
+        });
+        renderizarTodo();
+    }
+
+    function guardarVecino() {
+        if(!esAdmin()) return;
+        const idCasa = parseInt(document.getElementById('inputCasa').value);
+        if(!idCasa || idCasa < 1 || idCasa > 112) { alert("Ingrese una casa válida (1 al 112)"); return; }
+        
+        const prop = document.getElementById('inputPropietario').value.trim();
+        const tel = document.getElementById('inputTelefono1').value.trim();
+        const acc = document.getElementById('selectAccesoCasa').value;
+
+        if(!datosApp.vecinos) datosApp.vecinos = [];
+        let idx = datosApp.vecinos.findIndex(v => v.idCasa === idCasa);
+        if(idx >= 0) {
+            datosApp.vecinos[idx] = { idCasa, propietario: prop, telefono1: tel, acceso: acc };
+        } else {
+            datosApp.vecinos.push({ idCasa, propietario: prop, telefono1: tel, acceso: acc });
+        }
+        sincronizar();
+        alert("Datos de casa guardados con éxito.");
+    }
+
+    function guardarAnuncioCartelera() {
+        if(!esAdmin()) return;
+        const tit = document.getElementById('inputTituloCartelera').value.trim();
+        const con = document.getElementById('inputContenidoCartelera').value.trim();
+        if(!tit || !con) { alert("Complete el título y el contenido"); return; }
+        datosApp.cartelera.push({ id: Date.now(), titulo: tit, contenido: con, fecha: new Date().toLocaleDateString() });
+        sincronizar();
+        document.getElementById('inputTituloCartelera').value = '';
+        document.getElementById('inputContenidoCartelera').value = '';
+        alert("Anuncio publicado con éxito.");
+    }
+
+    function crearNovedad() {
+        const casa = parseInt(document.getElementById('inputCasaReporte').value);
+        const tipo = document.getElementById('selectTipoReporte').value;
+        const desc = document.getElementById('textoNovedad').value.trim();
+        if(!casa || casa < 1 || casa > 112 || !desc) { alert("Ingrese un número de casa válido y detalle el reporte."); return; }
+        datosApp.novedades.push({ id: Date.now(), casa, tipo, descripcion: desc, estado: 'Pendiente' });
+        sincronizar();
+        document.getElementById('inputCasaReporte').value = '';
+        document.getElementById('textoNovedad').value = '';
+        alert("Reporte enviado con éxito.");
+    }
+
+    function renderizarVecinos() {
+        const tbody = document.getElementById('tablaVecinosBody');
+        tbody.innerHTML = '';
+        if(!datosApp.vecinos || datosApp.vecinos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay viviendas registradas.</td></tr>`;
+            return;
+        }
+        datosApp.vecinos.sort((a,b)=>a.idCasa - b.idCasa).forEach(v => {
+            if(!esAdmin() && v.acceso === 'Restringido') return;
+            const tel = esAdmin() ? (v.telefono1 || '-') : '<span class="private-info">🔒 [Privado]</span>';
+            tbody.innerHTML += `<tr><td><strong>Casa ${v.idCasa}</strong></td><td>${v.propietario || '-'}</td><td>${tel}</td><td>${v.acceso || 'Activo'}</td></tr>`;
+        });
+    }
+
+    function renderizarCartelera() {
+        const cont = document.getElementById('listaCarteleraContainer');
+        cont.innerHTML = '';
+        if(!datosApp.cartelera || datosApp.cartelera.length === 0) {
+            cont.innerHTML = '<p>No hay anuncios publicados.</p>';
+            return;
+        }
+        datosApp.cartelera.slice().reverse().forEach(c => {
+            cont.innerHTML += `<div class="card"><h3>${c.titulo}</h3><small>${c.fecha || ''}</small><p>${c.contenido}</p></div>`;
+        });
+    }
+
+    function renderizarNovedades() {
+        const cont = document.getElementById('listaNovedadesContainer');
+        if(!esAdmin()) { cont.innerHTML = ''; return; }
+        cont.innerHTML = '<h3>Bandeja de Reportes</h3>';
+        if(!datosApp.novedades || datosApp.novedades.length === 0) {
+            cont.innerHTML += '<p>No hay reportes de vecinos.</p>';
+            return;
+        }
+        datosApp.novedades.slice().reverse().forEach(n => {
+            cont.innerHTML += `<div class="card">Casa Nº ${n.casa} | <em>${n.tipo}</em><p>${n.descripcion}</p><small>Estado: <b>${n.estado}</b></small></div>`;
+        });
+    }
+
+    function renderizarTodo() {
+        renderizarVecinos();
+        renderizarCartelera();
+        renderizarNovedades();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        verificarSesion();
+    });
+</script>
+</body>
+</html>
