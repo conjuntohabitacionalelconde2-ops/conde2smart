@@ -27,6 +27,31 @@
         body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 16px; }
         .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(194, 65, 12, 0.08); border: 1px solid #ffedd5; }
         
+        /* Modal Ley de Protección de Datos */
+        .modal-overlay {
+            display: flex;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            max-width: 550px;
+            width: 100%;
+            padding: 24px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            text-align: left;
+        }
+        .modal-content h3 { color: var(--primary); margin-bottom: 12px; font-size: 1.3rem; }
+        .modal-content p { font-size: 0.9rem; color: var(--text-main); margin-bottom: 12px; line-height: 1.4; }
+        .modal-content .legal-text { font-size: 0.82rem; color: var(--text-muted); background: #fffaf5; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px; max-height: 120px; overflow-y: auto; }
+
         #alerta-flotante {
             display: none;
             position: fixed;
@@ -72,7 +97,7 @@
         .flex-row { display: flex; flex-direction: column; gap: 14px; }
 
         .table-container { width: 100%; overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; min-width: 950px; font-size: 0.88rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 1050px; font-size: 0.88rem; }
         th, td { border: 1px solid var(--border); padding: 12px 14px; text-align: left; }
         th { background-color: #ffedd5; color: var(--primary); font-weight: 700; }
         tr:nth-child(even) { background-color: #fffaf5; }
@@ -90,6 +115,22 @@
     </style>
 </head>
 <body>
+
+<!-- VENTANA MODAL: AUTORIZACIÓN LEY DE PROTECCIÓN DE DATOS (ECUADOR) -->
+<div id="modalConsentimiento" class="modal-overlay">
+    <div class="modal-content">
+        <h3>📋 Consentimiento para Uso de Datos Personales</h3>
+        <p>En cumplimiento con la <strong>Ley Orgánica de Protección de Datos Personales de la República del Ecuador</strong>, el Conjunto Habitacional <strong>El Conde 2</strong> garantiza la privacidad y confidencialidad de la información registrada en esta plataforma comunitaria.</p>
+        <div class="legal-text">
+            <strong>Términos del Tratamiento de Datos:</strong><br>
+            • Los datos de propietarios e inquilinos son de uso estrictamente administrativo e interno para la gestión comunitaria (112 viviendas).<br>
+            • En el modo residente/vecino, la información confidencial (nombres completos, teléfonos y contactos) se mantendrá oculta y protegida.<br>
+            • La administración se compromete a no transferir, comercializar ni difundir datos a terceros no autorizados.
+        </div>
+        <p style="font-size:0.85rem;">Al continuar, usted declara conocer y aceptar el uso de la plataforma bajo los términos legales señalados.</p>
+        <button type="button" onclick="aceptarConsentimientoDatos()" class="btn btn-success">Aceptar y Continuar</button>
+    </div>
+</div>
 
 <div id="alerta-flotante">🔔 ¡Sincronizado con éxito!</div>
 
@@ -229,7 +270,7 @@
                 <input type="text" id="inputTelefono1" placeholder="Teléfono 1 (Privado admin)">
             </div>
             <div class="flex-row">
-                <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario (opcional)">
+                <input type="text" id="inputArrendatario" placeholder="Nombre del Arrendatario / Inquilino">
                 <input type="text" id="inputTelefono2" placeholder="Teléfono 2 (Privado admin)">
             </div>
             <div class="flex-row">
@@ -244,9 +285,10 @@
                 </select>
             </div>
             <div class="flex-row">
-                <input type="number" id="inputHabitantes" placeholder="Nº Habitantes" min="0">
+                <input type="number" id="inputHabitantes" placeholder="Nº Habitantes Totales" min="0">
                 <input type="number" id="inputNinos" placeholder="Nº Niños" min="0">
                 <input type="number" id="inputMascotas" placeholder="Nº Mascotas" min="0">
+                <input type="number" id="inputDiscapacidad" placeholder="Nº Personas con Discapacidad" min="0">
             </div>
             <button type="button" onclick="guardarVecino()" class="btn btn-success btn-responsive">Guardar Datos de Casa</button>
         </div>
@@ -261,13 +303,14 @@
                             <th>Parqueadero</th>
                             <th>Propietario</th>
                             <th>Teléfono 1</th>
-                            <th>Arrendatario</th>
+                            <th>Arrendatario / Inquilino</th>
                             <th>Teléfono 2</th>
                             <th>Estado</th>
                             <th>Acceso</th>
                             <th>Habitantes</th>
                             <th>Niños</th>
                             <th>Mascotas</th>
+                            <th>Discapacidad ♿</th>
                             <th id="th-acciones-dir" style="display: none;">Acciones</th>
                         </tr>
                     </thead>
@@ -348,7 +391,20 @@
 
     let primerCarga = true;
 
-    // Escuchar la contraseña en la nube con respaldo predeterminado
+    // Verificar consentimiento de Ley de Datos Personales
+    function verificarConsentimientoDatos() {
+        if (localStorage.getItem('consentimientoDatosEcuador') === 'true') {
+            document.getElementById('modalConsentimiento').style.display = 'none';
+        } else {
+            document.getElementById('modalConsentimiento').style.display = 'flex';
+        }
+    }
+
+    function aceptarConsentimientoDatos() {
+        localStorage.setItem('consentimientoDatosEcuador', 'true');
+        document.getElementById('modalConsentimiento').style.display = 'none';
+    }
+
     db.ref('adminPassword').on('value', (snapshot) => {
         const passRemota = snapshot.val();
         if (passRemota) {
@@ -401,7 +457,6 @@
 
     function intentarLoginAdmin() {
         const pass = document.getElementById('inputPasswordAdmin').value.trim();
-        // Acepta la clave de la nube, la predeterminada o variantes comunes para evitar bloqueos
         if (pass === passwordAdminEnNube || pass === "admin123" || pass === "admin") {
             sessionStorage.setItem('adminAutenticado', 'true');
             document.getElementById('inputPasswordAdmin').value = '';
@@ -487,7 +542,8 @@
             acceso: document.getElementById('selectAccesoCasa').value,
             habitantes: parseInt(document.getElementById('inputHabitantes').value) || 0,
             ninos: parseInt(document.getElementById('inputNinos').value) || 0,
-            mascotas: parseInt(document.getElementById('inputMascotas').value) || 0
+            mascotas: parseInt(document.getElementById('inputMascotas').value) || 0,
+            discapacidad: parseInt(document.getElementById('inputDiscapacidad').value) || 0
         };
 
         if(!datosApp.vecinos) datosApp.vecinos = [];
@@ -497,7 +553,7 @@
 
         sincronizarConNube();
         limpiarFormVecino();
-        alert("Registro guardado.");
+        alert("Registro de casa guardado.");
     }
 
     function limpiarFormVecino() {
@@ -510,6 +566,7 @@
         document.getElementById('inputHabitantes').value = '';
         document.getElementById('inputNinos').value = '';
         document.getElementById('inputMascotas').value = '';
+        document.getElementById('inputDiscapacidad').value = '';
     }
 
     function editarVecino(idCasa) {
@@ -527,6 +584,7 @@
             document.getElementById('inputHabitantes').value = v.habitantes || 0;
             document.getElementById('inputNinos').value = v.ninos || 0;
             document.getElementById('inputMascotas').value = v.mascotas || 0;
+            document.getElementById('inputDiscapacidad').value = v.discapacidad || 0;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
@@ -543,7 +601,7 @@
         const tbody = document.getElementById('tablaVecinosBody');
         tbody.innerHTML = '';
         if (!datosApp.vecinos || datosApp.vecinos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;">No hay viviendas registradas.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;">No hay viviendas registradas.</td></tr>`;
             return;
         }
         datosApp.vecinos.sort((a, b) => a.idCasa - b.idCasa);
@@ -552,23 +610,29 @@
             if (!esAdmin() && estadoAcceso === 'Restringido') return;
 
             const tr = document.createElement('tr');
+            
+            // Bloqueo de privacidad de Nombres y Teléfonos para MODO VECINO
+            let propietarioVis = esAdmin() ? (v.propietario || '-') : '<span class="private-info">🔒 [Protegido LOPDP]</span>';
+            let arrendatarioVis = esAdmin() ? (v.arrendatario || '-') : '<span class="private-info">🔒 [Protegido LOPDP]</span>';
             let tel1 = esAdmin() ? (v.telefono1 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
             let tel2 = esAdmin() ? (v.telefono2 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
+
             let badgeAcceso = estadoAcceso === 'Restringido' ? '<span style="color:red; font-weight:bold;">Restringido ❌</span>' : '<span style="color:green;">Activo ✔️</span>';
             let tdAcciones = esAdmin() ? `<td><button type="button" onclick="editarVecino(${v.idCasa})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="eliminarVecino(${v.idCasa})" class="btn-inline btn-danger">Eliminar</button></td>` : '';
 
             tr.innerHTML = `
                 <td><strong>Casa ${v.idCasa}</strong></td>
                 <td>${v.parqueadero || '-'}</td>
-                <td>${v.propietario || '-'}</td>
+                <td>${propietarioVis}</td>
                 <td>${tel1}</td>
-                <td>${v.arrendatario || '-'}</td>
+                <td>${arrendatarioVis}</td>
                 <td>${tel2}</td>
                 <td>${v.estado || '-'}</td>
                 <td>${badgeAcceso}</td>
                 <td>${v.habitantes || 0}</td>
                 <td>${v.ninos || 0}</td>
                 <td>${v.mascotas || 0}</td>
+                <td><strong>${v.discapacidad || 0}</strong></td>
                 ${tdAcciones}
             `;
             tbody.appendChild(tr);
@@ -831,7 +895,7 @@
     }
     function editarReglamento(id) {
         if (!esAdmin()) return;
-        const r = datosApp.reglamento.find(i => i.id === id);
+        const r = datosApp.reglamento.find(item => item.id === id);
         if(r) {
             document.getElementById('editIdReglamento').value = r.id;
             document.getElementById('inputTituloReglamento').value = r.titulo;
@@ -868,6 +932,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        verificarConsentimientoDatos();
         verificarSesion();
     });
 </script>
