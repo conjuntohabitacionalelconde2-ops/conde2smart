@@ -64,6 +64,12 @@
             box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3);
             z-index: 1000;
             font-weight: 600;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.03); }
         }
 
         .header { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
@@ -132,7 +138,7 @@
     </div>
 </div>
 
-<div id="alerta-flotante">🔔 ¡Sincronizado con éxito!</div>
+<div id="alerta-flotante">🔔 ¡Nueva publicación en la aplicación!</div>
 
 <div class="container">
     <div class="header">
@@ -391,7 +397,46 @@
 
     let primerCarga = true;
 
-    // Verificar consentimiento de Ley de Datos Personales
+    // SISTEMA DE NOTIFICACIONES Y ALARME SONORA
+    function solicitarPermisoNotificaciones() {
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+    }
+
+    function reproducirSonidoAlarma() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Tono D5
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // Tono A5
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        } catch(e) {}
+    }
+
+    function dispararAlertaNotificacion(mensaje) {
+        reproducirSonidoAlarma();
+
+        const alerta = document.getElementById('alerta-flotante');
+        alerta.textContent = "🔔 " + mensaje;
+        alerta.style.display = 'block';
+        setTimeout(() => { alerta.style.display = 'none'; }, 5000);
+
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("EL CONDE 2 SMART", {
+                body: mensaje,
+                icon: "https://cdn-icons-png.flaticon.com/512/3602/3602145.png"
+            });
+        }
+    }
+
     function verificarConsentimientoDatos() {
         if (localStorage.getItem('consentimientoDatosEcuador') === 'true') {
             document.getElementById('modalConsentimiento').style.display = 'none';
@@ -403,6 +448,7 @@
     function aceptarConsentimientoDatos() {
         localStorage.setItem('consentimientoDatosEcuador', 'true');
         document.getElementById('modalConsentimiento').style.display = 'none';
+        solicitarPermisoNotificaciones();
     }
 
     db.ref('adminPassword').on('value', (snapshot) => {
@@ -431,17 +477,11 @@
         }
 
         if (!primerCarga) {
-            mostrarAlertaFlotante();
+            dispararAlertaNotificacion("¡Se actualizó el contenido de la aplicación!");
         }
         primerCarga = false;
         renderizarTodo();
     });
-
-    function mostrarAlertaFlotante() {
-        const alerta = document.getElementById('alerta-flotante');
-        alerta.style.display = 'block';
-        setTimeout(() => { alerta.style.display = 'none'; }, 4000);
-    }
 
     function sincronizarConNube() {
         db.ref('elCondeData').set(datosApp);
@@ -611,7 +651,6 @@
 
             const tr = document.createElement('tr');
             
-            // Bloqueo de privacidad de Nombres y Teléfonos para MODO VECINO
             let propietarioVis = esAdmin() ? (v.propietario || '-') : '<span class="private-info">🔒 [Protegido LOPDP]</span>';
             let arrendatarioVis = esAdmin() ? (v.arrendatario || '-') : '<span class="private-info">🔒 [Protegido LOPDP]</span>';
             let tel1 = esAdmin() ? (v.telefono1 || 'N/A') : '<span class="private-info">🔒 [Privado]</span>';
@@ -933,6 +972,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         verificarConsentimientoDatos();
+        solicitarPermisoNotificaciones();
         verificarSesion();
     });
 </script>
