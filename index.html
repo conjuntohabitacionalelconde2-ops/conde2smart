@@ -21,6 +21,7 @@
             --success: #16a34a;
             --danger: #dc2626;
             --warning: #d97706;
+            --whatsapp: #25d366;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -100,6 +101,8 @@
         .btn-warning { background-color: var(--warning); color: white; }
         .btn-warning:hover { background-color: #b45309; }
         .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; }
+        .btn-whatsapp:hover { background-color: #1ebe5d; }
 
         .flex-row { display: flex; flex-direction: column; gap: 14px; }
 
@@ -404,14 +407,13 @@
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             const audioCtx = new AudioContext();
 
-            // Primer pitido fuerte
             const osc1 = audioCtx.createOscillator();
             const gain1 = audioCtx.createGain();
-            osc1.type = 'square'; // Onda cuadrada para mayor presencia y volumen acústico
+            osc1.type = 'square';
             osc1.frequency.setValueAtTime(800, audioCtx.currentTime); 
             osc1.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.2);
             
-            gain1.gain.setValueAtTime(0.4, audioCtx.currentTime); // Volumen amplificado
+            gain1.gain.setValueAtTime(0.4, audioCtx.currentTime);
             gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
             
             osc1.connect(gain1);
@@ -419,7 +421,6 @@
             osc1.start();
             osc1.stop(audioCtx.currentTime + 0.3);
 
-            // Segundo pitido fuerte de refuerzo (efecto alerta real)
             setTimeout(() => {
                 const osc2 = audioCtx.createOscillator();
                 const gain2 = audioCtx.createGain();
@@ -436,9 +437,7 @@
                 osc2.stop(audioCtx.currentTime + 0.3);
             }, 350);
 
-        } catch(e) {
-            console.log("Audio contextual no permitido aún por políticas del navegador hasta la primera interacción.");
-        }
+        } catch(e) {}
     }
 
     function dispararAlertaNotificacion(mensaje) {
@@ -526,7 +525,7 @@
         const confirmar = document.getElementById('inputPasswordConfirmar').value.trim();
         
         if (actual !== passwordAdminEnNube && actual !== "admin123" && actual !== "admin") {
-            alert("La contraseña actual es incorrecta.");
+            alert("La contraseña actual adalah incorrecta.");
             return;
         }
         if (nueva !== confirmar || nueva.length < 6) {
@@ -783,12 +782,19 @@
         document.getElementById('titulo-form-cartelera').textContent = "Publicar Nuevo Anuncio";
         document.getElementById('btnCancelarCartelera').style.display = 'none';
     }
+    function compartirWhatsApp(titulo, contenido) {
+        const urlApp = window.location.href.split('?')[0];
+        const texto = `📢 *EL CONDE 2 SMART - COMUNICADO OFICIAL*\n\n*${titulo}*\n\n${contenido}\n\n👉 Revisa todos los detalles ingresando a la plataforma: ${urlApp}`;
+        const urlWp = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+        window.open(urlWp, '_blank');
+    }
+
     function renderizarCartelera() {
         const cont = document.getElementById('listaCarteleraContainer'); cont.innerHTML = '';
         if (!datosApp.cartelera || datosApp.cartelera.length === 0) { cont.innerHTML = '<p>No hay anuncios.</p>'; return; }
         datosApp.cartelera.slice().reverse().forEach(c => {
-            let botones = esAdmin() ? `<button type="button" onclick="editarCartelera(${c.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.cartelera=datosApp.cartelera.filter(x=>x.id!==${c.id});sincronizarConNube();" class="btn-inline btn-danger">Eliminar</button>` : '';
-            cont.innerHTML += `<div class="card"><h3>${c.titulo}</h3><small>${c.fecha}</small><p>${c.contenido}</p><div>${botones}</div></div>`;
+            let botones = esAdmin() ? `<button type="button" onclick="editarCartelera(${c.id})" class="btn-inline btn-warning">Editar</button><button type="button" onclick="datosApp.cartelera=datosApp.cartelera.filter(x=>x.id!==${c.id});sincronizarConNube();" class="btn-inline btn-danger">Eliminar</button><button type="button" onclick="compartirWhatsApp('${c.titulo.replace(/'/g, "\\'")}', '${c.contenido.replace(/'/g, "\\'")}')" class="btn-inline btn-whatsapp">💬 Avisar por WhatsApp</button>` : '';
+            cont.innerHTML += `<div class="card"><h3>${c.titulo}</h3><small>${c.fecha}</small><p>${c.contenido}</p><div style="margin-top:10px;">${botones}</div></div>`;
         });
     }
 
